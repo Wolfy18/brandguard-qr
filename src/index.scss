@@ -1,0 +1,22 @@
+// Add styles here.
+// .components-notice.is-dismissible {
+// 	position: fixed;
+// 	top: '10%';
+// 	right: 0;
+// }
+#blockchain_product_data {
+	position: relative;
+	#spinner {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		z-index: 99999;
+		display: flex;
+		justify-content: center;
+		background: rgba(0, 0, 0, 0.2);
+		svg {
+			align-self: center;
+		}
+	}
+}
