@@ -403,16 +403,13 @@ function ipfs_meta_box_markup($post)
 
 				// need to update product meta to set new gallery ids
 				if ($update_meta) {
-					update_post_meta($post->ID, 'bk_att_token_image', implode(',', $updated_gallery_ids));
+					update_post_meta($post->ID, 'bk_att_token_image', esc_attr($bk_token_att));
 				}
 			}
 			?>
 		</ul>
-
-		<input type="hidden" id="product_image_gallery" name="product_image_gallery" value="<?php echo esc_attr(implode(',', $updated_gallery_ids)); ?>" />
-
+		<input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
 	</div>
-	<input type="text" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
 
 	<p class="add_product_images hide-if-no-js">
 		<a href="#" data-choose="<?php esc_attr_e('Add images to product gallery', 'woocommerce'); ?>" data-update="<?php esc_attr_e('Add to gallery', 'woocommerce'); ?>" data-delete="<?php esc_attr_e('Delete image', 'woocommerce'); ?>" data-text="<?php esc_attr_e('Delete', 'woocommerce'); ?>"><?php esc_html_e('Choose from the gallery', 'woocommerce'); ?></a>
@@ -442,10 +439,35 @@ function bak_save_blockchain_meta($post_id)
 	$bk_att_token_image = isset($_POST['bk_att_token_image']) ? sanitize_text_field($_POST['bk_att_token_image']) : '';
 
 	if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
-		$bk_att_token_image = $bk_token_image;
-
 		# Insert attachment
+		$upload = fetch_ipfs_attachment($bk_token_image);
 
+		if ($upload) {
+			$file_path        = $upload['file'];
+			$file_name        = basename($file_path);
+			$file_type        = wp_check_filetype($file_name, null);
+			$attachment_title = sanitize_file_name(pathinfo($file_name, PATHINFO_FILENAME));
+			$wp_upload_dir    = wp_upload_dir();
+
+			$args = array(
+				'guid'           => $wp_upload_dir['url'] . '/' . $file_name,
+				'post_mime_type' => $file_type['type'],
+				'post_status'    => 'inherit',
+				'post_content' => '',
+				'post_title' => $attachment_title,
+				'ipfs'       => $bk_token_image
+			);
+
+			$att_id = wp_insert_attachment($args, $file_path, $post_id);
+
+			// you must first include the image.php file
+			// for the function wp_generate_attachment_metadata() to work
+			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+			$attach_data = wp_generate_attachment_metadata($att_id, $file_path);
+			wp_update_attachment_metadata($att_id, $attach_data);
+
+			$bk_att_token_image = $att_id;
+		}
 	}
 
 	// grab the product
@@ -467,16 +489,13 @@ function bak_save_blockchain_meta($post_id)
 	$product->save();
 }
 
-function fetch_ipfs_attachment()
+function fetch_ipfs_attachment($ipfs)
 {
-	// Write the file using put_contents instead of fopen(), etc.
-	global $wp_filesystem;
-
-	$url  = "https://gateway.bakrypt.io/ipfs/";
+	$url  = "https://gateway.bakrypt.io/ipfs/" . str_replace("ipfs://", "", $ipfs);
 
 	$response = wp_remote_get($url);
-	
-	$access = array();
+
+	$upload = null;
 
 	if (is_wp_error($response)) {
 		$error_message = $response->get_error_message();
@@ -484,10 +503,14 @@ function fetch_ipfs_attachment()
 	} else {
 
 		$file = $response['body'];
-		$wp_filesystem->put_contents($file, $zip);
+		$upload = wp_upload_bits(basename(str_replace("ipfs://", "", $ipfs) . '.' . explode("/", $response['headers']['content-type'])[1]), null, $file);
+		$upload['mime_type'] = $response['headers']['content-type'];
 
+		if (!empty($upload['error'])) {
+			return false;
+		}
 	}
-	return $access;
+	return $upload;
 }
 
 function generate_access_token()
