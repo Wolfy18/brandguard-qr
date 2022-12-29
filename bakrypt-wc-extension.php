@@ -615,7 +615,20 @@ function generate_access_token()
 
 function upload_attachment_to_ipfs()
 {
+	$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
+	if ($testnet != "yes") {
+		$url  = "https://bakrypt.io/v1/files/";
+	} else {
+		$url  = "https://testnet.bakrypt.io/v1/files/";
+	}
+
 	$access_token = generate_access_token();
+
+	$file = file_get_contents('php://input');
+
+	$temp   = tmpfile();
+	fwrite($temp, $file);
+	$metadata = stream_get_meta_data($temp);
 
 	$response = wp_remote_post(
 		$url,
@@ -630,7 +643,7 @@ function upload_attachment_to_ipfs()
 				"authorization" => "Bearer " . $access_token['token']
 			),
 			'body' => array(
-				"file" => $client_id,
+				"file" => $metadata,
 			),
 		)
 	);
