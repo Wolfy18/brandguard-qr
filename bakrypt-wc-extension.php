@@ -40,7 +40,7 @@ register_deactivation_hook(__FILE__, 'bakrypt_wc_extension_deactivate');
 
 //==================================== MAIN ASSETS ===================================
 // Register init script
-function add_extension_register_script()
+function add_extension_register_script($page)
 {
 	$script_path = '/build/index.js';
 	$script_asset_path = dirname(__FILE__) . '/build/index.asset.php';
@@ -67,6 +67,11 @@ function add_extension_register_script()
 
 	wp_enqueue_script('bakrypt-wc-extension');
 	wp_enqueue_style('bakrypt-wc-extension');
+
+	if ($page == 'post.php') {
+		// Enqueue WordPress media scripts
+		wp_enqueue_media();
+	}
 }
 
 add_action('admin_enqueue_scripts', 'add_extension_register_script');
@@ -187,7 +192,6 @@ function bakrypt_blockchain_product_tab($tabs)
 		'callback'  => 'bakrypt_blockchain_product_tab_content'
 	);
 }
-
 
 add_filter('woocommerce_product_data_tabs', 'bakrypt_blockchain_product_data_tab');
 function bakrypt_blockchain_product_data_tab($product_data_tabs)
@@ -354,7 +358,7 @@ function bakrypt_blockchain_product_data_fields()
 add_action("add_meta_boxes", "add_ipfs_meta_box");
 function add_ipfs_meta_box()
 {
-	add_meta_box("ipfs-meta-box", "Product token image", "ipfs_meta_box_markup", "product", "side", "low", null);
+	add_meta_box("ipfs-meta-box", "Blockchain asset image", "ipfs_meta_box_markup", "product", "side", "low", null);
 }
 function ipfs_meta_box_markup($post)
 {
@@ -362,6 +366,11 @@ function ipfs_meta_box_markup($post)
 	$thepostid      = $post->ID;
 	$product_object = $thepostid ? wc_get_product($thepostid) : new WC_Product();
 	$bk_token_att = get_post_meta(get_the_ID(), 'bk_att_token_image', true);
+	$img_metadata = wp_get_attachment_metadata($bk_token_att);
+	$img_ipfs = null;
+	if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
+		$img_ipfs = $img_metadata['ipfs'];
+	}
 	wp_nonce_field(basename(__FILE__), "ipfs-box-nonce");
 ?>
 	<div id="product_images_container">
@@ -395,7 +404,7 @@ function ipfs_meta_box_markup($post)
 						do_action('woocommerce_admin_after_product_gallery_item', $thepostid, $attachment_id);
 						?>
 					</li>
-			<?php
+				<?php
 
 					// rebuild ids to be saved.
 					$updated_gallery_ids[] = $attachment_id;
@@ -405,16 +414,35 @@ function ipfs_meta_box_markup($post)
 				if ($update_meta) {
 					update_post_meta($post->ID, 'bk_att_token_image', esc_attr($bk_token_att));
 				}
+			} else {
+				?>
+				<li class="image" data-attachment_id="<?php echo esc_attr($attachment_id); ?>">
+					<span id="preview_bk_att_token_image"></span>
+				</li>
+			<?php
 			}
 			?>
 		</ul>
-		<input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
+		<input type="text" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
+		<input type="text" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs" value="<?php echo esc_attr($img_ipfs); ?>" />
 	</div>
 
-	<p class="add_product_images hide-if-no-js">
-		<a href="#" data-choose="<?php esc_attr_e('Add images to product gallery', 'woocommerce'); ?>" data-update="<?php esc_attr_e('Add to gallery', 'woocommerce'); ?>" data-delete="<?php esc_attr_e('Delete image', 'woocommerce'); ?>" data-text="<?php esc_attr_e('Delete', 'woocommerce'); ?>"><?php esc_html_e('Choose from the gallery', 'woocommerce'); ?></a>
-	</p>
+	<a href="#" id="bk_token_image_media_manager"><?php esc_attr_e('Choose from gallery', 'mytextdomain'); ?></a>
 <?php
+}
+
+add_action('wp_ajax_product_token_get_image', 'product_token_get_image');
+function product_token_get_image()
+{
+	if (isset($_GET['id'])) {
+		$image = wp_get_attachment_image(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), 'thumbnail', false, array('id' => 'preview_bk_att_token_image'));
+		$data = array(
+			'image'    => $image,
+		);
+		wp_send_json_success($data);
+	} else {
+		wp_send_json_error();
+	}
 }
 
 
@@ -440,34 +468,8 @@ function bak_save_blockchain_meta($post_id)
 
 	if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
 		# Insert attachment
-		$upload = fetch_ipfs_attachment($bk_token_image);
-
-		if ($upload) {
-			$file_path        = $upload['file'];
-			$file_name        = basename($file_path);
-			$file_type        = wp_check_filetype($file_name, null);
-			$attachment_title = sanitize_file_name(pathinfo($file_name, PATHINFO_FILENAME));
-			$wp_upload_dir    = wp_upload_dir();
-
-			$args = array(
-				'guid'           => $wp_upload_dir['url'] . '/' . $file_name,
-				'post_mime_type' => $file_type['type'],
-				'post_status'    => 'inherit',
-				'post_content' => '',
-				'post_title' => $attachment_title,
-				'ipfs'       => $bk_token_image
-			);
-
-			$att_id = wp_insert_attachment($args, $file_path, $post_id);
-
-			// you must first include the image.php file
-			// for the function wp_generate_attachment_metadata() to work
-			require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-			$attach_data = wp_generate_attachment_metadata($att_id, $file_path);
-			wp_update_attachment_metadata($att_id, $attach_data);
-
-			$bk_att_token_image = $att_id;
-		}
+		$att_id = insert_attachment_from_ipfs($bk_token_image);
+		$bk_att_token_image = $att_id;
 	}
 
 	// grab the product
@@ -487,6 +489,39 @@ function bak_save_blockchain_meta($post_id)
 	$product->update_meta_data('bk_att_token_image', $bk_att_token_image);
 
 	$product->save();
+}
+
+function insert_attachment_from_ipfs($ipfs)
+{
+	$upload = fetch_ipfs_attachment($ipfs);
+	$att_id = null;
+	if ($upload) {
+		$file_path        = $upload['file'];
+		$file_name        = basename($file_path);
+		$file_type        = wp_check_filetype($file_name, null);
+		$attachment_title = sanitize_file_name(pathinfo($file_name, PATHINFO_FILENAME));
+		$wp_upload_dir    = wp_upload_dir();
+
+		$args = array(
+			'guid'           => $wp_upload_dir['url'] . '/' . $file_name,
+			'post_mime_type' => $file_type['type'],
+			'post_status'    => 'inherit',
+			'post_content' => '',
+			'post_title' => $attachment_title,
+			'ipfs'       => $bk_token_image
+		);
+
+		$att_id = wp_insert_attachment($args, $file_path, $post_id);
+
+		// you must first include the image.php file
+		// for the function wp_generate_attachment_metadata() to work
+		require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+		$attach_data = wp_generate_attachment_metadata($att_id, $file_path);
+		$attach_data['ipfs'] = $bk_token_image;
+		wp_update_attachment_metadata($att_id, $attach_data);
+	}
+
+	return $att_id;
 }
 
 function fetch_ipfs_attachment($ipfs)

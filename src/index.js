@@ -123,7 +123,7 @@ const init = () => {
 
 		let tx;
 		// Get transaction if the transaction is not found within the asset.
-		if (asset.transaction && !asset.transaction.uuid) {
+		if (asset && asset.transaction && !asset.transaction.uuid) {
 			tx = await helper.getTransaction(asset.transaction);
 		} else {
 			tx = asset.transaction;
@@ -172,4 +172,68 @@ const init = () => {
 window.removeEventListener('load', init, true);
 window.addEventListener('load', init, true);
 
+jQuery(document).ready(function ($) {
+	jQuery('a#bk_token_image_media_manager').click(function (e) {
+		e.preventDefault();
+		var imageFrame;
+		if (imageFrame) {
+			imageFrame.open();
+		}
+		// Define imageFrame as wp.media object
+		imageFrame = wp.media({
+			title: 'Select Media',
+			multiple: false,
+			library: {
+				type: 'image',
+			},
+		});
+
+		imageFrame.on('close', function () {
+			// On close, get selections and save to the hidden input
+			// plus other AJAX stuff to refresh the image preview
+			var selection = imageFrame.state().get('selection');
+			var gallery_ids = new Array();
+			var my_index = 0;
+			selection.each(function (attachment) {
+				gallery_ids[my_index] = attachment['id'];
+				my_index++;
+			});
+			var ids = gallery_ids.join(',');
+			if (ids.length === 0) return true; //if closed withput selecting an image
+			jQuery('input#bk_att_token_image').val(ids);
+			refreshImages(ids);
+		});
+
+		imageFrame.on('open', function () {
+			// On open, get the id from the hidden input
+			// and select the appropiate images in the media manager
+			var selection = imageFrame.state().get('selection');
+			var ids = jQuery('input#bk_att_token_image').val().split(',');
+			ids.forEach(function (id) {
+				var attachment = wp.media.attachment(id);
+				attachment.fetch();
+				selection.add(attachment ? [attachment] : []);
+			});
+		});
+
+		imageFrame.open();
+	});
+});
+
+// Ajax request to refresh the image preview
+function refreshImages(the_id) {
+	var data = {
+		action: 'product_token_get_image',
+		id: the_id,
+	};
+
+	jQuery.get(ajaxurl, data, function (response) {
+		if (response.success === true) {
+			console.log(response.data.image);
+			jQuery('#preview_bk_att_token_image').replaceWith(
+				response.data.image
+			);
+		}
+	});
+}
 console.log('new version v.1');
