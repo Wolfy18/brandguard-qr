@@ -229,9 +229,11 @@ function refreshImages(the_id) {
 
 	jQuery.get(ajaxurl, data, function (response) {
 		if (response.success === true) {
-			console.log(response.data.image);
 			jQuery('#preview_bk_att_token_image').replaceWith(
 				response.data.image
+			);
+			jQuery('#bk_att_token_image_ipfs').val(
+				jQuery('#preview_bk_att_token_image').data('ipfs')
 			);
 		}
 	});

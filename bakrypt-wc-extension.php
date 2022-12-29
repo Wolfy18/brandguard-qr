@@ -435,7 +435,24 @@ add_action('wp_ajax_product_token_get_image', 'product_token_get_image');
 function product_token_get_image()
 {
 	if (isset($_GET['id'])) {
-		$image = wp_get_attachment_image(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT), 'thumbnail', false, array('id' => 'preview_bk_att_token_image'));
+		# Verify IPFS information
+		$img_metadata = wp_get_attachment_metadata(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+		$img_ipfs = "";
+		if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
+			$img_ipfs = $img_metadata['ipfs'];
+		}
+
+		# Upload to IPFS node if nothing is found
+		if($img_ipfs == ''){
+
+		}
+
+		$image = wp_get_attachment_image(
+			filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT),
+			'thumbnail',
+			false,
+			array('id' => 'preview_bk_att_token_image', 'data-ipfs' => $img_ipfs)
+		);
 		$data = array(
 			'image'    => $image,
 		);
