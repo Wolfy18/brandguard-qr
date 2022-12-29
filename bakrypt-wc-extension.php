@@ -613,6 +613,38 @@ function generate_access_token()
 	return $access;
 }
 
+function upload_attachment_to_ipfs()
+{
+	$access_token = generate_access_token();
+
+	$response = wp_remote_post(
+		$url,
+		array(
+			'method' => 'POST',
+			'timeout' => 30,
+			'redirection' => 5,
+			'httpversion' => '1.0',
+			'blocking' => true,
+			'headers' => array(
+				"content-type" => "multipart/form-data",
+				"authorization" => "Bearer " . $access_token['token']
+			),
+			'body' => array(
+				"file" => $client_id,
+			),
+		)
+	);
+
+	$attachment = array();
+	if (is_wp_error($response)) {
+		$error_message = $response->get_error_message();
+		echo "Something went wrong: $error_message";
+	} else {
+		$attachment = json_decode($response["body"]);
+	}
+	return $attachment;
+}
+
 //==================================== LIST SECTION ===================================
 // Additional column in products list and filters
 add_filter('manage_product_posts_columns', 'bak_fingerprint_column');
