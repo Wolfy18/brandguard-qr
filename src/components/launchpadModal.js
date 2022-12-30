@@ -2,7 +2,7 @@ import { Button, Modal } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import '../launchpad/index';
 
-const LaunchpadModal = ({ accessToken, collection, callback }) => {
+const LaunchpadModal = ({ accessToken, getter, callback }) => {
 	const [isOpen, setOpen] = useState(false);
 	const modalRef = useRef();
 	const openModal = () => setOpen(true);
@@ -12,10 +12,12 @@ const LaunchpadModal = ({ accessToken, collection, callback }) => {
 		const modal = modalRef.current;
 		if (!modal) return;
 
+		const initial = getter();
+		console.log(initial)
 		const launchpad = document.createElement('bakrypt-launchpad');
 		Object.assign(launchpad, {
 			accessToken: accessToken,
-			initial: collection,
+			initial: initial,
 		});
 
 		launchpad.addEventListener('submit', (e) => {
@@ -45,11 +47,11 @@ const LaunchpadModal = ({ accessToken, collection, callback }) => {
 	);
 };
 
-function renderLaunchpadModal(token, data, listener) {
+function renderLaunchpadModal(token, getter, listener) {
 	return (
 		<LaunchpadModal
 			accessToken={token}
-			collection={data}
+			getter={getter}
 			callback={listener}
 		/>
 	);

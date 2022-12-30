@@ -78,10 +78,38 @@ const init = () => {
 		.querySelector('.mint');
 	if (mintModalContainer) {
 		const modal = document.createElement('div');
-		const initial =
-			'[{"blockchain":"ada","name":"first token","asset_name":"","image":"ipfs://QmevPofBhZ7jPNdbbSSa5wfL68eL5roWRwuMFaCvtWeSRf","media_type":"","description":"","files":[],"attrs":{},"amount":1,"royalties":"this is the wallet","royalties_rate":"2"},{"blockchain":"ada","name":"second token","asset_name":"","image":"ipfs://QmVnzJMU91QCdgfg4CgRpUZzcwjwywLdUhVAh6RjVEZmvg","media_type":"","description":"","files":[],"attrs":{},"amount":1},{"blockchain":"ada","name":"third token","asset_name":"","image":"ipfs://QmbFU9gtgqfFLcTy4VfBQ4KNMrBMEghVSRXdfNYmcwMbDH","media_type":"","description":"","files":[],"attrs":{},"amount":1}]';
+
+		const setInitial = () => {
+			let initialName = document.querySelector('#title').value;
+			let initialImage = document.querySelector(
+				'#bk_att_token_image_ipfs'
+			).value;
+			console.log(initialName, initialImage)
+			if (!initialImage || !initialImage.length) {
+				alert('Please select a Blockchain token image');
+				return;
+			}
+
+			const asset = {
+				blockchain: 'ada',
+				name: initialName,
+				asset_name: initialName,
+				image: initialImage,
+				amount: 1,
+				description: ''
+				// media_type: string;
+				// description: string;
+				// files: Array<IAssetFile>;
+				// attrs: object;
+				// royalties?: string;
+				// royalties_rate?: string;
+			};
+
+			return JSON.stringify([asset]);
+		};
+
 		ReactDOM.render(
-			renderLaunchpadModal(token, initial, (response) => {
+			renderLaunchpadModal(token, setInitial, (response) => {
 				if (response.collection && response.transaction) {
 					setData(response.collection[0], response.transaction);
 
@@ -228,7 +256,7 @@ function refreshImages(the_id) {
 	};
 
 	jQuery.get(ajaxurl, data, function (response) {
-		console.log(response)
+		console.log(response);
 		if (response.success === true) {
 			jQuery('#preview_bk_att_token_image').replaceWith(
 				response.data.image

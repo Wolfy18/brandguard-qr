@@ -385,7 +385,9 @@ function ipfs_meta_box_markup($post)
 
 			if (!empty($attachments)) {
 				foreach ($attachments as $attachment_id) {
-					$attachment = wp_get_attachment_image($attachment_id, 'thumbnail');
+					$attachment = wp_get_attachment_image($attachment_id, 'thumbnail',
+						false,
+						array('id' => 'preview_bk_att_token_image', 'data-ipfs' => $img_ipfs));
 
 					// if attachment is empty skip.
 					if (empty($attachment)) {
