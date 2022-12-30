@@ -423,8 +423,8 @@ function ipfs_meta_box_markup($post)
 			}
 			?>
 		</ul>
-		<input type="text" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
-		<input type="text" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs" value="<?php echo esc_attr($img_ipfs); ?>" />
+		<input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
+		<input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs" value="<?php echo esc_attr($img_ipfs); ?>" />
 	</div>
 
 	<a href="#" id="bk_token_image_media_manager"><?php esc_attr_e('Choose from gallery', 'mytextdomain'); ?></a>
@@ -435,20 +435,26 @@ add_action('wp_ajax_product_token_get_image', 'product_token_get_image');
 function product_token_get_image()
 {
 	if (isset($_GET['id'])) {
+
+		$attachment_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 		# Verify IPFS information
-		$img_metadata = wp_get_attachment_metadata(filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT));
+		$img_metadata = wp_get_attachment_metadata($attachment_id);
 		$img_ipfs = "";
 		if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
 			$img_ipfs = $img_metadata['ipfs'];
 		}
 
 		# Upload to IPFS node if nothing is found
-		if($img_ipfs == ''){
-
+		if ($img_ipfs == '') {
+			$bak_file = upload_attachment_to_ipfs($attachment_id);
+			$img_ipfs = $bak_file->{'ipfs'};
+			$img_metadata['ipfs'] = $img_ipfs;
+			wp_update_attachment_metadata($attachment_id, $img_metadata);  // save it back to the db
 		}
 
+		// Return image object
 		$image = wp_get_attachment_image(
-			filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT),
+			$attachment_id,
 			'thumbnail',
 			false,
 			array('id' => 'preview_bk_att_token_image', 'data-ipfs' => $img_ipfs)
@@ -613,7 +619,7 @@ function generate_access_token()
 	return $access;
 }
 
-function upload_attachment_to_ipfs()
+function upload_attachment_to_ipfs($attachment_id)
 {
 	$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
 	if ($testnet != "yes") {
@@ -622,13 +628,27 @@ function upload_attachment_to_ipfs()
 		$url  = "https://testnet.bakrypt.io/v1/files/";
 	}
 
-	$access_token = generate_access_token();
+	$token = generate_access_token();
 
-	$file = file_get_contents('php://input');
+	$img_url = wp_get_attachment_url($attachment_id);
+	$img_name = basename(get_attached_file($attachment_id));
+	$content_type = get_post_mime_type($attachment_id);
 
-	$temp   = tmpfile();
-	fwrite($temp, $file);
-	$metadata = stream_get_meta_data($temp);
+	$boundary = wp_generate_password(24);
+	$payload = '';
+	// Upload the file
+	$payload .= '--' . $boundary;
+	$payload .= "\r\n";
+	$payload .= 'Content-Disposition: form-data; name="' . 'file' .
+		'"; filename="' . $img_name . '"' . "\r\n";
+	if ($content_type) {
+		$payload .= 'Content-Type: ' . $content_type . "\r\n";
+	}
+	$payload .= "\r\n";
+	$payload .= file_get_contents($img_url);
+	$payload .= "\r\n";
+
+	$payload .= '--' . $boundary . '--';
 
 	$response = wp_remote_post(
 		$url,
@@ -639,12 +659,10 @@ function upload_attachment_to_ipfs()
 			'httpversion' => '1.0',
 			'blocking' => true,
 			'headers' => array(
-				"content-type" => "multipart/form-data",
-				"authorization" => "Bearer " . $access_token['token']
+				'content-type' => 'multipart/form-data; boundary=' . $boundary,
+				"authorization" => "Bearer " . $token->{'access_token'}
 			),
-			'body' => array(
-				"file" => $metadata,
-			),
+			'body' => $payload,
 		)
 	);
 
@@ -655,6 +673,7 @@ function upload_attachment_to_ipfs()
 	} else {
 		$attachment = json_decode($response["body"]);
 	}
+
 	return $attachment;
 }
 
