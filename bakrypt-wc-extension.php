@@ -207,9 +207,22 @@ add_action('woocommerce_product_data_panels', 'bakrypt_blockchain_product_data_f
 function bakrypt_blockchain_product_data_fields()
 {
 	global $woocommerce, $post;
+	$asset = array(
+		"uuid" => get_post_meta(get_the_ID(), 'bk_token_uuid', true),
+		"transaction_uuid" => get_post_meta(get_the_ID(), 'bk_token_transaction', true),
+	);
+
+	// Generate Bakrypt Token on load
+	$access = generate_access_token();
+	$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
 ?>
 	<!-- id below must match target registered in above add_blockchain_product_data_tab function -->
 	<div id="blockchain_product_data" class="panel woocommerce_options_panel">
+		<p class="form-field woocommerce-message" style="float:right" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>>
+			<button style="line-height:1" name="delete_token" class="button-primary woocommerce-save-button">
+				<span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
+			</button>
+		</p>
 		<?php
 		woocommerce_wp_text_input(array(
 			'id'            => 'bk_token_uuid',
@@ -331,22 +344,10 @@ function bakrypt_blockchain_product_data_fields()
 		));
 		?>
 
-		<?php
-		$asset = array(
-			"uuid" => get_post_meta(get_the_ID(), 'bk_token_uuid', true),
-			"transaction_uuid" => get_post_meta(get_the_ID(), 'bk_token_transaction', true),
-		);
-
-		// Generate Bakrypt Token on load
-		$access = generate_access_token();
-		$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
-		?>
-
 		<div <?php if ($testnet == "yes") echo "testnet" ?> data-token="<?php echo $access->{'access_token'} ?>" style="display: flex; justify-content: left" class="btn-action">
 			<p class="form-field mint" <?php if ($asset['uuid'] != '') echo 'style="display:none"' ?>></p>
-			<p class="form-field" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>><button name="update_token" class="button-secondary woocommerce-save-button" id="sync-asset-btn">Sync Token</button></p>
 			<p class="form-field view-transaction" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>></p>
-			<p class="form-field woocommerce-message" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>><button name="delete_token" class="button-primary woocommerce-save-button">Delete Token</button></p>
+			<p class="form-field" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>><button name="update_token" class="button-secondary woocommerce-save-button" id="sync-asset-btn">Sync Token</button></p>
 		</div>
 
 	</div>
@@ -366,6 +367,7 @@ function ipfs_meta_box_markup($post)
 	$thepostid      = $post->ID;
 	$product_object = $thepostid ? wc_get_product($thepostid) : new WC_Product();
 	$bk_token_att = get_post_meta(get_the_ID(), 'bk_att_token_image', true);
+	$bk_token_status = get_post_meta(get_the_ID(), 'bk_token_status', true);
 	$img_metadata = wp_get_attachment_metadata($bk_token_att);
 	$img_ipfs = null;
 	if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
@@ -385,9 +387,12 @@ function ipfs_meta_box_markup($post)
 
 			if (!empty($attachments)) {
 				foreach ($attachments as $attachment_id) {
-					$attachment = wp_get_attachment_image($attachment_id, 'thumbnail',
+					$attachment = wp_get_attachment_image(
+						$attachment_id,
+						'thumbnail',
 						false,
-						array('id' => 'preview_bk_att_token_image', 'data-ipfs' => $img_ipfs));
+						array('id' => 'preview_bk_att_token_image', 'data-ipfs' => $img_ipfs)
+					);
 
 					// if attachment is empty skip.
 					if (empty($attachment)) {
@@ -398,12 +403,17 @@ function ipfs_meta_box_markup($post)
 					<li class="image" data-attachment_id="<?php echo esc_attr($attachment_id); ?>">
 						<?php echo $attachment; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 						?>
-						<ul class="actions">
-							<li><a href="#" class="delete tips" data-tip="<?php esc_attr_e('Delete image', 'woocommerce'); ?>"><?php esc_html_e('Delete', 'woocommerce'); ?></a></li>
-						</ul>
+						<?php
+						if (!in_array($bk_token_status, ['confirmed', 'canceled'])) {
+						?>
+							<ul class="actions">
+								<li><a href="#" class="delete tips" data-tip="<?php esc_attr_e('Delete image', 'woocommerce'); ?>"><?php esc_html_e('Delete', 'woocommerce'); ?></a></li>
+							</ul>
+						<?php  } ?>
 						<?php
 						// Allow for extra info to be exposed or extra action to be executed for this attachment.
 						do_action('woocommerce_admin_after_product_gallery_item', $thepostid, $attachment_id);
+
 						?>
 					</li>
 				<?php
@@ -428,8 +438,11 @@ function ipfs_meta_box_markup($post)
 		<input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
 		<input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs" value="<?php echo esc_attr($img_ipfs); ?>" />
 	</div>
-
-	<a href="#" id="bk_token_image_media_manager"><?php esc_attr_e('Choose from gallery', 'mytextdomain'); ?></a>
+	<?php
+	if (!in_array($bk_token_status, ['confirmed', 'canceled'])) {
+	?>
+		<a href="#" id="bk_token_image_media_manager"><?php esc_attr_e('Choose from gallery', 'mytextdomain'); ?></a>
+	<?php } ?>
 <?php
 }
 
