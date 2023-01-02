@@ -292,7 +292,6 @@ function refreshImages(the_id) {
 	};
 
 	jQuery.get(ajaxurl, data, function (response) {
-		console.log(response);
 		if (response.success === true) {
 			jQuery('#preview_bk_att_token_image').replaceWith(
 				response.data.image

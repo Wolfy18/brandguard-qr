@@ -708,6 +708,7 @@ function generate_access_token()
 	} else {
 		$access = json_decode($response["body"]);
 	}
+
 	return $access;
 }
 
