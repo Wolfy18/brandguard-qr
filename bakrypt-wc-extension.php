@@ -212,6 +212,9 @@ function bakrypt_blockchain_product_data_fields()
 		"transaction_uuid" => get_post_meta(get_the_ID(), 'bk_token_transaction', true),
 	);
 
+	// Create nonce
+	$nonce = wp_create_nonce("bk_nonce");
+
 	// Generate Bakrypt Token on load
 	$access = generate_access_token();
 	$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
@@ -223,6 +226,10 @@ function bakrypt_blockchain_product_data_fields()
 				<span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
 			</button>
 		</p>
+
+		<input type="hidden" id="product_id" value="<?php echo get_the_ID() ?>" />
+		<input type="hidden" id="bk_nonce" value="<?php echo $nonce ?>" />
+
 		<?php
 		woocommerce_wp_text_input(array(
 			'id'            => 'bk_token_uuid',
@@ -486,8 +493,7 @@ function product_token_get_image()
 
 
 // Store and save custom product meta data
-add_action('woocommerce_process_product_meta', 'bak_save_blockchain_meta');
-function bak_save_blockchain_meta($post_id)
+function update_record($post_id)
 {
 	// grab the custom SKU from $_POST
 	$bk_token_uuid = isset($_POST['bk_token_uuid']) ? sanitize_text_field($_POST['bk_token_uuid']) : '';
@@ -527,6 +533,34 @@ function bak_save_blockchain_meta($post_id)
 	$product->update_meta_data('bk_att_token_image', $bk_att_token_image);
 
 	$product->save();
+
+	return $product;
+}
+add_action("wp_ajax_bk_update_record", "bak_save_rest_api_blockchain_meta");   //update_records is action
+function bak_save_rest_api_blockchain_meta()
+{
+	// nonce check for an extra layer of security, the function will exit if it fails
+	if (!wp_verify_nonce($_REQUEST['bk_nonce'], "bk_nonce")) {
+		wp_send_json_error("Incorrect Nonce", 400);
+	}
+
+	$post_id = isset($_POST['product_id']) ? sanitize_text_field($_POST['product_id']) : null;
+
+	try {
+		$product = update_record($post_id);
+	} catch (Exception $e) {
+		wp_send_json_error("Unable to update record", 400);
+	}
+
+	wp_send_json_success("Updated successfully.", 200);
+
+	wp_die(); // this is required to terminate immediately and return a proper response
+}
+
+add_action('woocommerce_process_product_meta', 'bak_save_blockchain_meta');
+function bak_save_blockchain_meta($post_id)
+{
+	update_record($post_id);
 }
 
 function insert_attachment_from_ipfs($ipfs)

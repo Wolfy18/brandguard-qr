@@ -1,11 +1,37 @@
 // Import SCSS entry file so that webpack picks up changes
 import './index.scss';
-// import 'bakrypt-invoice/dist/bakrypt-invoice';
 import * as ReactDOM from 'react-dom';
+import Swal from 'sweetalert2';
 import renderTransactionModal from './components/transactionModal';
 import renderLaunchpadModal from './components/launchpadModal';
 import showSpinner from './components/spinner';
 import BakryptApiInterface from './api/interfaces';
+
+const getData = () => {
+	let asset = new FormData();
+
+	let inputs = [
+		'bk_token_uuid',
+		'bk_token_policy',
+		'bk_token_fingerprint',
+		'bk_token_asset_name',
+		'bk_token_image',
+		'bk_token_name',
+		'bk_token_amount',
+		'bk_token_status',
+		'bk_token_transaction',
+		'bk_token_json',
+	];
+
+	inputs.map((i) => {
+		let input = document.querySelector(`#${i}`);
+		if (input) {
+			asset.set(i, input.value);
+		}
+	});
+
+	return asset;
+};
 
 const setData = (asset, tx) => {
 	let inputs = [
@@ -84,7 +110,7 @@ const init = () => {
 			let initialImage = document.querySelector(
 				'#bk_att_token_image_ipfs'
 			).value;
-			console.log(initialName, initialImage)
+			console.log(initialName, initialImage);
 			if (!initialImage || !initialImage.length) {
 				alert('Please select a Blockchain token image');
 				return;
@@ -96,7 +122,7 @@ const init = () => {
 				asset_name: initialName,
 				image: initialImage,
 				amount: 1,
-				description: ''
+				description: '',
 				// media_type: string;
 				// description: string;
 				// files: Array<IAssetFile>;
@@ -159,6 +185,8 @@ const init = () => {
 
 		setData(asset, tx);
 
+		updateRecord();
+
 		blockchainDataWrapper.removeChild(spinner);
 	};
 
@@ -196,9 +224,6 @@ const init = () => {
 		transactionModalContainer.appendChild(modal);
 	}
 };
-
-window.removeEventListener('load', init, true);
-window.addEventListener('load', init, true);
 
 jQuery(document).ready(function ($) {
 	jQuery('a#bk_token_image_media_manager').click(function (e) {
@@ -267,4 +292,53 @@ function refreshImages(the_id) {
 		}
 	});
 }
+
+const updateRecord = function () {
+	let id = jQuery('#product_id').val();
+	let nonce = jQuery('#bk_nonce').val();
+
+	let body = getData();
+
+	body.set('product_id', id);
+	body.set('bk_nonce', nonce);
+	body.set('action', 'bk_update_record');
+
+	const blockchainDataWrapper = document.querySelector(
+		'#blockchain_product_data'
+	);
+	const spinner = document.createElement('div');
+	spinner.id = 'spinner';
+
+	ReactDOM.render(showSpinner(), spinner);
+	blockchainDataWrapper.appendChild(spinner);
+
+	jQuery.ajax({
+		url: ajaxurl,
+		type: 'POST',
+		data: Object.fromEntries(body),
+		success: function (response) {
+			// location.reload();
+			console.log(response);
+			Swal.fire({
+				title: 'Success!',
+				text: response.data,
+				icon: 'success',
+			});
+			blockchainDataWrapper.removeChild(spinner);
+		},
+		error: function (error) {
+			console.log(error);
+			Swal.fire({
+				title: 'Error',
+				text: error.responseJSON.data,
+				icon: 'error',
+			});
+			blockchainDataWrapper.removeChild(spinner);
+		},
+	});
+};
+
+window.removeEventListener('load', init, true);
+window.addEventListener('load', init, true);
+
 console.log('new version v.1');
