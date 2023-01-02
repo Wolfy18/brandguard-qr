@@ -222,7 +222,7 @@ function bakrypt_blockchain_product_data_fields()
 	<!-- id below must match target registered in above add_blockchain_product_data_tab function -->
 	<div id="blockchain_product_data" class="panel woocommerce_options_panel">
 		<p class="form-field woocommerce-message" style="float:right" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>>
-			<button style="line-height:1" name="delete_token" class="button-primary woocommerce-save-button">
+			<button style="line-height:1" id="delete_token" name="delete_token" class="button-primary woocommerce-save-button">
 				<span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
 			</button>
 		</p>
@@ -354,7 +354,7 @@ function bakrypt_blockchain_product_data_fields()
 		<div <?php if ($testnet == "yes") echo "testnet" ?> data-token="<?php echo $access->{'access_token'} ?>" style="display: flex; justify-content: left" class="btn-action">
 			<p class="form-field mint" <?php if ($asset['uuid'] != '') echo 'style="display:none"' ?>></p>
 			<p class="form-field view-transaction" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>></p>
-			<p class="form-field" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>><button name="update_token" class="button-secondary woocommerce-save-button" id="sync-asset-btn">Sync Token</button></p>
+			<p class="form-field" <?php if ($asset['uuid'] == '') echo 'style="display:none"' ?>><button name="update_token" class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
 		</div>
 
 	</div>
@@ -495,6 +495,7 @@ function product_token_get_image()
 // Store and save custom product meta data
 function update_record($post_id)
 {
+	// throw new Exception("failed!");
 	// grab the custom SKU from $_POST
 	$bk_token_uuid = isset($_POST['bk_token_uuid']) ? sanitize_text_field($_POST['bk_token_uuid']) : '';
 	$bk_token_policy = isset($_POST['bk_token_policy']) ? sanitize_text_field($_POST['bk_token_policy']) : '';
@@ -536,8 +537,8 @@ function update_record($post_id)
 
 	return $product;
 }
-add_action("wp_ajax_bk_update_record", "bak_save_rest_api_blockchain_meta");   //update_records is action
-function bak_save_rest_api_blockchain_meta()
+add_action("wp_ajax_bk_update_record", "bak_update_rest_api_blockchain_meta");   //update_records is action
+function bak_update_rest_api_blockchain_meta()
 {
 	// nonce check for an extra layer of security, the function will exit if it fails
 	if (!wp_verify_nonce($_REQUEST['bk_nonce'], "bk_nonce")) {
@@ -561,6 +562,48 @@ add_action('woocommerce_process_product_meta', 'bak_save_blockchain_meta');
 function bak_save_blockchain_meta($post_id)
 {
 	update_record($post_id);
+}
+
+function delete_record($post_id)
+{
+	$meta_keys = array(
+		'bk_token_uuid',
+		'bk_token_policy',
+		'bk_token_fingerprint',
+		'bk_token_asset_name',
+		'bk_token_image',
+		'bk_token_name',
+		'bk_token_amount',
+		'bk_token_status',
+		'bk_token_transaction',
+		'bk_token_json',
+		'bk_att_token_image'
+	);
+
+	foreach ($meta_keys as $meta) {
+		delete_post_meta($post_id, $meta);
+	}
+}
+
+add_action("wp_ajax_bk_delete_record", "bak_delete_rest_api_blockchain_meta");   //update_records is action
+function bak_delete_rest_api_blockchain_meta()
+{
+	// nonce check for an extra layer of security, the function will exit if it fails
+	if (!wp_verify_nonce($_REQUEST['bk_nonce'], "bk_nonce")) {
+		wp_send_json_error("Incorrect Nonce", 400);
+	}
+
+	$post_id = isset($_POST['product_id']) ? sanitize_text_field($_POST['product_id']) : null;
+
+	try {
+		$product = delete_record($post_id);
+	} catch (Exception $e) {
+		wp_send_json_error("Unable to delete record", 400);
+	}
+
+	wp_send_json_success("Token Deleted.", 200);
+
+	wp_die(); // this is required to terminate immediately and return a proper response
 }
 
 function insert_attachment_from_ipfs($ipfs)

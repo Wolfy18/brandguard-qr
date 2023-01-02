@@ -21,6 +21,7 @@ const getData = () => {
 		'bk_token_status',
 		'bk_token_transaction',
 		'bk_token_json',
+		'bk_att_token_image',
 	];
 
 	inputs.map((i) => {
@@ -148,6 +149,8 @@ const init = () => {
 						.querySelector('.btn-action')
 						.querySelector('.form-field.mint').style.display =
 						'none';
+
+					updateRecord();
 				}
 			}),
 			modal
@@ -223,6 +226,14 @@ const init = () => {
 		ReactDOM.render(renderTransactionModal(viewTransaction, []), modal);
 		transactionModalContainer.appendChild(modal);
 	}
+
+	// Delete action
+	wrapper
+		.querySelector('#delete_token')
+		.removeEventListener('click', deleteRecord);
+	wrapper
+		.querySelector('#delete_token')
+		.addEventListener('click', deleteRecord);
 };
 
 jQuery(document).ready(function ($) {
@@ -293,7 +304,7 @@ function refreshImages(the_id) {
 	});
 }
 
-const updateRecord = function () {
+const updateRecord = async () => {
 	let id = jQuery('#product_id').val();
 	let nonce = jQuery('#bk_nonce').val();
 
@@ -317,17 +328,14 @@ const updateRecord = function () {
 		type: 'POST',
 		data: Object.fromEntries(body),
 		success: function (response) {
-			// location.reload();
-			console.log(response);
 			Swal.fire({
-				title: 'Success!',
+				title: 'Good!',
 				text: response.data,
 				icon: 'success',
 			});
 			blockchainDataWrapper.removeChild(spinner);
 		},
 		error: function (error) {
-			console.log(error);
 			Swal.fire({
 				title: 'Error',
 				text: error.responseJSON.data,
@@ -335,6 +343,61 @@ const updateRecord = function () {
 			});
 			blockchainDataWrapper.removeChild(spinner);
 		},
+	});
+};
+
+const deleteRecord = async (e) => {
+	e.preventDefault();
+
+	Swal.fire({
+		title: 'Are you sure?',
+		text: "You won't be able to revert this!",
+		icon: 'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Yes, delete it!',
+	}).then((result) => {
+		/* Read more about isConfirmed, isDenied below */
+		if (result.isConfirmed) {
+			let id = jQuery('#product_id').val();
+			let nonce = jQuery('#bk_nonce').val();
+
+			let body = new FormData();
+
+			body.set('product_id', id);
+			body.set('bk_nonce', nonce);
+			body.set('action', 'bk_delete_record');
+
+			const blockchainDataWrapper = document.querySelector(
+				'#blockchain_product_data'
+			);
+			const spinner = document.createElement('div');
+			spinner.id = 'spinner';
+
+			ReactDOM.render(showSpinner(), spinner);
+			blockchainDataWrapper.appendChild(spinner);
+
+			jQuery.ajax({
+				url: ajaxurl,
+				type: 'POST',
+				data: Object.fromEntries(body),
+				success: function (response) {
+					location.reload();
+					blockchainDataWrapper.removeChild(spinner);
+				},
+				error: function (error) {
+					Swal.fire({
+						title: 'Error',
+						text: error.responseJSON.data,
+						icon: 'error',
+					});
+					blockchainDataWrapper.removeChild(spinner);
+				},
+			});
+		} else if (result.isDenied) {
+			Swal.fire('Changes are not saved', '', 'info');
+		}
 	});
 };
 
