@@ -107,6 +107,10 @@ const init = () => {
 		const modal = document.createElement('div');
 
 		const setInitial = () => {
+			if (!document.querySelector('#bk_att_token_image_ipfs')) {
+				alert('Please select a Blockchain token image');
+				return;
+			}
 			let initialName = document.querySelector('#title').value;
 			let initialImage = document.querySelector(
 				'#bk_att_token_image_ipfs'

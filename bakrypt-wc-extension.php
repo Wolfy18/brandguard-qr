@@ -416,7 +416,30 @@ function bakrypt_blockchain_product_data_fields()
 add_action("add_meta_boxes", "add_ipfs_meta_box");
 function add_ipfs_meta_box()
 {
-	add_meta_box("ipfs-meta-box", "Blockchain asset image", "ipfs_meta_box_markup", "product", "side", "low", null);
+	$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
+	if ($testnet != "yes") {
+		$url = "https://bakrypt.io/auth/token/";
+		$client_id = woocommerce_settings_get_option('wc_settings_tab_bak_client_id');
+		$client_secret = woocommerce_settings_get_option('wc_settings_tab_bak_client_secret');
+		$username = woocommerce_settings_get_option('wc_settings_tab_bak_username');
+		$password = woocommerce_settings_get_option('wc_settings_tab_bak_password');
+	} else {
+		$url = "https://testnet.bakrypt.io/auth/token/";
+		$client_id = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_client_id');
+		$client_secret = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_client_secret');
+		$username = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_username');
+		$password = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_password');
+	}
+
+	if (!$client_id && !$client_secret && !$username && !$password) {
+		?>
+		<div class="error">
+			<p><strong><a href="<?php echo get_admin_url() . 'admin.php?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt credentials</a> are required to mint tokens into the Cardano Blockchain</strong></p>
+		</div> <?php
+		return;
+	}
+
+	add_meta_box("ipfs-meta-box", "Blockchain token image", "ipfs_meta_box_markup", "product", "side", "low", null);
 }
 function ipfs_meta_box_markup($post)
 {
