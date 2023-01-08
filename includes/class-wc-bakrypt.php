@@ -1,7 +1,6 @@
-
 <?php
 
-if (!class_exists('WC_Bakrypt')) :
+if (!class_exists('WC_Bakrypt')):
 
     /**
      * My Extension core class
@@ -23,21 +22,13 @@ if (!class_exists('WC_Bakrypt')) :
 
         public static function init()
         {
-            /**
-             * Check if WooCommerce is activated
-             */
 
-            if (!function_exists('is_woocommerce_activated')) {
-                function is_woocommerce_activated()
-                {
-                    if (!class_exists('woocommerce')) {
-                        // wp_die(__('Please activate WooCommerce.', 'bakrypt-wc-extension'), 'Plugin dependency check', array('back_link' => true));
-                        
-                    }
-                }
-            }
+            // start including scripts
 
-            is_woocommerce_activated();
+
+
+
+
         }
 
         /**
