@@ -127,7 +127,7 @@ function fetch_bak_settings()
 {
 	$settings = array(
 		'section_title' => array(
-			'name' => __('Bakrypt API oAuth2 Credentials', 'bak-woocommerce-settings-tab'),
+			'name' => __('Bakrypt API OAuth Credentials', 'bak-woocommerce-settings-tab'),
 			'type' => 'title',
 			'desc' => '',
 			'id' => 'wc_settings_tab_demo_section_title'
@@ -240,34 +240,19 @@ function bakrypt_blockchain_product_data_fields()
 	// Generate Bakrypt Token on load
 	$access = generate_access_token();
 	$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
-	?>
+?>
 	<!-- id below must match target registered in above add_blockchain_product_data_tab function -->
 	<div id="blockchain_product_data" class="panel woocommerce_options_panel">
 		<p class="form-field woocommerce-message" style="float:right" <?php if ($asset['uuid'] == '')
-			echo 'style="display:none"' ?>>
-				<button style="line-height:1" id="delete_token" name="delete_token"
-					class="button-primary woocommerce-save-button">
-					<span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
-				</button>
-			</p>
+																			echo 'style="display:none"' ?>>
+			<button style="line-height:1" id="delete_token" name="delete_token" class="button-primary woocommerce-save-button">
+				<span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
+			</button>
+		</p>
 
-			<input type="hidden" id="product_id" value="<?php echo get_the_ID() ?>" />
+		<input type="hidden" id="product_id" value="<?php echo get_the_ID() ?>" />
 		<input type="hidden" id="bk_nonce" value="<?php echo $nonce ?>" />
 
-		<?php
-		woocommerce_wp_text_input(
-			array(
-				'id' => 'bk_token_uuid',
-				'value' => get_post_meta(get_the_ID(), 'bk_token_uuid', true),
-				// 'wrapper_class' => 'show_if_simple',
-				'label' => __('Bakrypt UUID', 'my_text_domain'),
-				'description' => __("Bakrypt's Unique Identifier.", "my_text_domain"),
-				'default' => '',
-				'desc_tip' => false,
-				'custom_attributes' => array('readonly' => 'readonly'),
-			)
-		);
-		?>
 		<?php
 		woocommerce_wp_text_input(
 			array(
@@ -289,7 +274,7 @@ function bakrypt_blockchain_product_data_fields()
 				'value' => get_post_meta(get_the_ID(), 'bk_token_fingerprint', true),
 				// 'wrapper_class' => 'show_if_simple',
 				'label' => __('Asset Fingerprint', 'my_text_domain'),
-				'description' => __('As recorded in the blockchain.', 'my_text_domain'),
+				'description' => __('Recorded in the blockchain.', 'my_text_domain'),
 				'default' => '',
 				'desc_tip' => false,
 				'custom_attributes' => array('readonly' => 'readonly'),
@@ -353,34 +338,6 @@ function bakrypt_blockchain_product_data_fields()
 		);
 		?>
 		<?php
-		woocommerce_wp_text_input(
-			array(
-				'id' => 'bk_token_status',
-				'value' => get_post_meta(get_the_ID(), 'bk_token_status', true),
-				// 'wrapper_class' => 'show_if_simple',
-				'label' => __('Asset transaction status', 'my_text_domain'),
-				'description' => __('Status of the transaction related to this asset.', 'my_text_domain'),
-				'default' => '',
-				'desc_tip' => false,
-				'custom_attributes' => array('readonly' => 'readonly'),
-			)
-		);
-		?>
-		<?php
-		woocommerce_wp_text_input(
-			array(
-				'id' => 'bk_token_transaction',
-				'value' => get_post_meta(get_the_ID(), 'bk_token_transaction', true),
-				// 'wrapper_class' => 'show_if_simple',
-				'label' => __('Transaction UUID', 'my_text_domain'),
-				'description' => __('Transaction related to this token.', 'my_text_domain'),
-				'default' => '',
-				'desc_tip' => false,
-				'custom_attributes' => array('readonly' => 'readonly'),
-			)
-		);
-		?>
-		<?php
 		woocommerce_wp_textarea_input(
 			array(
 				'id' => 'bk_token_json',
@@ -394,20 +351,60 @@ function bakrypt_blockchain_product_data_fields()
 			)
 		);
 		?>
+		<?php
+		woocommerce_wp_text_input(
+			array(
+				'id' => 'bk_token_uuid',
+				'value' => get_post_meta(get_the_ID(), 'bk_token_uuid', true),
+				// 'wrapper_class' => 'show_if_simple',
+				'label' => __('BAK ID', 'my_text_domain'),
+				'description' => __("Bakrypt's Asset Unique Identifier.", "my_text_domain"),
+				'default' => '',
+				'desc_tip' => true,
+				'custom_attributes' => array('readonly' => 'readonly'),
+			)
+		);
+		?>
+		<?php
+		woocommerce_wp_text_input(
+			array(
+				'id' => 'bk_token_transaction',
+				'value' => get_post_meta(get_the_ID(), 'bk_token_transaction', true),
+				// 'wrapper_class' => 'show_if_simple',
+				'label' => __('Transaction ID', 'my_text_domain'),
+				'description' => __('Transaction Object related to this asset in bakrypt', 'my_text_domain'),
+				'default' => '',
+				'desc_tip' => true,
+				'custom_attributes' => array('readonly' => 'readonly'),
+			)
+		);
+		?>
+		<?php
+		woocommerce_wp_text_input(
+			array(
+				'id' => 'bk_token_status',
+				'value' => get_post_meta(get_the_ID(), 'bk_token_status', true),
+				// 'wrapper_class' => 'show_if_simple',
+				'label' => __('Status', 'my_text_domain'),
+				'description' => __('Status of the transaction related to the request.', 'my_text_domain'),
+				'default' => '',
+				'desc_tip' => true,
+				'custom_attributes' => array('readonly' => 'readonly'),
+			)
+		);
+		?>
 
 		<div <?php if ($testnet == "yes")
-			echo "testnet" ?> data-token="<?php echo $access->{'access_token'} ?>"
-			style="display: flex; justify-content: left" class="btn-action">
+					echo "testnet" ?> data-token="<?php echo $access->{'access_token'} ?>" style="display: flex; justify-content: left" class="btn-action">
 			<p class="form-field mint" <?php if ($asset['uuid'] != '')
-				echo 'style="display:none"' ?>></p>
-				<p class="form-field view-transaction" <?php if ($asset['uuid'] == '')
-				echo 'style="display:none"' ?>></p>
-				<p class="form-field" <?php if ($asset['uuid'] == '')
-				echo 'style="display:none"' ?>><button name="update_token"
-						class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
-			</div>
-
+											echo 'style="display:none"' ?>></p>
+			<p class="form-field view-transaction" <?php if ($asset['uuid'] == '')
+														echo 'style="display:none"' ?>></p>
+			<p class="form-field" <?php if ($asset['uuid'] == '')
+										echo 'style="display:none"' ?>><button name="update_token" class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
 		</div>
+
+	</div>
 
 	<?php
 
@@ -416,6 +413,11 @@ function bakrypt_blockchain_product_data_fields()
 add_action("add_meta_boxes", "add_ipfs_meta_box");
 function add_ipfs_meta_box()
 {
+	add_meta_box("ipfs-meta-box", "Blockchain token image", "ipfs_meta_box_markup", "product", "side", "low", null);
+}
+function ipfs_meta_box_markup($post)
+{
+
 	$testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
 	if ($testnet != "yes") {
 		$url = "https://bakrypt.io/auth/token/";
@@ -431,18 +433,12 @@ function add_ipfs_meta_box()
 		$password = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_password');
 	}
 
-	if (!$client_id && !$client_secret && !$username && !$password) {
-		?>
+	if (!$client_id && !$client_secret && !$username && !$password) { ?>
 		<div class="error">
-			<p><strong><a href="<?php echo get_admin_url() . 'admin.php?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt credentials</a> are required to mint tokens into the Cardano Blockchain</strong></p>
-		</div> <?php
-		return;
-	}
+			<p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt OAuth credentials</a> are required to load data from the remote source.</strong></p>
+		</div>
+	<?php }
 
-	add_meta_box("ipfs-meta-box", "Blockchain token image", "ipfs_meta_box_markup", "product", "side", "low", null);
-}
-function ipfs_meta_box_markup($post)
-{
 	global $thepostid, $product_object;
 	$thepostid = $post->ID;
 	$product_object = $thepostid ? wc_get_product($thepostid) : new WC_Product();
@@ -479,13 +475,13 @@ function ipfs_meta_box_markup($post)
 						$update_meta = true;
 						continue;
 					}
-					?>
+			?>
 					<li class="image" data-attachment_id="<?php echo esc_attr($attachment_id); ?>">
 						<?php echo $attachment; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
-									?>
+						?>
 						<?php
 						if (!in_array($bk_token_status, ['confirmed', 'canceled'])) {
-							?>
+						?>
 							<ul class="actions">
 								<li><a href="#" class="delete tips" data-tip="<?php esc_attr_e('Delete image', 'woocommerce'); ?>">
 										<?php esc_html_e('Delete', 'woocommerce'); ?>
@@ -498,7 +494,7 @@ function ipfs_meta_box_markup($post)
 
 						?>
 					</li>
-					<?php
+				<?php
 
 					// rebuild ids to be saved.
 					$updated_gallery_ids[] = $attachment_id;
@@ -513,18 +509,16 @@ function ipfs_meta_box_markup($post)
 				<li class="image" data-attachment_id="<?php echo esc_attr($attachment_id); ?>">
 					<span id="preview_bk_att_token_image"></span>
 				</li>
-				<?php
+			<?php
 			}
 			?>
 		</ul>
-		<input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image"
-			value="<?php echo esc_attr($bk_token_att); ?>" />
-		<input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs"
-			value="<?php echo esc_attr($img_ipfs); ?>" />
+		<input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
+		<input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs" value="<?php echo esc_attr($img_ipfs); ?>" />
 	</div>
 	<?php
 	if (!in_array($bk_token_status, ['confirmed', 'canceled'])) {
-		?>
+	?>
 		<a href="#" id="bk_token_image_media_manager">
 			<?php esc_attr_e('Choose from gallery', 'mytextdomain'); ?>
 		</a>

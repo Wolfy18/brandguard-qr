@@ -45,7 +45,7 @@ const TransactionModal = ({ getter, collection }) => {
 	return (
 		<>
 			<Button variant="secondary" onClick={openModal}>
-				View Transaction
+				View Request
 			</Button>
 			{isOpen && (
 				<Modal

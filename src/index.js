@@ -50,7 +50,7 @@ const setData = (asset, tx) => {
 
 	inputs.map((i) => {
 		let input = document.querySelector(`#${i}`);
-		if (input) {
+		if (input && asset) {
 			switch (i) {
 				case 'bk_token_uuid':
 					input.value = asset.uuid;
@@ -182,11 +182,23 @@ const init = () => {
 		const tokenUuid = document.querySelector('#bk_token_uuid').value;
 		const asset = await helper.getAsset(tokenUuid);
 
+		// Valid asset
+		if (!asset) {
+			Swal.fire({
+				title: 'Error',
+				text: 'Unable to load asset from remote source.',
+				icon: 'error',
+			});
+
+			blockchainDataWrapper.removeChild(spinner);
+			return;
+		}
+
 		let tx;
 		// Get transaction if the transaction is not found within the asset.
 		if (asset && asset.transaction && !asset.transaction.uuid) {
 			tx = await helper.getTransaction(asset.transaction);
-		} else {
+		} else if (asset && asset.transaction) {
 			tx = asset.transaction;
 		}
 
