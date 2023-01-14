@@ -485,15 +485,6 @@ function ipfs_meta_box_markup($post)
 						<?php echo $attachment; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
 									?>
 						<?php
-						if (!in_array($bk_token_status, ['confirmed', 'canceled'])) {
-							?>
-							<ul class="actions">
-								<li><a href="#" class="delete tips" data-tip="<?php esc_attr_e('Delete image', 'woocommerce'); ?>">
-										<?php esc_html_e('Delete', 'woocommerce'); ?>
-									</a></li>
-							</ul>
-						<?php } ?>
-						<?php
 						// Allow for extra info to be exposed or extra action to be executed for this attachment.
 						do_action('woocommerce_admin_after_product_gallery_item', $thepostid, $attachment_id);
 
