@@ -9,3 +9,13 @@
  * @version 3.0.0
  * @since   3.0.0
  */
+
+
+namespace BakExtension\controllers;
+
+class Order
+{
+
+}
+// Orders section
+//https://rudrastyh.com/woocommerce/customize-order-details.html
