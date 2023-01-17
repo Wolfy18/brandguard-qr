@@ -35,10 +35,14 @@ if (!function_exists('woothemes_queue_update')) {
 	require_once 'woo-includes/woo-functions.php';
 }
 
+
+
 // Initiate wc bakrypt class
+use BakExtension\core\BakWCExtension;
+
 function wcbakrypt_init()
 {
-	require_once WCBAK_ABSPATH . '/includes/class-bak-init.php';
+
 	BakWCExtension::init();
 }
 
