@@ -931,8 +931,8 @@ function bak_products_filter_query($query)
 // Initiate wc bakrypt class
 function wcbakrypt_init()
 {
-	require_once WCBAK_ABSPATH . '/includes/class-wc-bakrypt.php';
-	WC_Bakrypt::init();
+	require_once WCBAK_ABSPATH . '/includes/class-bak-init.php';
+	BakWCExtension::init();
 }
 
 add_action('plugins_loaded', 'wcbakrypt_init', 11);
