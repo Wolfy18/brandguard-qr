@@ -31,9 +31,7 @@ class BakWCExtension
 
     public static function init()
     {
-
-        // start including scripts
-        // WooCommerce is required
+        // Start initiating settings
         if (!is_woocommerce_active()) {
             add_action('admin_notices', array('BakExtension\core\Settings', 'missing_wc_notice'));
             return;
@@ -43,7 +41,6 @@ class BakWCExtension
         add_filter('woocommerce_settings_tabs_array', array('BakExtension\core\Settings', 'add_bak_settings'), 50);
         add_action('woocommerce_settings_tabs_bak_settings', array('BakExtension\core\Settings', 'bak_add_bak_settings'));
         add_action('woocommerce_update_options_bak_settings', array('BakExtension\core\Settings', 'bak_update_options_bak_settings'));
-
     }
 
 

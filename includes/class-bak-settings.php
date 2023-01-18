@@ -36,11 +36,11 @@ class Settings
 	public static function add_extension_register_script($page)
 	{
 		$script_path = '/build/index.js';
-		$script_asset_path = dirname(__FILE__) . '/build/index.asset.php';
+		$script_asset_path = dirname(WCBAK_PLUGIN_FILE) . '/build/index.asset.php';
 		$script_asset = file_exists($script_asset_path)
 			? require($script_asset_path)
 			: array('dependencies' => array(), 'version' => filemtime($script_path));
-		$script_url = plugins_url($script_path, __FILE__);
+		$script_url = plugins_url($script_path, WCBAK_PLUGIN_FILE);
 
 		wp_register_script(
 			'bakrypt-wc-extension',
@@ -52,10 +52,10 @@ class Settings
 
 		wp_register_style(
 			'bakrypt-wc-extension',
-			plugins_url('/build/index.css', __FILE__),
+			plugins_url('/build/index.css', WCBAK_PLUGIN_FILE),
 			// Add any dependencies styles may have, such as wp-components.
 			array(),
-			filemtime(dirname(__FILE__) . '/build/index.css')
+			filemtime(dirname(WCBAK_PLUGIN_FILE) . '/build/index.css')
 		);
 
 		wp_enqueue_script('bakrypt-wc-extension');
@@ -156,11 +156,11 @@ class Settings
 // 	// Your activation logic goes here.
 
 // }
-// register_activation_hook(__FILE__, 'bakrypt_wc_extension_activate');
+// register_activation_hook(WCBAK_PLUGIN_FILE, 'bakrypt_wc_extension_activate');
 
 
 // function bakrypt_wc_extension_deactivate()
 // {
 // 	// Your deactivation logic goes here.
 // }
-// register_deactivation_hook(__FILE__, 'bakrypt_wc_extension_deactivate');
+// register_deactivation_hook(WCBAK_PLUGIN_FILE, 'bakrypt_wc_extension_deactivate');
