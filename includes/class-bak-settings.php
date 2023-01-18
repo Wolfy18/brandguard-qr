@@ -17,22 +17,16 @@ defined('ABSPATH') || exit;
 class Settings
 {
 
-  public static $version = 'v1';
+	public static $version = 'v1';
 
-  public static $base = 'bak';
+	public static $base = 'bak';
 
-}
+	public static function missing_wc_notice()
+	{
+		/* translators: %s WC download URL link. */
+		echo '<div class="error"><p><strong>' . sprintf(esc_html__('WC Blockchain Extension requires WooCommerce to be installed and active. You can download %s here.', 'woocommerce-blockchain-extension'), '<a href="https://woocommerce.com/" target="_blank">WooCommerce</a>') . '</strong></p></div>';
+	}
 
-
-function missing_wc_notice()
-{
-	/* translators: %s WC download URL link. */
-	echo '<div class="error"><p><strong>' . sprintf(esc_html__('WC Blockchain Extension requires WooCommerce to be installed and active. You can download %s here.', 'woocommerce-blockchain-extension'), '<a href="https://woocommerce.com/" target="_blank">WooCommerce</a>') . '</strong></p></div>';
-}
-
-if (!is_woocommerce_active()) {
-	add_action('admin_notices', 'missing_wc_notice');
-	return;
 }
 
 function bakrypt_wc_extension_activate()

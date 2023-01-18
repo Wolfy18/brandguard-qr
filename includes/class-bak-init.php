@@ -12,6 +12,8 @@
 
 namespace BakExtension\core;
 
+use BakExtension\core\Settings;
+
 class BakWCExtension
 {
     /**
@@ -31,8 +33,11 @@ class BakWCExtension
     {
 
         // start including scripts
-
-
+        // WooCommerce is required
+        if (!is_woocommerce_active()) {
+            add_action('admin_notices', Settings::missing_wc_notice());
+            return;
+        }
 
     }
 
