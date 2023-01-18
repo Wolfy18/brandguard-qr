@@ -35,6 +35,9 @@ if (!function_exists('woothemes_queue_update')) {
 	require_once 'woo-includes/woo-functions.php';
 }
 
+# Autoload Classes with Composer
+require_once "vendor/autoload.php";
+
 // Initiate wc bakrypt class
 use BakExtension\core\BakWCExtension;
 

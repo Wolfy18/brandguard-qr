@@ -35,11 +35,17 @@ class BakWCExtension
         // start including scripts
         // WooCommerce is required
         if (!is_woocommerce_active()) {
-            add_action('admin_notices', Settings::missing_wc_notice());
+            add_action('admin_notices', array('BakExtension\core\Settings', 'missing_wc_notice'));
             return;
         }
 
+        add_action('admin_enqueue_scripts', array('BakExtension\core\Settings', 'add_extension_register_script'));
+        add_filter('woocommerce_settings_tabs_array', array('BakExtension\core\Settings', 'add_bak_settings'), 50);
+        add_action('woocommerce_settings_tabs_bak_settings', array('BakExtension\core\Settings', 'bak_add_bak_settings'));
+        add_action('woocommerce_update_options_bak_settings', array('BakExtension\core\Settings', 'bak_update_options_bak_settings'));
+
     }
+
 
     /**
      * Main Extension Instance.
