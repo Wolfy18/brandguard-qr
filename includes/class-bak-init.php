@@ -13,6 +13,8 @@
 namespace BakExtension\core;
 
 use BakExtension\core\Settings;
+use BakExtension\api\RestAdapter;
+use BakExtension\controllers\ProductList;
 
 class BakWCExtension
 {
@@ -36,11 +38,19 @@ class BakWCExtension
             add_action('admin_notices', array('BakExtension\core\Settings', 'missing_wc_notice'));
             return;
         }
-
+        //==================================== WooCommerce Settings ===================================
         add_action('admin_enqueue_scripts', array('BakExtension\core\Settings', 'add_extension_register_script'));
         add_filter('woocommerce_settings_tabs_array', array('BakExtension\core\Settings', 'add_bak_settings'), 50);
         add_action('woocommerce_settings_tabs_bak_settings', array('BakExtension\core\Settings', 'bak_add_bak_settings'));
         add_action('woocommerce_update_options_bak_settings', array('BakExtension\core\Settings', 'bak_update_options_bak_settings'));
+
+        //==================================== Product List ===================================
+        add_filter('manage_product_posts_columns', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column'));
+        add_action('manage_product_posts_custom_column', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column_data'), 10, 2);
+        add_filter('woocommerce_product_filters', array("BakExtension\controllers\ProductList", 'bak_custom_filter'));
+
+        // Set up the query
+        add_action('pre_get_posts', array("BakExtension\controllers\ProductList", 'bak_products_filter_query'));
     }
 
 
