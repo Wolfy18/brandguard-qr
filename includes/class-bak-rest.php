@@ -148,4 +148,37 @@ class RestAdapter
         return $upload;
     }
 
+    public static function insert_attachment_from_ipfs($ipfs)
+    {
+        $upload = self::fetch_ipfs_attachment($ipfs);
+        $att_id = null;
+        if ($upload) {
+            $file_path = $upload['file'];
+            $file_name = basename($file_path);
+            $file_type = wp_check_filetype($file_name, null);
+            $attachment_title = sanitize_file_name(pathinfo($file_name, PATHINFO_FILENAME));
+            $wp_upload_dir = wp_upload_dir();
+
+            $args = array(
+                'guid' => $wp_upload_dir['url'] . '/' . $file_name,
+                'post_mime_type' => $file_type['type'],
+                'post_status' => 'inherit',
+                'post_content' => '',
+                'post_title' => $attachment_title,
+                'ipfs' => $bk_token_image
+            );
+
+            $att_id = wp_insert_attachment($args, $file_path, $post_id);
+
+            // you must first include the image.php file
+            // for the function wp_generate_attachment_metadata() to work
+            require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+            $attach_data = wp_generate_attachment_metadata($att_id, $file_path);
+            $attach_data['ipfs'] = $bk_token_image;
+            wp_update_attachment_metadata($att_id, $attach_data);
+        }
+
+        return $att_id;
+    }
+
 }

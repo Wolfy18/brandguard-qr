@@ -48,8 +48,6 @@ class BakWCExtension
         add_filter('manage_product_posts_columns', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column'));
         add_action('manage_product_posts_custom_column', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column_data'), 10, 2);
         add_filter('woocommerce_product_filters', array("BakExtension\controllers\ProductList", 'bak_custom_filter'));
-
-        // Set up the query
         add_action('pre_get_posts', array("BakExtension\controllers\ProductList", 'bak_products_filter_query'));
     }
 
