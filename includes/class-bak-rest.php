@@ -4,11 +4,12 @@ namespace BakExtension\api;
 
 class RestAdapter
 {
-    public static $access_token;
-    public static $settings;
+    public $access_token;
+    public $settings;
+
     function __construct()
     {
-        if (!self::$settings) {
+        if (!$this->settings) {
             $testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
             if ($testnet != "yes") {
                 $url = "https://bakrypt.io/auth/token/";
@@ -24,20 +25,23 @@ class RestAdapter
                 $password = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_password');
             }
 
-            self::$settings = array(
+            $this->settings = array(
                 "url" => $url,
                 "client_id" => $client_id,
                 "client_secret" => $client_secret,
                 "username" => $username,
-                "password" => $password
+                "password" => $password,
+                "testnet" => $testnet
             );
+
         }
     }
 
-    public static function generate_access_token()
+    public function generate_access_token()
     {
+
         $response = wp_remote_post(
-            self::$settings['url'],
+            $this->settings['url'],
             array(
                 'method' => 'POST',
                 'timeout' => 30,
@@ -47,10 +51,10 @@ class RestAdapter
                 'headers' => array("content-type" => "application/x-www-form-urlencoded"),
                 'body' => http_build_query(
                     array(
-                        "client_id" => self::$settings['client_id'],
-                        "client_secret" => self::$settings['client_secret'],
-                        "username" => self::$settings['username'],
-                        "password" => self::$settings['password'],
+                        "client_id" => $this->settings['client_id'],
+                        "client_secret" => $this->settings['client_secret'],
+                        "username" => $this->settings['username'],
+                        "password" => $this->settings['password'],
                         "grant_type" => "password"
                     )
                 ),
@@ -68,14 +72,14 @@ class RestAdapter
         }
 
         # Set access token
-        self::$access_token = $access;
+        $this->access_token = $access;
 
         return $access;
     }
 
-    public static function upload_attachment_to_ipfs($attachment_id)
+    public function upload_attachment_to_ipfs($attachment_id)
     {
-        $token = self::$access_token;
+        $token = $this->access_token;
 
         $img_url = wp_get_attachment_url($attachment_id);
         $img_name = basename(get_attached_file($attachment_id));
