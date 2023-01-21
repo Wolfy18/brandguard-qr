@@ -267,7 +267,6 @@ jQuery(document).ready(function ($) {
 				type: 'image',
 			},
 		});
-
 		imageFrame.on('close', function () {
 			// On close, get selections and save to the hidden input
 			// plus other AJAX stuff to refresh the image preview
@@ -306,12 +305,12 @@ function refreshImages(the_id) {
 		action: 'product_token_get_image',
 		id: the_id,
 	};
-
 	jQuery.get(ajaxurl, data, function (response) {
 		if (response.success === true) {
 			jQuery('#preview_bk_att_token_image').replaceWith(
 				response.data.image
 			);
+
 			jQuery('#bk_att_token_image_ipfs').val(
 				jQuery('#preview_bk_att_token_image').data('ipfs')
 			);

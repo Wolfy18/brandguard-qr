@@ -56,7 +56,7 @@ class Product
         return $product_data_tabs;
     }
 
-    function bakrypt_blockchain_product_data_fields()
+    public static function bakrypt_blockchain_product_data_fields()
     {
         global $woocommerce, $post;
         $asset = array(
@@ -376,6 +376,11 @@ class Product
 
             # Upload to IPFS node if nothing is found
             if ($img_ipfs == '') {
+
+                if(!self::$adapter){
+                    self::$adapter = new RestAdapter();
+                }
+
                 $bak_file = self::$adapter->upload_attachment_to_ipfs($attachment_id);
                 $img_ipfs = $bak_file->{'ipfs'};
                 $img_metadata['ipfs'] = $img_ipfs;

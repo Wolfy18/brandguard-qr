@@ -12,13 +12,13 @@ class RestAdapter
         if (!$this->settings) {
             $testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
             if ($testnet != "yes") {
-                $url = "https://bakrypt.io/auth/token/";
+                $url = "https://bakrypt.io";
                 $client_id = woocommerce_settings_get_option('wc_settings_tab_bak_client_id');
                 $client_secret = woocommerce_settings_get_option('wc_settings_tab_bak_client_secret');
                 $username = woocommerce_settings_get_option('wc_settings_tab_bak_username');
                 $password = woocommerce_settings_get_option('wc_settings_tab_bak_password');
             } else {
-                $url = "https://testnet.bakrypt.io/auth/token/";
+                $url = "https://testnet.bakrypt.io";
                 $client_id = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_client_id');
                 $client_secret = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_client_secret');
                 $username = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_username');
@@ -41,7 +41,7 @@ class RestAdapter
     {
 
         $response = wp_remote_post(
-            $this->settings['url'],
+            $this->settings['url']. "/auth/token/",
             array(
                 'method' => 'POST',
                 'timeout' => 30,
@@ -79,6 +79,11 @@ class RestAdapter
 
     public function upload_attachment_to_ipfs($attachment_id)
     {
+
+        if(!$this->access_token){
+            $this->generate_access_token();
+        }
+
         $token = $this->access_token;
 
         $img_url = wp_get_attachment_url($attachment_id);
@@ -102,7 +107,7 @@ class RestAdapter
         $payload .= '--' . $boundary . '--';
 
         $response = wp_remote_post(
-            self::$settings['url'],
+            $this->settings['url'] . "/v1/attachments/",
             array(
                 'method' => 'POST',
                 'timeout' => 30,
@@ -124,7 +129,6 @@ class RestAdapter
         } else {
             $attachment = json_decode($response["body"]);
         }
-
         return $attachment;
     }
 
