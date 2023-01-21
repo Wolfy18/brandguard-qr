@@ -382,6 +382,7 @@ class Product
                 }
 
                 $bak_file = self::$adapter->upload_attachment_to_ipfs($attachment_id);
+                
                 $img_ipfs = $bak_file->{'ipfs'};
                 $img_metadata['ipfs'] = $img_ipfs;
                 wp_update_attachment_metadata($attachment_id, $img_metadata); // save it back to the db

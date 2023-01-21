@@ -107,7 +107,7 @@ class RestAdapter
         $payload .= '--' . $boundary . '--';
 
         $response = wp_remote_post(
-            $this->settings['url'] . "/v1/attachments/",
+            $this->settings['url'] . "/v1/files/",
             array(
                 'method' => 'POST',
                 'timeout' => 30,
@@ -129,6 +129,7 @@ class RestAdapter
         } else {
             $attachment = json_decode($response["body"]);
         }
+
         return $attachment;
     }
 
