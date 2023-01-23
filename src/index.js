@@ -22,6 +22,7 @@ const getData = () => {
 		'bk_token_transaction',
 		'bk_token_json',
 		'bk_att_token_image',
+		'bk_token_json',
 	];
 
 	inputs.map((i) => {
@@ -80,7 +81,7 @@ const setData = (asset, tx) => {
 					input.value = tx.uuid;
 					break;
 				case 'bk_token_json':
-					input.value = asset.metadata;
+					input.value = JSON.stringify(tx.metadata);
 					break;
 				default:
 					break;
