@@ -28,6 +28,7 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "7.0.0-beta.55",
+		"bakrypt-launchpad": "^0.0.1",
 		"react": "16.13.1",
 		"react-dom": "16.13.1",
 		"sweetalert2": "^11.6.16"

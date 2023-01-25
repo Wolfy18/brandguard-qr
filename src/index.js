@@ -8,9 +8,9 @@ import showSpinner from './components/spinner';
 import BakryptApiInterface from './api/interfaces';
 
 const getData = () => {
-	let asset = new FormData();
+	const asset = new FormData();
 
-	let inputs = [
+	const inputs = [
 		'bk_token_uuid',
 		'bk_token_policy',
 		'bk_token_fingerprint',
@@ -26,7 +26,7 @@ const getData = () => {
 	];
 
 	inputs.map((i) => {
-		let input = document.querySelector(`#${i}`);
+		const input = document.querySelector(`#${i}`);
 		if (input) {
 			asset.set(i, input.value);
 		}
@@ -36,7 +36,7 @@ const getData = () => {
 };
 
 const setData = (asset, tx) => {
-	let inputs = [
+	const inputs = [
 		'bk_token_uuid',
 		'bk_token_policy',
 		'bk_token_fingerprint',
@@ -50,7 +50,7 @@ const setData = (asset, tx) => {
 	];
 
 	inputs.map((i) => {
-		let input = document.querySelector(`#${i}`);
+		const input = document.querySelector(`#${i}`);
 		if (input && asset) {
 			switch (i) {
 				case 'bk_token_uuid':

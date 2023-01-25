@@ -1,6 +1,6 @@
 import { Button, Modal } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
-import '../launchpad/bakrypt-launchpad';
+import 'bakrypt-launchpad/dist/bakrypt-launchpad';
 
 const LaunchpadModal = ({ accessToken, getter, callback }) => {
 	const [isOpen, setOpen] = useState(false);
