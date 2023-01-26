@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Order Item
  *
@@ -59,6 +60,7 @@ class BakWCExtension
         add_action("wp_ajax_bk_update_record", array("BakExtension\controllers\Product", "bak_update_rest_api_blockchain_meta"));
         add_action('woocommerce_process_product_meta', array("BakExtension\controllers\Product", 'bak_save_blockchain_meta'));
         add_action("wp_ajax_bk_delete_record", array("BakExtension\controllers\Product", "bak_delete_rest_api_blockchain_meta"));
+
     }
 
 
