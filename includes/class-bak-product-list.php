@@ -12,6 +12,7 @@
 
 namespace BakExtension\controllers;
 
+defined('ABSPATH') || exit;
 class ProductList
 {
 

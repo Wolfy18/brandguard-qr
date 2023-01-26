@@ -13,6 +13,7 @@
 
 namespace BakExtension\controllers;
 
+defined('ABSPATH') || exit;
 use BakExtension\api\RestAdapter;
 
 class Product

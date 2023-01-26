@@ -13,6 +13,7 @@
 
 namespace BakExtension\core;
 
+defined('ABSPATH') || exit;
 use BakExtension\core\Settings;
 use BakExtension\api\RestAdapter;
 use BakExtension\controllers\ProductList;
@@ -61,6 +62,9 @@ class BakWCExtension
         add_action('woocommerce_process_product_meta', array("BakExtension\controllers\Product", 'bak_save_blockchain_meta'));
         add_action("wp_ajax_bk_delete_record", array("BakExtension\controllers\Product", "bak_delete_rest_api_blockchain_meta"));
 
+        // =================================== Orders ======================================
+        add_filter('woocommerce_get_item_data', array("BakExtension\controllers\Order", "display_asset_fingerprint_in_cart"), 10, 2);
+        add_action('woocommerce_checkout_create_order_line_item', array("BakExtension\controllers\Order", "add_asset_fingerprint_to_order_line_item_meta"), 10, 4);
     }
 
 

@@ -2,6 +2,7 @@
 
 namespace BakExtension\api;
 
+defined('ABSPATH') || exit;
 class RestAdapter
 {
     public $access_token;
