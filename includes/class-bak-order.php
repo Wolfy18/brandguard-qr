@@ -35,14 +35,16 @@ class Order
     {
         $item->add_meta_data('Fingerprint', get_post_meta($values["data"]->get_id(), 'bk_token_fingerprint', true));
     }
-}
 
-// add_action( 'wc_pip_after_customer_addresses', 'action_after_customer_addresses', 10, 4 );
-// function action_after_customer_addresses( $type, $action, $document, $order ) {
-//     if( $ddate = $order->get_meta( 'jckwds_date' ) ){
-//         echo '<p>'.__("Delivery date") . ': ' . $ddate . '</p>';
-//     }
-// }
-// Orders section
-//https://rudrastyh.com/woocommerce/customize-order-details.html
-// https://rudrastyh.com/woocommerce/checkout-fields.html
+    public static function bak_woocommerce_order_item_name($name, $item)
+    {
+
+        $product_id = $item['product_id'];
+
+        $fingerprint = get_post_meta($product_id, 'bk_token_fingerprint', true);
+        if ($fingerprint) {
+            $name .= '<label>' . $fingerprint . ': </label>';
+        }
+        return $name;
+    }
+}
