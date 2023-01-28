@@ -42,9 +42,9 @@ class Order
         $product_id = $item['product_id'];
         
         $fingerprint = get_post_meta($product_id, 'bk_token_fingerprint', true);
-        // if ($fingerprint) {
-        //     $name .= '<label>' . $fingerprint . ': </label>';
-        // }
+        if ($fingerprint) {
+            $name .= '<label>' . $fingerprint . ': </label>';
+        }
         return $name;
     }
 }
