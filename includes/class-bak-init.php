@@ -66,7 +66,7 @@ class BakWCExtension
         // =================================== Orders ======================================
         add_filter('woocommerce_get_item_data', array("BakExtension\controllers\Order", "display_asset_fingerprint_in_cart"), 10, 2);
         add_action('woocommerce_checkout_create_order_line_item', array("BakExtension\controllers\Order", "add_asset_fingerprint_to_order_line_item_meta"), 10, 4);
-        add_filter('woocommerce_order_item_name', array("BakExtension\controllers\Order", 'bak_woocommerce_order_item_name', 10, 2));
+        // add_filter('woocommerce_order_item_name', array("BakExtension\controllers\Order", 'bak_woocommerce_order_item_name', 10, 2));
     }
 
 
