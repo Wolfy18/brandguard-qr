@@ -7,8 +7,10 @@ A WooCommerce Admin Extension
 To get started, run the following commands:
 
 ```text
-pnpm install
-pnpm start
+npm install
+npm start
+
+composer install
 ```
 
 ### Woocommerce Blockchain Tokenization Extension  ###
