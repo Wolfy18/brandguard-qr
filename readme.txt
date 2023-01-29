@@ -47,13 +47,25 @@ Cardano is a decentralized public blockchain and cryptocurrency project that is 
 4. To use the plugin, you'll need to activate it. When the installation is finished (this usually takes a couple of seconds), click Activate.
 
 = Register with Bakrypt =
-We use Bakrypt's API to conveniently interact with a blockchain platform, while still being able to take advantage of the underlying technology. Therefore, it's required to create an account in our platform. We only required a valid email.
+We use Bakrypt's API to conveniently interact with the blockchain platform, while still being able to take advantage of the underlying technology. Therefore, it's require to create an account in our platform. We only required a valid email.
 
 * Create an account for mainnet:
 [Mainnet Bakrypt API](https://bakrypt.io/account/login/) 
+[Remember to set your password](https://bakrypt.io/account/password_reset/) 
 
 * Create an account for testnet.
 [Testnet Bakrypt API](https://testnet.bakrypt.io/account/login/) 
+[Remember to set your password](https://testnet.bakrypt.io/account/password_reset/) 
+
+**WooCommerce Blockchain Settings**
+1. In your WooCommerce Settings, find the "Blockchain" tab to setup your credentials. 
+2. Set your Client ID, Client Secret, Username and Password for the Bakrypt's account. 
+3. Save Changes!
+
+*Testnet Credentials (Optional):* 
+4. Set your Client ID, Client Secret, Username and Password for the Bakrypt's *testnet* account.
+5. Activate the "testnet" checkbox. This will send all requests towards the testnet network.
+6. Save Changes! 
 
 
 == Frequently Asked Questions ==
