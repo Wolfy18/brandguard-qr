@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: WooCommerce Blockchain Extension
+ * Plugin Name: Bakrypt Blockchain Extension
  * Developer URI: https://bakrypt.io
  * Plugin URI: https://bakrypt.io
  * Description: Mint your products into the Cardano Blockchain
