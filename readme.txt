@@ -81,7 +81,6 @@ We use Bakrypt's API to conveniently interact with the blockchain platform, whil
 5. Activate the "testnet" checkbox. This will send all requests towards the testnet network.
 6. Save Changes! 
 
-
 == Frequently Asked Questions ==
 
 = Is it easy to use? =
@@ -98,8 +97,14 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Screenshots are stored in the /assets directory.
-2. This is the second screenshot
+1. Blockchain Settings Section.
+2. Product List filtered by tokenized products.
+3. Product Tokenization Minting process.
+4. Product Tokenization Invoice.
+5. Product Tokenization Invoice Status.
+6. Cart with tokenized product. It includes the asset fingerprint.
+7. Order view that includes tokenized products. It includes asset fingerprints for each product.
+8. Email view that includes a tokenized product. 
 
 == Changelog ==
 
