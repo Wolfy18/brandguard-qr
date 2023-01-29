@@ -37,6 +37,20 @@ Cardano is a decentralized public blockchain and cryptocurrency project that is 
 
 5. Community support: Cardano has a large and active community of developers and users who are involved in the project and contribute to its development. This can provide users with access to a wealth of resources and support when it comes to using Cardano for NFTs.
 
+== Bakrypt API ==
+
+Are you looking to create and sell non-fungible tokens (NFTs)? Our minting service can help you bring your unique digital assets to the market quickly and easily.
+
+With our platform, you'll have access to a range of tools and features that make it simple to create and manage your NFTs. You can easily upload your artwork or other content, set your own prices, and choose from a variety of options for how your NFTs will be sold and distributed.
+
+Our platform is built on top of a robust and secure blockchain, ensuring that your NFTs are safe and secure. We also offer support from our team of experts, who can help you every step of the way as you create and sell your NFTs.
+
+Don't miss out on the growing market for NFTs – join our platform today and start minting your own digital assets.
+
+**Bakrypt Docs**
+[Getting started with our API](https://bakrypt.readme.io/reference/getting-started-with-your-api)
+[Swagger Environment](https://bakrypt.io/docs/)
+
 == Installation ==
 
 **Make sure WooCommerce is also installed and activated** 
