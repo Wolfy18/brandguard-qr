@@ -41,7 +41,7 @@ Cardano is a decentralized public blockchain and cryptocurrency project that is 
 
 5. Community support: Cardano has a large and active community of developers and users who are involved in the project and contribute to its development. This can provide users with access to a wealth of resources and support when it comes to using Cardano for NFTs.
 
-== Bakrypt API ==
+## Bakrypt API ##
 
 Are you looking to create and sell non-fungible tokens (NFTs)? Our minting service can help you bring your unique digital assets to the market quickly and easily.
 
@@ -55,7 +55,7 @@ Don't miss out on the growing market for NFTs – join our platform today and st
 [Getting started with our API](https://bakrypt.readme.io/reference/getting-started-with-your-api)
 [Swagger Environment](https://bakrypt.io/docs/)
 
-== Installation ==
+## Installation ##
 
 **Make sure WooCommerce is also installed and activated** 
 
@@ -85,7 +85,7 @@ We use Bakrypt's API to conveniently interact with the blockchain platform, whil
 5. Activate the "testnet" checkbox. This will send all requests towards the testnet network.
 6. Save Changes! 
 
-== Frequently Asked Questions ==
+## Frequently Asked Questions ##
 
 = Is it easy to use? =
 
@@ -99,7 +99,7 @@ This plugin allows users to mint and manage NFTs within their existing WordPress
 
 WooCommerce is a scalable platform that can handle a large volume of traffic and transactions, making it suitable for stores of all sizes.
 
-== Screenshots ==
+## Screenshots ##
 
 1. Blockchain Settings Section.
 2. Product List filtered by tokenized products.
@@ -109,14 +109,4 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 6. Cart with tokenized product. It includes the asset fingerprint.
 7. Order view that includes tokenized products. It includes asset fingerprints for each product.
 8. Email view that includes a tokenized product. 
-
-== Changelog ==
-
-= 0.1 =
-* Beta version.
-
-== Upgrade Notice ==
-
-= 0.1 =
-This is our beta version to start testing the water.
 
