@@ -11,11 +11,11 @@ pnpm install
 pnpm start
 ```
 
-=== Woocommerce Blockchain Tokenization Extension  ===
+### Woocommerce Blockchain Tokenization Extension  ###
 
 A plugin made to extend Woocommerce features.
 
-== Description ==
+## Description ##
 
 **Non-Fungible Tokens as a supply chain solution.**
 
@@ -27,7 +27,7 @@ NFTs could also be used to verify the authenticity of products, by linking them 
 
 Overall, the use of NFTs in a supply chain could help companies improve transparency, traceability, and authenticity, which could in turn enhance customer trust and loyalty.
 
-== Cardano Blockchain ==
+## Cardano Blockchain ##
 
 Cardano is a decentralized public blockchain and cryptocurrency project that is focused on providing a secure and scalable platform for the creation and use of non-fungible tokens (NFTs). Some potential benefits of using Cardano for NFTs include:
 
@@ -64,7 +64,7 @@ Don't miss out on the growing market for NFTs – join our platform today and st
 3. After finding the plugin in the results, click Install Now. You can also click the plugin name to view more details about it.
 4. To use the plugin, you'll need to activate it. When the installation is finished (this usually takes a couple of seconds), click Activate.
 
-= Register with Bakrypt =
+# Register with Bakrypt #
 We use Bakrypt's API to conveniently interact with the blockchain platform, while still being able to take advantage of the underlying technology. Therefore, it's require to create an account in our platform. We only required a valid email.
 
 * Create an account for mainnet:
@@ -87,15 +87,15 @@ We use Bakrypt's API to conveniently interact with the blockchain platform, whil
 
 ## Frequently Asked Questions ##
 
-= Is it easy to use? =
+# Is it easy to use? #
 
 Using a WordPress plugin to mint NFTs can make the process of creating and managing NFTs more accessible to users who may not have technical expertise in blockchain or coding.
 
-= Can I integrate it to my existing shop? =
+# Can I integrate it to my existing shop? #
 
 This plugin allows users to mint and manage NFTs within their existing WordPress website, rather than having to set up a separate platform or interface. This can be more convenient for users who already have a presence on WordPress.
 
-= Is this solution scalable? =
+# Is this solution scalable? #
 
 WooCommerce is a scalable platform that can handle a large volume of traffic and transactions, making it suitable for stores of all sizes.
 
