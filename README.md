@@ -111,4 +111,6 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 6. Cart with tokenized product. It includes the asset fingerprint.
 7. Order view that includes tokenized products. It includes asset fingerprints for each product.
 8. Email view that includes a tokenized product. 
+9. Tokenized Product View Blockchain Section
+10. New Product View Blockchain Section
 
