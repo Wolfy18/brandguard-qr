@@ -34,7 +34,7 @@ class ProductList
 		switch ($column) {
 			case 'asset_fingerprint': // This has to match to the defined column in function above
 				$get_fingerprint = get_post_meta($post_id, 'bk_token_fingerprint', true);
-				echo "<a target='_blank' rel='nofollow' href='https://cexplorer.io/asset/" . $get_fingerprint . "'>" . $get_fingerprint . "</a>";
+				echo "<a target='_blank' rel='nofollow' href='https://cexplorer.io/asset/" . esc_html($get_fingerprint) . "'>" . esc_html($get_fingerprint) . "</a>";
 				break;
 		}
 	}

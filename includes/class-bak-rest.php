@@ -34,7 +34,6 @@ class RestAdapter
                 "password" => $password,
                 "testnet" => $testnet
             );
-
         }
     }
 
@@ -42,7 +41,7 @@ class RestAdapter
     {
 
         $response = wp_remote_post(
-            $this->settings['url']. "/auth/token/",
+            $this->settings['url'] . "/auth/token/",
             array(
                 'method' => 'POST',
                 'timeout' => 30,
@@ -67,7 +66,7 @@ class RestAdapter
             is_wp_error($response)
         ) {
             $error_message = $response->get_error_message();
-            echo "Something went wrong: $error_message";
+            echo "Something went wrong:" . esc_html($error_message);
         } else {
             $access = json_decode($response["body"]);
         }
@@ -81,7 +80,7 @@ class RestAdapter
     public function upload_attachment_to_ipfs($attachment_id)
     {
 
-        if(!$this->access_token){
+        if (!$this->access_token) {
             $this->generate_access_token();
         }
 
@@ -126,7 +125,7 @@ class RestAdapter
         $attachment = array();
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
-            echo "Something went wrong: $error_message";
+            echo "Something went wrong: " . esc_html($error_message);
         } else {
             $attachment = json_decode($response["body"]);
         }
@@ -144,9 +143,8 @@ class RestAdapter
 
         if (is_wp_error($response)) {
             $error_message = $response->get_error_message();
-            echo "Something went wrong: $error_message";
+            echo "Something went wrong: " . esc_html($error_message);
         } else {
-
             $file = $response['body'];
             $upload = wp_upload_bits(basename(str_replace("ipfs://", "", $ipfs) . '.' . explode("/", $response['headers']['content-type'])[1]), null, $file);
             $upload['mime_type'] = $response['headers']['content-type'];
@@ -190,5 +188,4 @@ class RestAdapter
 
         return $att_id;
     }
-
 }

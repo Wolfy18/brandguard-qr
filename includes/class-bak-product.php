@@ -33,7 +33,7 @@ class Product
     {
         // The new tab content
         $prod_id = get_the_ID();
-        echo '<p>' . get_post_meta($prod_id, 'additional information', true) . '</p>';
+        echo '<p>' . esc_html(get_post_meta($prod_id, 'additional information', true)) . '</p>';
     }
 
     public static function bakrypt_blockchain_product_tab($tabs)
@@ -85,7 +85,7 @@ class Product
                 </p>
 
                 <input type="hidden" id="product_id" value="<?php echo get_the_ID() ?>" />
-            <input type="hidden" id="bk_nonce" value="<?php echo $nonce ?>" />
+            <input type="hidden" id="bk_nonce" value="<?php echo esc_attr($nonce) ?>" />
 
             <?php
             woocommerce_wp_text_input(
@@ -229,7 +229,7 @@ class Product
             ?>
 
             <div <?php if ($testnet == "yes")
-                echo "testnet" ?> data-token="<?php echo $access->{'access_token'} ?>"
+                echo "testnet" ?> data-token="<?php echo esc_attr($access->{'access_token'}) ?>"
                 style="display: flex; justify-content: left" class="btn-action">
                 <p class="form-field mint" <?php if ($asset['uuid'] != '')
                     echo 'style="display:none"' ?>></p>

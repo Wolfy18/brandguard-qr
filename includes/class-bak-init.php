@@ -34,13 +34,23 @@ class BakWCExtension
         // Instantiation logic will go here.
     }
 
+    public static function is_woocommerce_activated()
+    {
+        if (class_exists('woocommerce')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function init()
     {
         // Start initiating settings
-        if (!is_woocommerce_active()) {
+        if (!self::is_woocommerce_activated()) {
             add_action('admin_notices', array('BakExtension\core\Settings', 'missing_wc_notice'));
             return;
         }
+
         //==================================== WooCommerce Settings ===================================
         add_action('admin_enqueue_scripts', array('BakExtension\core\Settings', 'add_extension_register_script'));
         add_filter('woocommerce_settings_tabs_array', array('BakExtension\core\Settings', 'add_bak_settings'), 50);
