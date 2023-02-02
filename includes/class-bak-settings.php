@@ -138,13 +138,13 @@ class Settings
 		return apply_filters('wc_settings_tab_bak_settings', $settings);
 	}
 
-	function bak_add_bak_settings()
+	public static function bak_add_bak_settings()
 	{
 		woocommerce_admin_fields(self::fetch_bak_settings());
 	}
 
 
-	function bak_update_options_bak_settings()
+	public static function bak_update_options_bak_settings()
 	{
 		woocommerce_update_options(self::fetch_bak_settings());
 	}
