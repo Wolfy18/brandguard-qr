@@ -1,14 +1,15 @@
 <?php
+
 /**
- * Order Item
+ * Product
  *
- * A class which represents an item within an order and handles CRUD.
- * Uses ArrayAccess to be BW compatible with WC_Orders::get_items().
+ * A class which represents Product details operations and renderization.
  *
- * @package WooCommerce\Classes
- * @version 3.0.0
- * @since   3.0.0
+ * @package BakExtension\controllers
+ * @version 1.0.0
+ * @since   1.0.0
  */
+
 
 
 namespace BakExtension\controllers;

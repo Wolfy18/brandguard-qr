@@ -1,13 +1,13 @@
 <?php
+
 /**
- * Order Item
+ * Settings
  *
- * A class which represents an item within an order and handles CRUD.
- * Uses ArrayAccess to be BW compatible with WC_Orders::get_items().
+ * A class which represents blockchain settings.
  *
- * @package WooCommerce\Classes
- * @version 3.0.0
- * @since   3.0.0
+ * @package BakExtension\core
+ * @version 1.0.0
+ * @since   1.0.0
  */
 
 namespace BakExtension\core;

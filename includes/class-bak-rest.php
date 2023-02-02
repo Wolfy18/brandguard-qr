@@ -1,5 +1,15 @@
 <?php
 
+/**
+ * RestAdapter
+ *
+ * A class which represents bakrypt's API and features.
+ *
+ * @package BakExtension\api
+ * @version 1.0.0
+ * @since   1.0.0
+ */
+
 namespace BakExtension\api;
 
 defined('ABSPATH') || exit;
