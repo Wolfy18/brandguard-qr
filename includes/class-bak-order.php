@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Order Item
  *
@@ -20,25 +21,31 @@ class Order
         $cart_item
     ) {
         $fingerprint = get_post_meta($cart_item["product_id"], 'bk_token_fingerprint', true);
-        $item_data[] = array(
-            'key'     => __('Fingerprint', ''),
-            'value'   => $fingerprint,
-            'display' => $fingerprint,
-        );
+        if ($fingerprint) {
+            $item_data[] = array(
+                'key'     => __('Fingerprint', ''),
+                'value'   => $fingerprint,
+                'display' => $fingerprint,
+            );
+        }
+
 
         return $item_data;
     }
 
     public static function add_asset_fingerprint_to_order_line_item_meta($item, $cart_item_key, $values, $order)
     {
-        $item->add_meta_data('Fingerprint', get_post_meta($values["data"]->get_id(), 'bk_token_fingerprint', true));
+        $fingerprint = get_post_meta($values["data"]->get_id(), 'bk_token_fingerprint', true);
+        if ($fingerprint) {
+            $item->add_meta_data('Fingerprint', $fingerprint);
+        }
     }
 
     public static function bak_woocommerce_order_item_name($name, $item)
     {
 
         $product_id = $item['product_id'];
-        
+
         $fingerprint = get_post_meta($product_id, 'bk_token_fingerprint', true);
         if ($fingerprint) {
             $name .= '<label>' . $fingerprint . ': </label>';
