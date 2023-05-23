@@ -59,10 +59,14 @@ class BakWCExtension
 
         //==================================== Product List ===================================
         add_filter('manage_product_posts_columns', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column'));
+        add_filter('bulk_actions-edit-product', array("BakExtension\controllers\ProductList", 'add_mint_bulk_action'));
         add_action('manage_product_posts_custom_column', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column_data'), 10, 2);
         add_filter('woocommerce_product_filters', array("BakExtension\controllers\ProductList", 'bak_custom_filter'));
         add_action('pre_get_posts', array("BakExtension\controllers\ProductList", 'bak_products_filter_query'));
-
+        add_action('wp_ajax_mint_bulk_action', array("BakExtension\controllers\ProductList", 'handle_mint_bulk_action_ajax'));
+        add_action('wp_ajax_upload_ipfs_bulk_action', array("BakExtension\controllers\ProductList", 'handle_upload_ipfs_bulk_action_ajax'));
+        
+        
         //==================================== Product  ===================================
         add_filter('woocommerce_product_tabs', array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_tab'));
         add_filter('woocommerce_product_data_tabs', array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_data_tab'));

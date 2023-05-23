@@ -17,7 +17,6 @@ class ProductList
 
 	protected function __construct()
 	{
-
 	}
 
 	public static function bak_fingerprint_column($columns)
@@ -91,5 +90,95 @@ class ProductList
 				$query->set('meta_query', $meta_query);
 			}
 		}
+	}
+
+	public function add_mint_bulk_action($actions)
+	{
+		$actions['mint'] = 'Mint as Tokens';
+		return $actions;
+	}
+
+	public function handle_mint_bulk_action_ajax()
+	{
+		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'mint_bulk_action') {
+			// Perform your custom action here using the $_REQUEST data
+
+			$func = function ($id) {
+
+				$bk_token_att = get_post_meta($id, 'bk_att_token_image', true);
+
+				$img_metadata = wp_get_attachment_metadata($bk_token_att);
+				$img_ipfs = null;
+				if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
+					$img_ipfs = $img_metadata['ipfs'];
+				}
+
+				if (!$img_ipfs) {
+					$img_ipfs = get_post_meta($id, 'bk_token_image', true);
+				}
+
+				return array(
+					'product_id' => $id,
+					'image' => $img_ipfs,
+					'name' => get_the_title($id),
+					// 'short_description' => wp_trim_excerpt(get_post_field('post_excerpt', $id))
+				);
+			};
+
+			$response = array(
+				'success' => true,
+				'message' => 'Minting selected products!',
+				'data' => array_map($func, $_POST['product_ids'])
+			);
+		} else {
+			$response = array(
+				'success' => false,
+				'message' => 'Invalid action.',
+			);
+		}
+
+		wp_send_json($response);
+	}
+
+	public function handle_upload_ipfs_bulk_action_ajax()
+	{
+		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'upload_ipfs_bulk_action') {
+			// Perform your custom action here using the $_REQUEST data
+
+			$func = function ($id) {
+
+				$bk_token_att = get_post_meta($id, 'bk_att_token_image', true);
+
+				$img_metadata = wp_get_attachment_metadata($bk_token_att);
+				$img_ipfs = null;
+				if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
+					$img_ipfs = $img_metadata['ipfs'];
+				}
+
+				if (!$img_ipfs) {
+					$img_ipfs = get_post_meta($id, 'bk_token_image', true);
+				}
+
+				return array(
+					'product_id' => $id,
+					'image' => $img_ipfs,
+					'name' => get_the_title($id),
+					// 'short_description' => wp_trim_excerpt(get_post_field('post_excerpt', $id))
+				);
+			};
+
+			$response = array(
+				'success' => true,
+				'message' => 'Uploaded images for selected products!',
+				'data' => array_map($func, $_POST['product_ids'])
+			);
+		} else {
+			$response = array(
+				'success' => false,
+				'message' => 'Invalid action.',
+			);
+		}
+
+		wp_send_json($response);
 	}
 }
