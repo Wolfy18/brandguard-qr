@@ -260,7 +260,7 @@ jQuery(document).ready(function ($) {
 		e.preventDefault();
 
 		const selectedProducts = []; // Get the selected product IDs
-		
+
 		// Iterate over each row in the WP-List-Table
 		$('.wp-list-table tbody tr.entry').each(function () {
 			const checkbox = $(this).find('input[type="checkbox"]');
@@ -312,7 +312,7 @@ jQuery(document).ready(function ($) {
 								) {
 									elem.image = ipfsRes.data.filter(
 										(j) => j.product_id === i.product_id
-									)[0].name;
+									)[0].image;
 								}
 								return elem;
 							});

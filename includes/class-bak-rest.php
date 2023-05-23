@@ -143,6 +143,62 @@ class RestAdapter
         return $attachment;
     }
 
+    public function upload_attachment_to_ipfs_from_url($url)
+    {
+
+        if (!$this->access_token) {
+            $this->generate_access_token();
+        }
+
+        $token = $this->access_token;
+
+        $img_url = $url;
+        $img_name = basename($url);
+        $content_type = get_headers($url, 1)["Content-Type"];
+
+        $boundary = wp_generate_password(24);
+        $payload = '';
+        // Upload the file
+        $payload .= '--' . $boundary;
+        $payload .= "\r\n";
+        $payload .= 'Content-Disposition: form-data; name="' . 'file' .
+            '"; filename="' . $img_name . '"' . "\r\n";
+        if ($content_type) {
+            $payload .= 'Content-Type: ' . $content_type . "\r\n";
+        }
+        $payload .= "\r\n";
+        $payload .= file_get_contents($img_url);
+        $payload .= "\r\n";
+
+        $payload .= '--' . $boundary . '--';
+
+        $response = wp_remote_post(
+            $this->settings['url'] . "/v1/files/",
+            array(
+                'method' => 'POST',
+                'timeout' => 30,
+                'redirection' => 5,
+                'httpversion' => '1.0',
+                'blocking' => true,
+                'headers' => array(
+                    'content-type' => 'multipart/form-data; boundary=' . $boundary,
+                    "authorization" => "Bearer " . $token->{'access_token'}
+                ),
+                'body' => $payload,
+            )
+        );
+
+        $attachment = array();
+        if (is_wp_error($response)) {
+            $error_message = $response->get_error_message();
+            echo "Something went wrong: " . esc_html($error_message);
+        } else {
+            $attachment = json_decode($response["body"]);
+        }
+
+        return $attachment;
+    }
+
     public static function fetch_ipfs_attachment($ipfs)
     {
         $url = "https://gateway.bakrypt.io/ipfs/" . str_replace("ipfs://", "", $ipfs);

@@ -12,8 +12,12 @@
 namespace BakExtension\controllers;
 
 defined('ABSPATH') || exit;
+
+use BakExtension\api\RestAdapter;
+
 class ProductList
 {
+	private static $adapter;
 
 	protected function __construct()
 	{
@@ -146,24 +150,29 @@ class ProductList
 			// Perform your custom action here using the $_REQUEST data
 
 			$func = function ($id) {
+				$featured_image_url = get_the_post_thumbnail_url($id, 'full');
 
-				$bk_token_att = get_post_meta($id, 'bk_att_token_image', true);
-
-				$img_metadata = wp_get_attachment_metadata($bk_token_att);
-				$img_ipfs = null;
-				if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
-					$img_ipfs = $img_metadata['ipfs'];
+				if (!$featured_image_url) {
+					$featured_image_url = wc_placeholder_img_src();
 				}
 
-				if (!$img_ipfs) {
-					$img_ipfs = get_post_meta($id, 'bk_token_image', true);
+				if (!self::$adapter) {
+					self::$adapter = new RestAdapter();
 				}
+
+				$bak_file = self::$adapter->upload_attachment_to_ipfs_from_url($featured_image_url);
+
+				$img_ipfs = $bak_file->{'ipfs'};
+
+				// grab the product
+				$product = wc_get_product($id);
+
+				// save the custom SKU using WooCommerce built-in functions
+				$product->update_meta_data('bk_token_image', $img_ipfs);
 
 				return array(
 					'product_id' => $id,
 					'image' => $img_ipfs,
-					'name' => get_the_title($id),
-					// 'short_description' => wp_trim_excerpt(get_post_field('post_excerpt', $id))
 				);
 			};
 
