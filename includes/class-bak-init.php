@@ -65,6 +65,8 @@ class BakWCExtension
         add_action('pre_get_posts', array("BakExtension\controllers\ProductList", 'bak_products_filter_query'));
         add_action('wp_ajax_mint_bulk_action', array("BakExtension\controllers\ProductList", 'handle_mint_bulk_action_ajax'));
         add_action('wp_ajax_upload_ipfs_bulk_action', array("BakExtension\controllers\ProductList", 'handle_upload_ipfs_bulk_action_ajax'));
+        add_action('wp_ajax_access_token_action', array("BakExtension\controllers\ProductList", 'handle_access_token_action_ajax'));
+        add_action('wp_ajax_update_records_action', array("BakExtension\controllers\ProductList", 'handle_update_records_action_ajax'));
         
         
         //==================================== Product  ===================================

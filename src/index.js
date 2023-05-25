@@ -256,8 +256,83 @@ const deleteRecord = async (e) => {
 };
 
 jQuery(document).ready(function ($) {
-	$('body').on('click', '#doaction', async (e) => {
+	const loadForm = (initialData) => {
+		$.ajax({
+			url: ajaxurl,
+			type: 'POST',
+			data: {
+				action: 'access_token_action',
+			},
+			success: (accessResp) => {
+				const wrapper = document.querySelector('#posts-filter');
+
+				if (!wrapper) return;
+
+				const token = accessResp.data.access_token;
+				const testnet = accessResp.testnet;
+
+				const mintModalContainer = wrapper;
+
+				const modal = document.createElement('div');
+
+				const setInitial = () => {
+					const data = initialData.map((i) => {
+						return {
+							asset_name: i.name,
+							name: i.name,
+							image: i.image,
+							amount: 1,
+							blockchain: 'ada',
+							description: '',
+						};
+					});
+
+					return JSON.stringify(data);
+				};
+
+				ReactDOM.render(
+					renderLaunchpadModal(token, setInitial, (response) => {
+						if (response.collection && response.transaction) {
+							// Update all records
+							const updateRecords = response.collection.map(
+								(i, idx) => {
+									return { ...initialData[idx], ...i };
+								}
+							);
+
+							$.ajax({
+								url: ajaxurl,
+								type: 'POST',
+								data: {
+									action: 'update_records_action',
+									products: updateRecords,
+								},
+								success: (ipfsRes) => {
+									// Process the AJAX ipfsRes
+									alert('done!');
+								},
+								error: (xhr, status, error) => {
+									// Handle AJAX error
+									console.error(error);
+								},
+							});
+						}
+					}),
+					modal
+				);
+				mintModalContainer.appendChild(modal);
+			},
+			error: (xhr, status, error) => {
+				// Handle AJAX error
+				console.error(error);
+			},
+		});
+	};
+
+	$('#posts-filter').on('click', '#doaction', async (e) => {
 		e.preventDefault();
+
+		if ($('#bulk-action-selector-top').val() !== 'mint') return;
 
 		const selectedProducts = []; // Get the selected product IDs
 
@@ -299,9 +374,6 @@ jQuery(document).ready(function ($) {
 						},
 						success: (ipfsRes) => {
 							// Process the AJAX ipfsRes
-							console.log(ipfsRes);
-							console.log(bulkResp);
-
 							const collectionFinal = bulkResp.data.map((i) => {
 								const elem = { ...i };
 
@@ -317,7 +389,7 @@ jQuery(document).ready(function ($) {
 								return elem;
 							});
 
-							console.log(collectionFinal);
+							loadForm(collectionFinal);
 						},
 						error: (xhr, status, error) => {
 							// Handle AJAX error
@@ -325,10 +397,7 @@ jQuery(document).ready(function ($) {
 						},
 					});
 				} else {
-					console.log(
-						bulkResp.data,
-						' is the collection!!! -<<<<<<<<<<< '
-					);
+					loadForm(bulkResp.data);
 				}
 			},
 			error: (xhr, status, error) => {

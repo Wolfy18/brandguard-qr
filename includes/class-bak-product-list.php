@@ -14,6 +14,7 @@ namespace BakExtension\controllers;
 defined('ABSPATH') || exit;
 
 use BakExtension\api\RestAdapter;
+use BakExtension\controllers\Product;
 
 class ProductList
 {
@@ -169,6 +170,7 @@ class ProductList
 
 				// save the custom SKU using WooCommerce built-in functions
 				$product->update_meta_data('bk_token_image', $img_ipfs);
+				$product->update_meta_data('bk_att_token_image', $img_ipfs);
 
 				return array(
 					'product_id' => $id,
@@ -180,6 +182,115 @@ class ProductList
 				'success' => true,
 				'message' => 'Uploaded images for selected products!',
 				'data' => array_map($func, $_POST['product_ids'])
+			);
+		} else {
+			$response = array(
+				'success' => false,
+				'message' => 'Invalid action.',
+			);
+		}
+
+		wp_send_json($response);
+	}
+
+	public function handle_access_token_action_ajax()
+	{
+		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'access_token_action') {
+			// Perform your custom action here using the $_REQUEST data
+
+			if (!self::$adapter) {
+				self::$adapter = new RestAdapter();
+			}
+
+			$access = self::$adapter->generate_access_token();
+
+			$response = array(
+				'success' => true,
+				'message' => 'Access Token',
+				'data' => $access,
+				'testnet' => self::$adapter->settings['testnet']
+			);
+		} else {
+			$response = array(
+				'success' => false,
+				'message' => 'Invalid action.',
+			);
+		}
+
+		wp_send_json($response);
+	}
+
+	public static function update_record($post_id, $data)
+	{
+		// throw new Exception("failed!");
+		// grab the custom SKU from $_POST
+		$bk_token_uuid = isset($data['bk_token_uuid']) ? sanitize_text_field($data['bk_token_uuid']) : '';
+		$bk_token_policy = isset($data['bk_token_policy']) ? sanitize_text_field($data['bk_token_policy']) : '';
+		$bk_token_fingerprint = isset($data['bk_token_fingerprint']) ? sanitize_text_field($data['bk_token_fingerprint']) : '';
+		$bk_token_asset_name = isset($data['bk_token_asset_name']) ? sanitize_text_field($data['bk_token_asset_name']) : '';
+		$bk_token_name = isset($data['bk_token_name']) ? sanitize_text_field($data['bk_token_name']) : '';
+		$bk_token_image = isset($data['bk_token_image']) ? sanitize_text_field($data['bk_token_image']) : '';
+		$bk_token_amount = isset($data['bk_token_amount']) ? sanitize_text_field($data['bk_token_amount']) : '';
+		$bk_token_status = isset($data['bk_token_status']) ? sanitize_text_field($data['bk_token_status']) : '';
+		$bk_token_transaction = isset($data['bk_token_transaction']) ? sanitize_text_field($data['bk_token_transaction']) : '';
+		$bk_token_json = isset($data['bk_token_json']) ? sanitize_text_field($data['bk_token_json']) : '';
+
+		// Update attachment, token_image rel
+		$bk_att_token_image = isset($data['bk_att_token_image']) ? sanitize_text_field($data['bk_att_token_image']) : '';
+
+		if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
+			# Insert attachment
+			$att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image);
+			$bk_att_token_image = $att_id;
+		}
+
+		// grab the product
+		$product = wc_get_product($post_id);
+
+		// save the custom SKU using WooCommerce built-in functions
+		$product->update_meta_data('bk_token_uuid', $bk_token_uuid);
+		$product->update_meta_data('bk_token_policy', $bk_token_policy);
+		$product->update_meta_data('bk_token_fingerprint', $bk_token_fingerprint);
+		$product->update_meta_data('bk_token_asset_name', $bk_token_asset_name);
+		$product->update_meta_data('bk_token_name', $bk_token_name);
+		$product->update_meta_data('bk_token_image', $bk_token_image);
+		$product->update_meta_data('bk_token_amount', $bk_token_amount);
+		$product->update_meta_data('bk_token_status', $bk_token_status);
+		$product->update_meta_data('bk_token_transaction', $bk_token_transaction);
+		$product->update_meta_data('bk_token_json', $bk_token_json);
+		$product->update_meta_data('bk_att_token_image', $bk_att_token_image);
+
+		$product->save();
+
+		return $product;
+	}
+
+	public function handle_update_records_action_ajax()
+	{
+		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'update_records_action') {
+			// Perform your custom action here using the $_REQUEST data
+
+			$func = function ($product) {
+
+				$data = array(
+					'bk_token_uuid' =>  $product['uuid'],
+					// 'bk_token_policy' =>  $bk_token_policy,
+					'bk_token_asset_name' =>  $product['asset_name'],
+					'bk_token_name' =>  $product['name'],
+					'bk_token_image' =>  $product['image'],
+					'bk_token_amount' =>  $product['amount'],
+					'bk_token_status' =>  $product['status'],
+					'bk_token_transaction' =>  $product['transaction'],
+					'bk_att_token_image' =>  $product['image'],
+				);
+
+				return self::update_record($product["product_id"], $data);
+			};
+
+			$response = array(
+				'success' => true,
+				'message' => 'Updated record',
+				'data' => array_map($func, $_POST['products'])
 			);
 		} else {
 			$response = array(
