@@ -97,13 +97,13 @@ class ProductList
 		}
 	}
 
-	public function add_mint_bulk_action($actions)
+	public static function add_mint_bulk_action($actions)
 	{
 		$actions['mint'] = 'Mint as Tokens';
 		return $actions;
 	}
 
-	public function handle_mint_bulk_action_ajax()
+	public static function handle_mint_bulk_action_ajax()
 	{
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'mint_bulk_action') {
 			// Perform your custom action here using the $_REQUEST data
@@ -145,7 +145,7 @@ class ProductList
 		wp_send_json($response);
 	}
 
-	public function handle_upload_ipfs_bulk_action_ajax()
+	public static function handle_upload_ipfs_bulk_action_ajax()
 	{
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'upload_ipfs_bulk_action') {
 			// Perform your custom action here using the $_REQUEST data
@@ -193,7 +193,7 @@ class ProductList
 		wp_send_json($response);
 	}
 
-	public function handle_access_token_action_ajax()
+	public static function handle_access_token_action_ajax()
 	{
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'access_token_action') {
 			// Perform your custom action here using the $_REQUEST data
@@ -240,32 +240,51 @@ class ProductList
 
 		if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
 			# Insert attachment
-			$att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image);
+			$att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image, $post_id);
 			$bk_att_token_image = $att_id;
 		}
 
 		// grab the product
-		$product = wc_get_product($post_id);
+		// $product = wc_get_product($post_id);
+
+		// // save the custom SKU using WooCommerce built-in functions
+		// $product->update_meta_data('bk_token_uuid', $bk_token_uuid);
+		// $product->update_meta_data('bk_token_policy', $bk_token_policy);
+		// $product->update_meta_data('bk_token_fingerprint', $bk_token_fingerprint);
+		// $product->update_meta_data('bk_token_asset_name', $bk_token_asset_name);
+		// $product->update_meta_data('bk_token_name', $bk_token_name);
+		// $product->update_meta_data('bk_token_image', $bk_token_image);
+		// $product->update_meta_data('bk_token_amount', $bk_token_amount);
+		// $product->update_meta_data('bk_token_status', $bk_token_status);
+		// $product->update_meta_data('bk_token_transaction', $bk_token_transaction);
+		// $product->update_meta_data('bk_token_json', $bk_token_json);
+		// $product->update_meta_data('bk_att_token_image', $bk_att_token_image);
+
+		// $product->save();
+
+
+		$product = get_post($post_id);
 
 		// save the custom SKU using WooCommerce built-in functions
-		$product->update_meta_data('bk_token_uuid', $bk_token_uuid);
-		$product->update_meta_data('bk_token_policy', $bk_token_policy);
-		$product->update_meta_data('bk_token_fingerprint', $bk_token_fingerprint);
-		$product->update_meta_data('bk_token_asset_name', $bk_token_asset_name);
-		$product->update_meta_data('bk_token_name', $bk_token_name);
-		$product->update_meta_data('bk_token_image', $bk_token_image);
-		$product->update_meta_data('bk_token_amount', $bk_token_amount);
-		$product->update_meta_data('bk_token_status', $bk_token_status);
-		$product->update_meta_data('bk_token_transaction', $bk_token_transaction);
-		$product->update_meta_data('bk_token_json', $bk_token_json);
-		$product->update_meta_data('bk_att_token_image', $bk_att_token_image);
+		update_post_meta($post_id, 'bk_token_uuid', $bk_token_uuid);
+		update_post_meta($post_id, 'bk_token_uuid', $bk_token_uuid);
+		update_post_meta($post_id, 'bk_token_policy', $bk_token_policy);
+		update_post_meta($post_id, 'bk_token_fingerprint', $bk_token_fingerprint);
+		update_post_meta($post_id, 'bk_token_asset_name', $bk_token_asset_name);
+		update_post_meta($post_id, 'bk_token_name', $bk_token_name);
+		update_post_meta($post_id, 'bk_token_image', $bk_token_image);
+		update_post_meta($post_id, 'bk_token_amount', $bk_token_amount);
+		update_post_meta($post_id, 'bk_token_status', $bk_token_status);
+		update_post_meta($post_id, 'bk_token_transaction', $bk_token_transaction);
+		update_post_meta($post_id, 'bk_token_json', $bk_token_json);
+		update_post_meta($post_id, 'bk_att_token_image', $bk_att_token_image);
 
-		$product->save();
+		// $product->save();
 
 		return $product;
 	}
 
-	public function handle_update_records_action_ajax()
+	public static function handle_update_records_action_ajax()
 	{
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'update_records_action') {
 			// Perform your custom action here using the $_REQUEST data

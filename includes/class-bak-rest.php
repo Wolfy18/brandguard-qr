@@ -21,19 +21,19 @@ class RestAdapter
     function __construct()
     {
         if (!$this->settings) {
-            $testnet = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_active');
+            $testnet = get_option('wc_settings_tab_bak_testnet_active');
             if ($testnet != "yes") {
                 $url = "https://bakrypt.io";
-                $client_id = woocommerce_settings_get_option('wc_settings_tab_bak_client_id');
-                $client_secret = woocommerce_settings_get_option('wc_settings_tab_bak_client_secret');
-                $username = woocommerce_settings_get_option('wc_settings_tab_bak_username');
-                $password = woocommerce_settings_get_option('wc_settings_tab_bak_password');
+                $client_id = get_option('wc_settings_tab_bak_client_id');
+                $client_secret = get_option('wc_settings_tab_bak_client_secret');
+                $username = get_option('wc_settings_tab_bak_username');
+                $password = get_option('wc_settings_tab_bak_password');
             } else {
                 $url = "https://testnet.bakrypt.io";
-                $client_id = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_client_id');
-                $client_secret = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_client_secret');
-                $username = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_username');
-                $password = woocommerce_settings_get_option('wc_settings_tab_bak_testnet_password');
+                $client_id = get_option('wc_settings_tab_bak_testnet_client_id');
+                $client_secret = get_option('wc_settings_tab_bak_testnet_client_secret');
+                $username = get_option('wc_settings_tab_bak_testnet_username');
+                $password = get_option('wc_settings_tab_bak_testnet_password');
             }
 
             $this->settings = array(
@@ -222,7 +222,7 @@ class RestAdapter
         return $upload;
     }
 
-    public static function insert_attachment_from_ipfs($ipfs)
+    public static function insert_attachment_from_ipfs($ipfs, $post_id)
     {
         $upload = self::fetch_ipfs_attachment($ipfs);
         $att_id = null;
@@ -239,7 +239,7 @@ class RestAdapter
                 'post_status' => 'inherit',
                 'post_content' => '',
                 'post_title' => $attachment_title,
-                'ipfs' => $bk_token_image
+                'ipfs' => $ipfs
             );
 
             $att_id = wp_insert_attachment($args, $file_path, $post_id);
@@ -248,10 +248,42 @@ class RestAdapter
             // for the function wp_generate_attachment_metadata() to work
             require_once(ABSPATH . "wp-admin" . '/includes/image.php');
             $attach_data = wp_generate_attachment_metadata($att_id, $file_path);
-            $attach_data['ipfs'] = $bk_token_image;
+            $attach_data['ipfs'] = $ipfs;
             wp_update_attachment_metadata($att_id, $attach_data);
         }
 
         return $att_id;
+    }
+
+    public function fetch_token_data($uuid)
+    {
+        $url = $this->settings["url"] . "/v1/assets/" . $uuid;
+        $token = $this->access_token;
+        $headers = array(
+            'Authorization' => 'Bearer ' . $token->{'access_token'},
+            'Content-Type' => 'application/json',
+        );
+
+        $args = array(
+            'headers' => $headers,
+            'timeout' => 30, // Set timeout to 30 seconds
+        );
+
+        $response = wp_remote_get($url, $args);
+
+        $response_body = [];
+
+        if (!is_wp_error($response)) {
+            $response_code = wp_remote_retrieve_response_code($response);
+            $response_body = json_decode($response["body"]);
+
+            // Handle the response data
+            // ...
+        } else {
+            $error_message = $response->get_error_message();
+            echo "Something went wrong: " . esc_html($error_message);
+        }
+
+        return $response_body;
     }
 }

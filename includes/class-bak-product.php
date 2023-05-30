@@ -405,7 +405,7 @@ class Product
 
         if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
             # Insert attachment
-            $att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image);
+            $att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image, $post_id);
             $bk_att_token_image = $att_id;
         }
 
