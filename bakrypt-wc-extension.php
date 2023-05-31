@@ -29,9 +29,46 @@ require_once "vendor/autoload.php";
 // Initiate wc bakrypt class
 use BakExtension\core\BakWCExtension;
 
+
+# Add custom interval for every 3 minutes
+add_filter('cron_schedules', 'bak_add_every_three_minutes');
+function bak_add_every_three_minutes($schedules)
+{
+	$schedules['every_three_minutes'] = array(
+		'interval'  => 180,
+		'display'   => __('Every 3 Minutes', 'textdomain')
+	);
+	return $schedules;
+}
+
+
+
 function wcbakrypt_init()
 {
 	BakWCExtension::init();
 }
 
 add_action('plugins_loaded', 'wcbakrypt_init', 11);
+
+// ========= Cron Tasks ======= 
+function cron_activate()
+{
+
+	error_log('cron activate function');
+	// Schedule the cron task to run every 3 minutes
+	// if (!wp_next_scheduled('bak_plugin_cron_task')) {
+	// 	wp_schedule_event(time(), '1min', 'bak_plugin_cron_task');
+	// }
+	wp_schedule_event(time(), 'every_three_minutes', 'bak_plugin_cron_task');
+}
+
+function cron_deactivate()
+{
+
+	error_log('deactivate function');
+	wp_clear_scheduled_hook('bak_plugin_cron_task');
+}
+
+register_activation_hook(WCBAK_PLUGIN_FILE, 'cron_activate');
+add_action('bak_plugin_cron_task', array("BakExtension\core\Cron", "bak_run_cron_task"), 12);
+register_deactivation_hook(WCBAK_PLUGIN_FILE, 'cron_deactivate');

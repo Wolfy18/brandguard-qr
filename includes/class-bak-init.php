@@ -84,24 +84,6 @@ class BakWCExtension
         add_filter('woocommerce_get_item_data', array("BakExtension\controllers\Order", "display_asset_fingerprint_in_cart"), 10, 2);
         add_action('woocommerce_checkout_create_order_line_item', array("BakExtension\controllers\Order", "add_asset_fingerprint_to_order_line_item_meta"), 10, 4);
         // add_filter('woocommerce_order_item_name', array("BakExtension\controllers\Order", 'bak_woocommerce_order_item_name', 10, 2));
-
-        // ========= Cron Tasks ======= 
-        function cron_activate()
-        {
-            // Schedule the cron task to run every 5 minutes
-            if (!wp_next_scheduled('bak_plugin_cron_task')) {
-                wp_schedule_event(time(), '1min', 'bak_plugin_cron_task');
-            }
-        }
-
-        function cron_deactivate()
-        {
-            wp_clear_scheduled_hook('bak_plugin_cron_task');
-        }
-
-        register_activation_hook(WCBAK_PLUGIN_FILE, 'cron_activate');
-        add_action('bak_plugin_cron_task', array("BakExtension\core\Cron", 'bak_run_cron_task'));
-        register_deactivation_hook(WCBAK_PLUGIN_FILE, 'cron_deactivate');
     }
 
 
