@@ -18,8 +18,8 @@ const LaunchpadModal = ({ config, getter, callback }) => {
 
 		const launchpad = document.createElement('bakrypt-launchpad');
 		Object.assign(launchpad, {
-			accessToken: accessToken,
-			initial: initial,
+			accessToken,
+			initial,
 		});
 
 		if (testnet) Object.assign(launchpad, { testnet: true });

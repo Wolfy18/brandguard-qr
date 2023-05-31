@@ -26,10 +26,7 @@ const TransactionModal = ({ getter, collection }) => {
 		const transaction = getter;
 
 		const invoice = document.createElement('bakrypt-invoice');
-		Object.assign(invoice, {
-			transaction: transaction,
-			collection: collection,
-		});
+		Object.assign(invoice, { transaction, collection });
 
 		const showToastr = (event) => {
 			const [message, type] = event.detail;
