@@ -60,7 +60,7 @@ const TransactionModal = ({ getter, collection }) => {
 					style={noticeStyles}
 					isDismissible={true}
 					status={noticeStatus}
-					onDismiss={(e) => setShowNotice(false)}
+					onDismiss={() => setShowNotice(false)}
 				>
 					<p>{String(notice)}</p>
 				</Notice>
