@@ -12,7 +12,7 @@ const TransactionModal = ({ getter, collection }) => {
 	const openModal = () => setOpen(true);
 	const closeModal = () => setOpen(false);
 
-	useEffect(async () => {
+	useEffect(() => {
 		const modal = modalRef.current;
 		if (!modal) return;
 
@@ -23,7 +23,7 @@ const TransactionModal = ({ getter, collection }) => {
 		)
 			return;
 
-		const transaction = await getter();
+		const transaction = getter;
 
 		const invoice = document.createElement('bakrypt-invoice');
 		Object.assign(invoice, {
@@ -41,7 +41,7 @@ const TransactionModal = ({ getter, collection }) => {
 		invoice.addEventListener('notification', showToastr);
 
 		modal.querySelector('.components-modal__content').appendChild(invoice);
-	}, [isOpen, showNotice]);
+	}, [isOpen, showNotice, collection, getter]);
 	return (
 		<>
 			<Button variant="secondary" onClick={openModal}>

@@ -11,7 +11,8 @@
 // 		}
 // 	}
 // }
-#blockchain_product_data {
+#blockchain_product_data,
+#posts-filter {
 	position: relative;
 	#spinner {
 		position: absolute;
@@ -25,5 +26,8 @@
 		svg {
 			align-self: center;
 		}
+	}
+	.custom-toast-position {
+		margin-top: 20px;
 	}
 }

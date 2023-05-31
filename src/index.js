@@ -30,6 +30,8 @@ const getData = () => {
 		if (input) {
 			asset.set(i, input.value);
 		}
+
+		return i;
 	});
 
 	return asset;
@@ -255,6 +257,7 @@ const deleteRecord = async (e) => {
 	});
 };
 
+// Product List
 jQuery(document).ready(function ($) {
 	const loadForm = (initialData) => {
 		$.ajax({
@@ -289,35 +292,46 @@ jQuery(document).ready(function ($) {
 
 					return JSON.stringify(data);
 				};
-
 				ReactDOM.render(
-					renderLaunchpadModal(token, setInitial, (response) => {
-						if (response.collection && response.transaction) {
-							// Update all records
-							const updateRecords = response.collection.map(
-								(i, idx) => {
-									return { ...initialData[idx], ...i };
-								}
-							);
+					renderLaunchpadModal(
+						{
+							accessToken: token,
+							testnet: testnet,
+							open: true,
+							showButton: false,
+						},
+						setInitial,
+						(response) => {
+							if (response.collection && response.transaction) {
+								// Update all records
+								const updateRecords = response.collection.map(
+									(i, idx) => {
+										return { ...initialData[idx], ...i };
+									}
+								);
 
-							$.ajax({
-								url: ajaxurl,
-								type: 'POST',
-								data: {
-									action: 'update_records_action',
-									products: updateRecords,
-								},
-								success: (ipfsRes) => {
-									// Process the AJAX ipfsRes
-									alert('done!');
-								},
-								error: (xhr, status, error) => {
-									// Handle AJAX error
-									console.error(error);
-								},
-							});
+								$.ajax({
+									url: ajaxurl,
+									type: 'POST',
+									data: {
+										action: 'update_records_action',
+										products: updateRecords,
+									},
+									success: (ipfsRes) => {
+										Swal.fire({
+											title: 'Products were updated',
+											icon: 'success',
+											text: 'Visit any product for more information about the transaction',
+										});
+									},
+									error: (xhr, status, error) => {
+										// Handle AJAX error
+										console.error(error);
+									},
+								});
+							}
 						}
-					}),
+					),
 					modal
 				);
 				mintModalContainer.appendChild(modal);
@@ -329,6 +343,151 @@ jQuery(document).ready(function ($) {
 		});
 	};
 
+	const startMinting = (selectedProducts) => {
+		const blockchainDataWrapper = document.querySelector('#posts-filter');
+		const spinner = document.createElement('div');
+		spinner.id = 'spinner';
+
+		ReactDOM.render(showSpinner(), spinner);
+		blockchainDataWrapper.appendChild(spinner);
+
+		Swal.fire({
+			title: 'Prepping data',
+			icon: 'info',
+			timer: 6000,
+			showConfirmButton: false,
+			position: 'top-end', // Adjust position as needed
+			toast: true, // Enables the toastr-style appearance
+			showClass: {
+				popup: 'swal2-noanimation',
+				backdrop: 'swal2-noanimation',
+			},
+			hideClass: {
+				popup: '',
+				backdrop: '',
+			},
+			customClass: {
+				popup: 'custom-toast-position',
+				container: 'custom-toast-position-container',
+				actions: 'custom-toast-position-actions',
+			},
+		});
+
+		$.ajax({
+			url: ajaxurl,
+			type: 'POST',
+			data: {
+				action: 'mint_bulk_action',
+				product_ids: selectedProducts,
+			},
+			success: (bulkResp) => {
+				// Process the AJAX bulkResp
+				const missingImgs = bulkResp.data.filter(
+					(i) => i.image === '' || !i.image
+				);
+				if (missingImgs.length) {
+					Swal.fire({
+						title: 'Uploading Images to IPFS',
+						icon: 'info',
+						timer: 6000,
+						showConfirmButton: false,
+						position: 'top-end', // Adjust position as needed
+						toast: true, // Enables the toastr-style appearance
+						showClass: {
+							popup: 'swal2-noanimation',
+							backdrop: 'swal2-noanimation',
+						},
+						hideClass: {
+							popup: '',
+							backdrop: '',
+						},
+						customClass: {
+							popup: 'custom-toast-position',
+							container: 'custom-toast-position-container',
+							actions: 'custom-toast-position-actions',
+						},
+					});
+					$.ajax({
+						url: ajaxurl,
+						type: 'POST',
+						data: {
+							action: 'upload_ipfs_bulk_action',
+							product_ids: missingImgs.map((i) => i.product_id),
+						},
+						success: (ipfsRes) => {
+							blockchainDataWrapper.removeChild(spinner);
+							// Process the AJAX ipfsRes
+							const collectionFinal = bulkResp.data.map((i) => {
+								const elem = { ...i };
+
+								if (
+									ipfsRes.data
+										.map((j) => j.product_id)
+										.includes(i.product_id)
+								) {
+									elem.image = ipfsRes.data.filter(
+										(j) => j.product_id === i.product_id
+									)[0].image;
+								}
+								return elem;
+							});
+
+							loadForm(collectionFinal);
+						},
+						error: (xhr, status, error) => {
+							Swal.fire({
+								title: 'Error',
+								text: 'Unable to start upload images',
+								icon: 'error',
+								timer: 6000,
+								showConfirmButton: false,
+								position: 'top-end', // Adjust position as needed
+								toast: true, // Enables the toastr-style appearance
+								showClass: {
+									popup: 'swal2-noanimation',
+									backdrop: 'swal2-noanimation',
+								},
+								hideClass: {
+									popup: '',
+									backdrop: '',
+								},
+							});
+							blockchainDataWrapper.removeChild(spinner);
+							// Handle AJAX error
+							console.error(error);
+						},
+					});
+				} else {
+					blockchainDataWrapper.removeChild(spinner);
+					loadForm(bulkResp.data);
+				}
+			},
+			error: (xhr, status, error) => {
+				blockchainDataWrapper.removeChild(spinner);
+				Swal.fire({
+					title: 'Error',
+					text: 'Unable to start minting process',
+					icon: 'error',
+					timer: 6000,
+					showConfirmButton: false,
+					position: 'top-end', // Adjust position as needed
+					toast: true, // Enables the toastr-style appearance
+					showClass: {
+						popup: 'swal2-noanimation',
+						backdrop: 'swal2-noanimation',
+					},
+					hideClass: {
+						popup: '',
+						backdrop: '',
+					},
+				});
+				// Handle AJAX error
+				console.error(error);
+			},
+		});
+	};
+
+	// Mint bulk action
 	$('#posts-filter').on('click', '#doaction', async (e) => {
 		e.preventDefault();
 
@@ -350,65 +509,32 @@ jQuery(document).ready(function ($) {
 			}
 		});
 
-		if (!selectedProducts.length) return;
+		if (!selectedProducts.length) {
+			Swal.fire({ title: 'Please select products', icon: 'info' });
+			return;
+		}
 
-		$.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			data: {
-				action: 'mint_bulk_action',
-				product_ids: selectedProducts,
-			},
-			success: (bulkResp) => {
-				// Process the AJAX bulkResp
-				const missingImgs = bulkResp.data.filter(
-					(i) => i.image === '' || !i.image
-				);
-				if (missingImgs.length) {
-					$.ajax({
-						url: ajaxurl,
-						type: 'POST',
-						data: {
-							action: 'upload_ipfs_bulk_action',
-							product_ids: missingImgs.map((i) => i.product_id),
-						},
-						success: (ipfsRes) => {
-							// Process the AJAX ipfsRes
-							const collectionFinal = bulkResp.data.map((i) => {
-								const elem = { ...i };
-
-								if (
-									ipfsRes.data
-										.map((j) => j.product_id)
-										.includes(i.product_id)
-								) {
-									elem.image = ipfsRes.data.filter(
-										(j) => j.product_id === i.product_id
-									)[0].image;
-								}
-								return elem;
-							});
-
-							loadForm(collectionFinal);
-						},
-						error: (xhr, status, error) => {
-							// Handle AJAX error
-							console.error(error);
-						},
-					});
-				} else {
-					loadForm(bulkResp.data);
-				}
-			},
-			error: (xhr, status, error) => {
-				// Handle AJAX error
-				console.error(error);
-			},
+		// Add check for existing products in bak
+		// if found then show alert
+		Swal.fire({
+			title: 'Are you sure?',
+			text: 'This action is irreversible! Please note that any blockchain-related data will be overwritten',
+			icon: 'question',
+			showCancelButton: true,
+			cancelButtonColor: '#c7c7c9',
+			confirmButtonText: 'Yes, mint it!',
+		}).then((result) => {
+			/* Read more about isConfirmed, isDenied below */
+			if (result.isConfirmed) {
+				startMinting(selectedProducts);
+			} else if (result.isDenied) {
+				Swal.fire('Changes are not saved', '', 'info');
+			}
 		});
 	});
 });
 
-const init = () => {
+const init = async () => {
 	// Render Modal if section exists
 	const wrapper = document.querySelector('#blockchain_product_data');
 
@@ -450,23 +576,30 @@ const init = () => {
 		};
 
 		ReactDOM.render(
-			renderLaunchpadModal(token, setInitial, (response) => {
-				if (response.collection && response.transaction) {
-					setData(response.collection[0], response.transaction);
+			renderLaunchpadModal(
+				{
+					accessToken: token,
+					testnet: false,
+				},
+				setInitial,
+				(response) => {
+					if (response.collection && response.transaction) {
+						setData(response.collection[0], response.transaction);
 
-					// Hide/show action btns
-					wrapper
-						.querySelector('.btn-action')
-						.querySelectorAll('.form-field')
-						.forEach((i) => (i.style.display = 'block'));
-					wrapper
-						.querySelector('.btn-action')
-						.querySelector('.form-field.mint').style.display =
-						'none';
+						// Hide/show action btns
+						wrapper
+							.querySelector('.btn-action')
+							.querySelectorAll('.form-field')
+							.forEach((i) => (i.style.display = 'block'));
+						wrapper
+							.querySelector('.btn-action')
+							.querySelector('.form-field.mint').style.display =
+							'none';
 
-					updateRecord();
+						updateRecord();
+					}
 				}
-			}),
+			),
 			modal
 		);
 		mintModalContainer.appendChild(modal);
@@ -549,7 +682,8 @@ const init = () => {
 		.querySelector('.view-transaction');
 	if (transactionModalContainer) {
 		const modal = document.createElement('div');
-		ReactDOM.render(renderTransactionModal(viewTransaction, []), modal);
+		const transaction = await viewTransaction();
+		ReactDOM.render(renderTransactionModal(transaction, []), modal);
 		transactionModalContainer.appendChild(modal);
 	}
 

@@ -97,7 +97,6 @@ class BakWCExtension
 
             foreach ($products as $product) {
                 $product_id = $product->ID;
-                $token_policy = get_post_meta($product_id, 'bk_token_policy', true);
                 $token_uuid = get_post_meta($product_id, 'bk_token_uuid', true);
 
                 if ($token_uuid) {

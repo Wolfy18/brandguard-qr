@@ -208,7 +208,7 @@ class ProductList
 				'success' => true,
 				'message' => 'Access Token',
 				'data' => $access,
-				'testnet' => self::$adapter->settings['testnet']
+				'testnet' => self::$adapter->settings['testnet'] == "yes" ? true : false
 			);
 		} else {
 			$response = array(
