@@ -45,6 +45,18 @@ class Cron
                     'value' => 'error',
                     'compare' => '!=',
                 ),
+                array(
+                    'relation' => 'OR',
+                    array(
+                        'key' => 'bk_token_fingerprint',
+                        'compare' => 'NOT EXISTS',
+                    ),
+                    array(
+                        'key' => 'bk_token_fingerprint',
+                        'value' => '',
+                        'compare' => '=',
+                    ),
+                ),
             ),
         );
 

@@ -53,19 +53,12 @@ add_action('plugins_loaded', 'wcbakrypt_init', 11);
 // ========= Cron Tasks ======= 
 function cron_activate()
 {
-
-	error_log('cron activate function');
 	// Schedule the cron task to run every 3 minutes
-	// if (!wp_next_scheduled('bak_plugin_cron_task')) {
-	// 	wp_schedule_event(time(), '1min', 'bak_plugin_cron_task');
-	// }
 	wp_schedule_event(time(), 'every_three_minutes', 'bak_plugin_cron_task');
 }
 
 function cron_deactivate()
 {
-
-	error_log('deactivate function');
 	wp_clear_scheduled_hook('bak_plugin_cron_task');
 }
 
