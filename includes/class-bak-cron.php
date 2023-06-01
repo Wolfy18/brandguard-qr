@@ -62,7 +62,7 @@ class Cron
                     array(
                         'key' => 'bk_token_status',
                         'value' => 'completed',
-                        'compare' => '!=',
+                        'compare' => '=',
                     ),
                 ),
             ),
