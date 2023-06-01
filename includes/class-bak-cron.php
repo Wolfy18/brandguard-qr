@@ -27,26 +27,30 @@ class Cron
         # Get all non-completed products and sync them
         $args = array(
             'post_type' => 'product',
-            'posts_per_page' => 100,
+            'posts_per_page' => -1,
             'meta_query' => array(
-                'relation' => 'OR',
+                'relation' => "AND",
                 array(
-                    'key' => 'bk_token_status',
-                    'value' => 'completed',
-                    'compare' => '!=',
+                    'key' => 'bk_token_uuid',
+                    'compare' => 'EXISTS',
                 ),
                 array(
-                    'key' => 'bk_token_status',
-                    'value' => 'canceled',
-                    'compare' => '!=',
-                ),
-                array(
-                    'key' => 'bk_token_status',
-                    'value' => 'error',
-                    'compare' => '!=',
-                ),
-                array(
-                    'relation' => 'AND',
+                    'relation' => 'OR',
+                    array(
+                        'key' => 'bk_token_status',
+                        'value' => 'completed',
+                        'compare' => '!=',
+                    ),
+                    array(
+                        'key' => 'bk_token_status',
+                        'value' => 'canceled',
+                        'compare' => '!=',
+                    ),
+                    array(
+                        'key' => 'bk_token_status',
+                        'value' => 'error',
+                        'compare' => '!=',
+                    ),
                     array(
                         'relation' => 'OR',
                         array(
@@ -59,13 +63,9 @@ class Cron
                             'compare' => '=',
                         ),
                     ),
-                    array(
-                        'key' => 'bk_token_status',
-                        'value' => 'completed',
-                        'compare' => '=',
-                    ),
                 ),
-            ),
+
+            )
         );
 
         $products = get_posts($args);
