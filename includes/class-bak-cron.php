@@ -46,15 +46,23 @@ class Cron
                     'compare' => '!=',
                 ),
                 array(
-                    'relation' => 'OR',
+                    'relation' => 'AND',
                     array(
-                        'key' => 'bk_token_fingerprint',
-                        'compare' => 'NOT EXISTS',
+                        'relation' => 'OR',
+                        array(
+                            'key' => 'bk_token_fingerprint',
+                            'compare' => 'NOT EXISTS',
+                        ),
+                        array(
+                            'key' => 'bk_token_fingerprint',
+                            'value' => '',
+                            'compare' => '=',
+                        ),
                     ),
                     array(
-                        'key' => 'bk_token_fingerprint',
-                        'value' => '',
-                        'compare' => '=',
+                        'key' => 'bk_token_status',
+                        'value' => 'completed',
+                        'compare' => '!=',
                     ),
                 ),
             ),
