@@ -503,7 +503,7 @@ jQuery(document).ready(function ($) {
 		const selectedProducts = []; // Get the selected product IDs
 
 		// Iterate over each row in the WP-List-Table
-		$('.wp-list-table tbody tr.entry').each(function () {
+		$('.wp-list-table tbody tr').each(function () {
 			const checkbox = $(this).find('input[type="checkbox"]');
 
 			// Check if the checkbox is selected
