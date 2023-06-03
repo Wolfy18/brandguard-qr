@@ -14,7 +14,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * 
  * WC requires at least: 7.1
- * WC tested up to: 7.3.0
+ * WC tested up to: 7.7.2
  *
  */
 
