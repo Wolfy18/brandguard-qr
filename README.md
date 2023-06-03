@@ -4,9 +4,15 @@ A WooCommerce Admin Extension
 
 ## Development
 
+https://github.com/nvm-sh/nvm
+
+Node v16.20.0 is recommended.
+
 To get started, run the following commands:
 
 ```text
+nvm use 16
+
 npm install
 npm start
 

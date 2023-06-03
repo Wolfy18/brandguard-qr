@@ -12,36 +12,37 @@ const TransactionModal = ({ getter, collection }) => {
 	const openModal = () => setOpen(true);
 	const closeModal = () => setOpen(false);
 
-	useEffect(async () => {
-		const modal = modalRef.current;
-		if (!modal) return;
+	useEffect(() => {
+		(async () => {
+			const modal = modalRef.current;
+			if (!modal) return;
 
-		if (
+			if (
+				modal
+					.querySelector('.components-modal__content')
+					.querySelector('bakrypt-invoice')
+			)
+				return;
+
+			const transaction = await getter();
+
+			const invoice = document.createElement('bakrypt-invoice');
+			Object.assign(invoice, { transaction, collection });
+
+			const showToastr = (event) => {
+				const [message, type] = event.detail;
+				setNotice(message);
+				setNoticeStatus(type);
+				setShowNotice(true);
+			};
+
+			invoice.addEventListener('notification', showToastr);
+
 			modal
 				.querySelector('.components-modal__content')
-				.querySelector('bakrypt-invoice')
-		)
-			return;
-
-		const transaction = await getter();
-
-		const invoice = document.createElement('bakrypt-invoice');
-		Object.assign(invoice, {
-			transaction: transaction,
-			collection: collection,
-		});
-
-		const showToastr = (event) => {
-			const [message, type] = event.detail;
-			setNotice(message);
-			setNoticeStatus(type);
-			setShowNotice(true);
-		};
-
-		invoice.addEventListener('notification', showToastr);
-
-		modal.querySelector('.components-modal__content').appendChild(invoice);
-	}, [isOpen, showNotice]);
+				.appendChild(invoice);
+		})();
+	}, [isOpen, showNotice, collection, getter]);
 	return (
 		<>
 			<Button variant="secondary" onClick={openModal}>
@@ -63,7 +64,7 @@ const TransactionModal = ({ getter, collection }) => {
 					style={noticeStyles}
 					isDismissible={true}
 					status={noticeStatus}
-					onDismiss={(e) => setShowNotice(false)}
+					onDismiss={() => setShowNotice(false)}
 				>
 					<p>{String(notice)}</p>
 				</Notice>

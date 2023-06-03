@@ -2,8 +2,10 @@ import { Button, Modal } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import 'bakrypt-launchpad/dist/bakrypt-launchpad';
 
-const LaunchpadModal = ({ accessToken, getter, callback }) => {
-	const [isOpen, setOpen] = useState(false);
+const LaunchpadModal = ({ config, getter, callback }) => {
+	const { accessToken, testnet, open = false, showButton = true } = config;
+
+	const [isOpen, setOpen] = useState(open);
 	const modalRef = useRef();
 	const openModal = () => setOpen(true);
 	const closeModal = () => setOpen(false);
@@ -16,9 +18,11 @@ const LaunchpadModal = ({ accessToken, getter, callback }) => {
 
 		const launchpad = document.createElement('bakrypt-launchpad');
 		Object.assign(launchpad, {
-			accessToken: accessToken,
-			initial: initial,
+			accessToken,
+			initial,
 		});
+
+		if (testnet) Object.assign(launchpad, { testnet: true });
 
 		launchpad.addEventListener('submit', (e) => {
 			callback(e.detail);
@@ -27,12 +31,23 @@ const LaunchpadModal = ({ accessToken, getter, callback }) => {
 		modal
 			.querySelector('.components-modal__content')
 			.appendChild(launchpad);
-	}, [isOpen]);
+	}, [isOpen, accessToken, getter, testnet, callback]);
 	return (
 		<>
-			<Button variant="secondary" onClick={openModal}>
-				Mint Token
-			</Button>
+			{showButton && (
+				<>
+					<p style={{ maxWidth: '50%', marginTop: 0 }}>
+						To begin minting your single token, simply click on the
+						button below. If you have previously set a blockchain
+						token image, the system will automatically load it into
+						the form.
+					</p>
+					<Button variant="secondary" onClick={openModal}>
+						Get started
+					</Button>
+				</>
+			)}
+
 			{isOpen && (
 				<Modal
 					title="Review Assets"
@@ -47,13 +62,9 @@ const LaunchpadModal = ({ accessToken, getter, callback }) => {
 	);
 };
 
-function renderLaunchpadModal(token, getter, listener) {
+function renderLaunchpadModal(config, getter, callback) {
 	return (
-		<LaunchpadModal
-			accessToken={token}
-			getter={getter}
-			callback={listener}
-		/>
+		<LaunchpadModal config={config} getter={getter} callback={callback} />
 	);
 }
 
