@@ -13,31 +13,35 @@ const TransactionModal = ({ getter, collection }) => {
 	const closeModal = () => setOpen(false);
 
 	useEffect(() => {
-		const modal = modalRef.current;
-		if (!modal) return;
+		(async () => {
+			const modal = modalRef.current;
+			if (!modal) return;
 
-		if (
+			if (
+				modal
+					.querySelector('.components-modal__content')
+					.querySelector('bakrypt-invoice')
+			)
+				return;
+
+			const transaction = await getter();
+
+			const invoice = document.createElement('bakrypt-invoice');
+			Object.assign(invoice, { transaction, collection });
+
+			const showToastr = (event) => {
+				const [message, type] = event.detail;
+				setNotice(message);
+				setNoticeStatus(type);
+				setShowNotice(true);
+			};
+
+			invoice.addEventListener('notification', showToastr);
+
 			modal
 				.querySelector('.components-modal__content')
-				.querySelector('bakrypt-invoice')
-		)
-			return;
-
-		const transaction = getter;
-
-		const invoice = document.createElement('bakrypt-invoice');
-		Object.assign(invoice, { transaction, collection });
-
-		const showToastr = (event) => {
-			const [message, type] = event.detail;
-			setNotice(message);
-			setNoticeStatus(type);
-			setShowNotice(true);
-		};
-
-		invoice.addEventListener('notification', showToastr);
-
-		modal.querySelector('.components-modal__content').appendChild(invoice);
+				.appendChild(invoice);
+		})();
 	}, [isOpen, showNotice, collection, getter]);
 	return (
 		<>

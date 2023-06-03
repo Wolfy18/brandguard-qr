@@ -95,7 +95,7 @@ const setData = (asset, tx) => {
 };
 
 jQuery(document).ready(function ($) {
-	jQuery('a#bk_token_image_media_manager').click(function (e) {
+	$('a#bk_token_image_media_manager').click(function (e) {
 		e.preventDefault();
 		var imageFrame;
 		if (imageFrame) {
@@ -112,26 +112,26 @@ jQuery(document).ready(function ($) {
 		imageFrame.on('close', function () {
 			// On close, get selections and save to the hidden input
 			// plus other AJAX stuff to refresh the image preview
-			var selection = imageFrame.state().get('selection');
-			var gallery_ids = new Array();
-			var my_index = 0;
+			const selection = imageFrame.state().get('selection');
+			const galleryIds = new Array();
+			let idx = 0;
 			selection.each(function (attachment) {
-				gallery_ids[my_index] = attachment['id'];
-				my_index++;
+				galleryIds[idx] = attachment.id;
+				idx++;
 			});
-			var ids = gallery_ids.join(',');
+			const ids = galleryIds.join(',');
 			if (ids.length === 0) return true; //if closed withput selecting an image
-			jQuery('input#bk_att_token_image').val(ids);
+			$('input#bk_att_token_image').val(ids);
 			refreshImages(ids);
 		});
 
 		imageFrame.on('open', function () {
 			// On open, get the id from the hidden input
 			// and select the appropiate images in the media manager
-			var selection = imageFrame.state().get('selection');
-			var ids = jQuery('input#bk_att_token_image').val().split(',');
+			const selection = imageFrame.state().get('selection');
+			const ids = $('input#bk_att_token_image').val().split(',');
 			ids.forEach(function (id) {
-				var attachment = wp.media.attachment(id);
+				const attachment = wp.media.attachment(id);
 				attachment.fetch();
 				selection.add(attachment ? [attachment] : []);
 			});
@@ -142,10 +142,10 @@ jQuery(document).ready(function ($) {
 });
 
 // Ajax request to refresh the image preview
-function refreshImages(the_id) {
-	var data = {
+function refreshImages(id) {
+	const data = {
 		action: 'product_token_get_image',
-		id: the_id,
+		id,
 	};
 	jQuery.get(ajaxurl, data, function (response) {
 		if (response.success === true) {
@@ -239,8 +239,8 @@ const deleteRecord = async (e) => {
 				type: 'POST',
 				data: Object.fromEntries(body),
 				success: () => {
-					location.reload();
 					blockchainDataWrapper.removeChild(spinner);
+					window.location.reload();
 				},
 				error: (error) => {
 					Swal.fire({
@@ -296,7 +296,7 @@ jQuery(document).ready(function ($) {
 					renderLaunchpadModal(
 						{
 							accessToken: token,
-							testnet: testnet,
+							testnet,
 							open: true,
 							showButton: false,
 						},
@@ -317,16 +317,22 @@ jQuery(document).ready(function ($) {
 										action: 'update_records_action',
 										products: updateRecords,
 									},
-									success: (ipfsRes) => {
+									success: () => {
 										Swal.fire({
 											title: 'Products were updated',
 											icon: 'success',
 											text: 'Visit any product for more information about the transaction',
+										}).then(() => {
+											window.location.reload();
 										});
 									},
 									error: (xhr, status, error) => {
 										// Handle AJAX error
-										console.error(error);
+										Swal.fire({
+											title: 'Error',
+											text: error.responseJSON.data,
+											icon: 'error',
+										});
 									},
 								});
 							}
@@ -338,7 +344,11 @@ jQuery(document).ready(function ($) {
 			},
 			error: (xhr, status, error) => {
 				// Handle AJAX error
-				console.error(error);
+				Swal.fire({
+					title: 'Error',
+					text: error.responseJSON.data,
+					icon: 'error',
+				});
 			},
 		});
 	};
@@ -434,7 +444,7 @@ jQuery(document).ready(function ($) {
 
 							loadForm(collectionFinal);
 						},
-						error: (xhr, status, error) => {
+						error: () => {
 							Swal.fire({
 								title: 'Error',
 								text: 'Unable to start upload images',
@@ -454,7 +464,6 @@ jQuery(document).ready(function ($) {
 							});
 							blockchainDataWrapper.removeChild(spinner);
 							// Handle AJAX error
-							console.error(error);
 						},
 					});
 				} else {
@@ -462,7 +471,7 @@ jQuery(document).ready(function ($) {
 					loadForm(bulkResp.data);
 				}
 			},
-			error: (xhr, status, error) => {
+			error: () => {
 				blockchainDataWrapper.removeChild(spinner);
 				Swal.fire({
 					title: 'Error',
@@ -481,8 +490,6 @@ jQuery(document).ready(function ($) {
 						backdrop: '',
 					},
 				});
-				// Handle AJAX error
-				console.error(error);
 			},
 		});
 	};
@@ -540,33 +547,29 @@ const init = async () => {
 
 	if (!wrapper) return;
 
-	const token = wrapper.querySelector('.btn-action').dataset.token;
+	const accessToken = wrapper.querySelector('.btn-action').dataset.token;
 	const testnet = wrapper.querySelector('.btn-action').attributes.testnet;
 
 	const mintModalContainer = wrapper
 		.querySelector('.btn-action')
 		.querySelector('.mint');
+
 	if (mintModalContainer) {
 		const modal = document.createElement('div');
 
 		const setInitial = () => {
 			if (!document.querySelector('#bk_att_token_image_ipfs')) {
-				alert('Please select a Blockchain token image');
 				return;
 			}
 			const initialName = document.querySelector('#title').value;
 			const initialImage = document.querySelector(
 				'#bk_att_token_image_ipfs'
 			).value;
-			if (!initialImage || !initialImage.length) {
-				alert('Please select a Blockchain token image');
-				return;
-			}
 
 			const asset = {
 				blockchain: 'ada',
 				name: initialName,
-				asset_name: initialName,
+				asset_name: initialName.replace(/\s/g, ''),
 				image: initialImage,
 				amount: 1,
 				description: '',
@@ -578,8 +581,8 @@ const init = async () => {
 		ReactDOM.render(
 			renderLaunchpadModal(
 				{
-					accessToken: token,
-					testnet: false,
+					accessToken,
+					testnet,
 				},
 				setInitial,
 				(response) => {
@@ -602,12 +605,13 @@ const init = async () => {
 			),
 			modal
 		);
+
 		mintModalContainer.appendChild(modal);
 	}
 
 	const helper = new BakryptApiInterface(
 		testnet ? `https://testnet.bakrypt.io` : `https://bakrypt.io`,
-		token
+		accessToken
 	);
 
 	const syncAsset = async (e) => {
@@ -680,10 +684,10 @@ const init = async () => {
 	const transactionModalContainer = wrapper
 		.querySelector('.btn-action')
 		.querySelector('.view-transaction');
+
 	if (transactionModalContainer) {
 		const modal = document.createElement('div');
-		const transaction = await viewTransaction();
-		ReactDOM.render(renderTransactionModal(transaction, []), modal);
+		ReactDOM.render(renderTransactionModal(viewTransaction, []), modal);
 		transactionModalContainer.appendChild(modal);
 	}
 

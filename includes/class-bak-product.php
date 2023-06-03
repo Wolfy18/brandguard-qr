@@ -318,7 +318,7 @@ class Product
                     }
                 } else {
                     ?>
-                    <li class="image" data-attachment_id="<?php echo esc_attr($attachment_id); ?>">
+                    <li class="image" data-attachment_id="<?php echo (isset($attachment_id) ? esc_attr($attachment_id) : '') ?>">
                         <span id="preview_bk_att_token_image"></span>
                     </li>
                 <?php

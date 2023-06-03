@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from '@wordpress/element';
 import 'bakrypt-launchpad/dist/bakrypt-launchpad';
 
 const LaunchpadModal = ({ config, getter, callback }) => {
-	const { accessToken, testnet, open, showButton } = config;
+	const { accessToken, testnet, open = false, showButton = true } = config;
 
 	const [isOpen, setOpen] = useState(open);
 	const modalRef = useRef();
@@ -35,9 +35,17 @@ const LaunchpadModal = ({ config, getter, callback }) => {
 	return (
 		<>
 			{showButton && (
-				<Button variant="secondary" onClick={openModal}>
-					Mint Token
-				</Button>
+				<>
+					<p style={{ maxWidth: '50%', marginTop: 0 }}>
+						To begin minting your single token, simply click on the
+						button below. If you have previously set a blockchain
+						token image, the system will automatically load it into
+						the form.
+					</p>
+					<Button variant="secondary" onClick={openModal}>
+						Get started
+					</Button>
+				</>
 			)}
 
 			{isOpen && (

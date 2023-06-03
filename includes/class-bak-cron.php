@@ -22,12 +22,11 @@ class Cron
 
     public static function bak_run_cron_task()
     {
-        // Code to be executed in the cron task
-        error_log('Log message: started cron job');
         # Get all non-completed products and sync them
         $args = array(
             'post_type' => 'product',
             'posts_per_page' => -1,
+            'post_status' => array('publish', 'private'),
             'meta_query' => array(
                 'relation' => "AND",
                 array(
@@ -35,21 +34,24 @@ class Cron
                     'compare' => 'EXISTS',
                 ),
                 array(
-                    'relation' => 'OR',
+                    'relation' => 'AND',
                     array(
-                        'key' => 'bk_token_status',
-                        'value' => 'completed',
-                        'compare' => '!=',
-                    ),
-                    array(
-                        'key' => 'bk_token_status',
-                        'value' => 'canceled',
-                        'compare' => '!=',
-                    ),
-                    array(
-                        'key' => 'bk_token_status',
-                        'value' => 'error',
-                        'compare' => '!=',
+                        'relation' => 'OR',
+                        array(
+                            'key' => 'bk_token_status',
+                            'value' => 'confirmed',
+                            'compare' => '!=',
+                        ),
+                        array(
+                            'key' => 'bk_token_status',
+                            'value' => 'canceled',
+                            'compare' => '!=',
+                        ),
+                        array(
+                            'key' => 'bk_token_status',
+                            'value' => 'error',
+                            'compare' => '!=',
+                        ),
                     ),
                     array(
                         'relation' => 'OR',
