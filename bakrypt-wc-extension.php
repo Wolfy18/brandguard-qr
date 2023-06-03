@@ -4,7 +4,7 @@
  * Plugin Name: Bakrypt Blockchain Extension
  * Plugin URI: https://bakrypt.io
  * Description: Mint your products into the Cardano Blockchain
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Wolfgang Leon
  * Author URI: https://bakrypt.io/
  * Developer: Wolfgang Leon
