@@ -52,6 +52,11 @@ class Cron
                             'value' => 'error',
                             'compare' => '!=',
                         ),
+                        array(
+                            'key' => 'bk_token_status',
+                            'value' => 'rejected',
+                            'compare' => '!=',
+                        ),
                     ),
                     array(
                         'relation' => 'OR',

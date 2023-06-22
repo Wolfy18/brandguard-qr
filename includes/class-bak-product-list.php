@@ -85,12 +85,19 @@ class ProductList
 			if (isset($_GET['tokenize']) && !empty($_GET['tokenize'])) {
 
 				$meta_query = (array) $query->get('meta_query');
-				$meta_query[] = [
-					'key' => 'bk_token_fingerprint',
-					// replace with your own meta key
-					'value' => '',
-					'compare' => ($_GET['tokenize'] == "yes") ? '!=' : "=",
-				];
+
+				if ($_GET['tokenize'] == "yes") {
+					$meta_query[] = [
+						'key' => 'bk_token_fingerprint',
+						'compare' => 'EXISTS',
+					];
+				} else {
+					$meta_query[] = [
+						'key' => 'bk_token_fingerprint',
+						'compare' => "NOT EXISTS",
+					];
+				}
+
 
 				$query->set('meta_query', $meta_query);
 			}
@@ -292,15 +299,15 @@ class ProductList
 			$func = function ($product) {
 
 				$data = array(
-					'bk_token_uuid' =>  $product['uuid'],
+					'bk_token_uuid' => $product['uuid'],
 					// 'bk_token_policy' =>  $bk_token_policy,
-					'bk_token_asset_name' =>  $product['asset_name'],
-					'bk_token_name' =>  $product['name'],
-					'bk_token_image' =>  $product['image'],
-					'bk_token_amount' =>  $product['amount'],
-					'bk_token_status' =>  $product['status'],
-					'bk_token_transaction' =>  $product['transaction'],
-					'bk_att_token_image' =>  $product['image'],
+					'bk_token_asset_name' => $product['asset_name'],
+					'bk_token_name' => $product['name'],
+					'bk_token_image' => $product['image'],
+					'bk_token_amount' => $product['amount'],
+					'bk_token_status' => $product['status'],
+					'bk_token_transaction' => $product['transaction'],
+					'bk_att_token_image' => $product['image'],
 				);
 
 				return self::update_record($product["product_id"], $data);
