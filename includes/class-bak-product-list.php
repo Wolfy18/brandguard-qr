@@ -88,13 +88,31 @@ class ProductList
 
 				if ($_GET['tokenize'] == "yes") {
 					$meta_query[] = [
-						'key' => 'bk_token_fingerprint',
-						'compare' => 'EXISTS',
+						'relation' => "AND",
+						array(
+							'key' => 'bk_token_fingerprint',
+							'compare' => 'EXISTS',
+						),
+						array(
+							'key' => 'bk_token_fingerprint',
+							'compare' => '!=',
+							"value" => ""
+						)
+
 					];
 				} else {
 					$meta_query[] = [
-						'key' => 'bk_token_fingerprint',
-						'compare' => "NOT EXISTS",
+						'relation' => "OR",
+						array(
+							'key' => 'bk_token_fingerprint',
+							'compare' => "NOT EXISTS",
+						),
+						array(
+							'key' => 'bk_token_fingerprint',
+							'compare' => "=",
+							'value' => ""
+						)
+
 					];
 				}
 
