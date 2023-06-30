@@ -22,6 +22,15 @@ class Cron
 
     public static function bak_run_cron_task()
     {
+        // Check if the lock is set
+        if (get_transient('bak_plugin_cron_lock')) {
+            // Task is already running, exit
+            return;
+        }
+
+        // Set the lock for a specific time (e.g., 5 minutes)
+        set_transient('bak_plugin_cron_lock', true, 5 * 60);
+
         # Get all non-completed products and sync them
         $args = array(
             'post_type' => 'product',
@@ -106,5 +115,8 @@ class Cron
                 }
             }
         }
+
+        // Remove the lock when the task is completed
+        delete_transient('bak_plugin_cron_lock');
     }
 }

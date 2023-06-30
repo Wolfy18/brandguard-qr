@@ -35,8 +35,8 @@ add_filter('cron_schedules', 'bak_add_every_three_minutes');
 function bak_add_every_three_minutes($schedules)
 {
 	$schedules['every_three_minutes'] = array(
-		'interval'  => 180,
-		'display'   => __('Every 3 Minutes', 'textdomain')
+		'interval' => 180,
+		'display' => __('Every 3 Minutes', 'textdomain')
 	);
 	return $schedules;
 }
@@ -53,8 +53,10 @@ add_action('plugins_loaded', 'wcbakrypt_init', 11);
 // ========= Cron Tasks ======= 
 function cron_activate()
 {
-	// Schedule the cron task to run every 3 minutes
-	wp_schedule_event(time(), 'every_three_minutes', 'bak_plugin_cron_task');
+	if (!wp_next_scheduled('bak_plugin_cron_task')) {
+		// Schedule the cron task to run every 3 minutes
+		wp_schedule_event(time(), 'every_three_minutes', 'bak_plugin_cron_task');
+	}
 }
 
 function cron_deactivate()
