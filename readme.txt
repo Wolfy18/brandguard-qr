@@ -4,7 +4,7 @@ Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
 Requires at least: 6.0
 Tested up to: 6.2.2
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -110,6 +110,10 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 10. New Product View Blockchain Section
 
 == Changelog ==
+
+= 1.1.2 =
+* Checks if cron are scheduled before starting a new one.
+* Adds cron lock file logic.
 
 = 1.1.1 =
 * Fixes product list filter
