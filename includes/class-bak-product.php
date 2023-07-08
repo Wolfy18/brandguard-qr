@@ -72,12 +72,13 @@ class Product
         $testnet = self::$adapter->settings['testnet'];
         $access = self::$adapter->generate_access_token();
 
-?>
+        ?>
         <!-- id below must match target registered in above add_blockchain_product_data_tab function -->
         <div id="blockchain_product_data" class="panel woocommerce_options_panel">
             <p class="form-field woocommerce-message" style="float:right" <?php if ($asset['uuid'] == '')
-                                                                                echo 'style="display:none"' ?>>
-                <button style="line-height:1" id="delete_token" name="delete_token" class="button-primary woocommerce-save-button">
+                echo 'style="display:none"' ?>>
+                <button style="line-height:1" id="delete_token" name="delete_token"
+                    class="button-primary woocommerce-save-button">
                     <span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
                 </button>
             </p>
@@ -226,17 +227,22 @@ class Product
             );
             ?>
 
-            <div <?php if ($testnet == "yes") echo "testnet" ?> data-token="<?php echo esc_attr($access->{'access_token'}) ?>" style="display: flex; justify-content: space-between" class="btn-action">
+            <div <?php if ($testnet == "yes")
+                echo "testnet" ?> data-token="<?php echo esc_attr($access->{'access_token'}) ?>"
+                style="display: flex; justify-content: space-between" class="btn-action">
                 <p class="form-field mint" <?php if ($asset['uuid'] != '')
-                                                echo 'style="display:none"' ?>></p>
-                <p class="form-field view-transaction" <?php if ($asset['uuid'] == '')
-                                                            echo 'style="display:none"' ?>></p>
-                <p class="form-field" <?php if ($asset['uuid'] == '')
-                                            echo 'style="display:none"' ?>><button name="update_token" class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
+                    echo 'style="display:none"' ?>></p>
+                    <p class="form-field view-transaction" <?php if ($asset['uuid'] == '')
+                    echo 'style="display:none"' ?>></p>
+                    <p class="form-field" <?php if ($asset['uuid'] == '')
+                    echo 'style="display:none"' ?>><button name="update_token"
+                        class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
 
-                <?php if (get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) { ?>
-                    <p class="form-field"> <a target='_blank' rel='nofollow' href='https://cexplorer.io/asset/<?php echo esc_html(get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) ?>'>View in cexplorer.io</a></p>
-                <?php } ?>
+            <?php if (get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) { ?>
+                <p class="form-field"> <a target='_blank' rel='nofollow'
+                        href='https://cexplorer.io/asset/<?php echo esc_html(get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) ?>'>View
+                        in cexplorer.io</a></p>
+            <?php } ?>
             </div>
 
         </div>
@@ -255,7 +261,8 @@ class Product
 
         if (!$settings['client_id'] && !$settings['client_secret'] && !$settings['username'] && !$settings['password']) { ?>
             <div class="error">
-                <p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt OAuth credentials</a> are required to load data from the remote source.</strong>
+                <p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>"
+                            target="_blank">Bakrypt OAuth credentials</a> are required to load data from the remote source.</strong>
                 </p>
             </div>
         <?php }
@@ -296,17 +303,17 @@ class Product
                             $update_meta = true;
                             continue;
                         }
-                ?>
+                        ?>
                         <li class="image" data-attachment_id="<?php echo esc_attr($attachment_id); ?>">
                             <?php echo $attachment; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
-                            ?>
+                                            ?>
                             <?php
                             // Allow for extra info to be exposed or extra action to be executed for this attachment.
                             do_action('woocommerce_admin_after_product_gallery_item', $thepostid, $attachment_id);
 
                             ?>
                         </li>
-                    <?php
+                        <?php
 
                         // rebuild ids to be saved.
                         $updated_gallery_ids[] = $attachment_id;
@@ -318,24 +325,26 @@ class Product
                     }
                 } else {
                     ?>
-                    <li class="image" data-attachment_id="<?php echo (isset($attachment_id) ? esc_attr($attachment_id) : '') ?>">
-                        <span id="preview_bk_att_token_image"></span>
-                    </li>
+                <li class="image" data-attachment_id="<?php echo (isset($attachment_id) ? esc_attr($attachment_id) : '') ?>">
+                    <span id="preview_bk_att_token_image"></span>
+                </li>
                 <?php
                 }
                 ?>
             </ul>
-            <input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
-            <input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs" value="<?php echo esc_attr($img_ipfs); ?>" />
+            <input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image"
+                value="<?php echo esc_attr($bk_token_att); ?>" />
+            <input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs"
+                value="<?php echo esc_attr($img_ipfs); ?>" />
         </div>
         <?php
         if (!in_array($bk_token_status, ['confirmed', 'canceled'])) {
-        ?>
+            ?>
             <a href="#" id="bk_token_image_media_manager">
                 <?php esc_attr_e('Choose from gallery', 'mytextdomain'); ?>
             </a>
         <?php } ?>
-<?php
+    <?php
     }
 
     public static function add_ipfs_meta_box()

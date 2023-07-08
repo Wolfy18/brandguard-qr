@@ -37,7 +37,14 @@ class ProductList
 		switch ($column) {
 			case 'asset_fingerprint': // This has to match to the defined column in function above
 				$get_fingerprint = get_post_meta($post_id, 'bk_token_fingerprint', true);
-				echo "<a target='_blank' rel='nofollow' href='https://cexplorer.io/asset/" . esc_html($get_fingerprint) . "'>" . esc_html($get_fingerprint) . "</a>";
+				$get_status = get_post_meta($post_id, 'bk_token_status', true);
+				echo $get_status;
+				if ($get_fingerprint) {
+					echo "<a target='_blank' rel='nofollow' href='https://cexplorer.io/asset/" . esc_html($get_fingerprint) . "'>" . esc_html($get_fingerprint) . "</a>";
+				} else {
+
+					echo esc_html($get_status);
+				}
 				break;
 		}
 	}
@@ -143,8 +150,22 @@ class ProductList
 					$img_ipfs = $img_metadata['ipfs'];
 				}
 
-				if (!$img_ipfs) {
-					$img_ipfs = get_post_meta($id, 'bk_token_image', true);
+				// if (!$img_ipfs) {
+				// 	$img_ipfs = get_post_meta($id, 'bk_token_image', true);
+				// }
+
+				# Upload to IPFS node if nothing is found
+				if ($img_ipfs == '' || !$img_ipfs) {
+
+					if (!self::$adapter) {
+						self::$adapter = new RestAdapter();
+					}
+
+					$bak_file = self::$adapter->upload_attachment_to_ipfs($bk_token_att);
+
+					$img_ipfs = $bak_file->{'ipfs'};
+					$img_metadata['ipfs'] = $img_ipfs;
+					wp_update_attachment_metadata($bk_token_att, $img_metadata); // save it back to the db
 				}
 
 				return array(
@@ -196,6 +217,12 @@ class ProductList
 				// save the custom SKU using WooCommerce built-in functions
 				$product->update_meta_data('bk_token_image', $img_ipfs);
 				$product->update_meta_data('bk_att_token_image', $img_ipfs);
+
+				$attachment_id = attachment_url_to_postid($featured_image_url);
+				if ($attachment_id) {
+					$img_metadata = wp_get_attachment_metadata($attachment_id);
+					wp_update_attachment_metadata($attachment_id, $img_metadata); // save it back to the db
+				}
 
 				return array(
 					'product_id' => $id,
@@ -286,23 +313,6 @@ class ProductList
 		$product->update_meta_data('bk_att_token_image', $bk_att_token_image);
 
 		$product->save();
-
-
-		// $product = get_post($post_id);
-
-		// save the custom SKU using WooCommerce built-in functions
-		// update_post_meta($post_id, 'bk_token_uuid', $bk_token_uuid);
-		// update_post_meta($post_id, 'bk_token_uuid', $bk_token_uuid);
-		// update_post_meta($post_id, 'bk_token_policy', $bk_token_policy);
-		// update_post_meta($post_id, 'bk_token_fingerprint', $bk_token_fingerprint);
-		// update_post_meta($post_id, 'bk_token_asset_name', $bk_token_asset_name);
-		// update_post_meta($post_id, 'bk_token_name', $bk_token_name);
-		// update_post_meta($post_id, 'bk_token_image', $bk_token_image);
-		// update_post_meta($post_id, 'bk_token_amount', $bk_token_amount);
-		// update_post_meta($post_id, 'bk_token_status', $bk_token_status);
-		// update_post_meta($post_id, 'bk_token_transaction', $bk_token_transaction);
-		// update_post_meta($post_id, 'bk_token_json', $bk_token_json);
-		// update_post_meta($post_id, 'bk_att_token_image', $bk_att_token_image);
 
 		return $product;
 	}
