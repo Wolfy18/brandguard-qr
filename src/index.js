@@ -687,7 +687,17 @@ const init = async () => {
 
 	if (transactionModalContainer) {
 		const modal = document.createElement('div');
-		ReactDOM.render(renderTransactionModal(viewTransaction, []), modal);
+		ReactDOM.render(
+			renderTransactionModal(
+				{
+					accessToken,
+					testnet,
+				},
+				viewTransaction,
+				[]
+			),
+			modal
+		);
 		transactionModalContainer.appendChild(modal);
 	}
 

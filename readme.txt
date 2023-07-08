@@ -4,7 +4,7 @@ Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
 Requires at least: 6.0
 Tested up to: 6.2.2
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -110,6 +110,16 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 10. New Product View Blockchain Section
 
 == Changelog ==
+
+= 1.1.3 =
+* Added transaction status to the token column if the token hasn't been minted yet
+* Fixed logic when prepping data when minting a list of tokens.
+* Added logic to save the IPFS value to the attachment once it's uploaded.
+* Added function to delete transient when plugin is deactivated.
+* Modified query to fix issue with maximum execution time of the cron job.
+* Modified the transactionModal to accept config variables as parameters
+* Fixed issue authorization issue when submitting a refund.
+
 
 = 1.1.2 =
 * Checks if cron are scheduled before starting a new one.

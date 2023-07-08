@@ -34,7 +34,7 @@ class Cron
         # Get all non-completed products and sync them
         $args = array(
             'post_type' => 'product',
-            'posts_per_page' => -1,
+            'posts_per_page' => 10,
             'post_status' => array('publish', 'private'),
             'meta_query' => array(
                 'relation' => "AND",
@@ -48,23 +48,8 @@ class Cron
                         'relation' => 'OR',
                         array(
                             'key' => 'bk_token_status',
-                            'value' => 'confirmed',
-                            'compare' => '!=',
-                        ),
-                        array(
-                            'key' => 'bk_token_status',
-                            'value' => 'canceled',
-                            'compare' => '!=',
-                        ),
-                        array(
-                            'key' => 'bk_token_status',
-                            'value' => 'error',
-                            'compare' => '!=',
-                        ),
-                        array(
-                            'key' => 'bk_token_status',
-                            'value' => 'rejected',
-                            'compare' => '!=',
+                            'value' => array('canceled', 'error', 'rejected'),
+                            'compare' => 'NOT IN',
                         ),
                     ),
                     array(
@@ -95,6 +80,7 @@ class Cron
             $token_uuid = get_post_meta($product_id, 'bk_token_uuid', true);
 
             if ($token_uuid) {
+
                 $_data = $adapter->fetch_token_data($token_uuid);
 
                 if (!empty($_data)) {

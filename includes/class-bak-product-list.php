@@ -38,11 +38,9 @@ class ProductList
 			case 'asset_fingerprint': // This has to match to the defined column in function above
 				$get_fingerprint = get_post_meta($post_id, 'bk_token_fingerprint', true);
 				$get_status = get_post_meta($post_id, 'bk_token_status', true);
-				echo $get_status;
 				if ($get_fingerprint) {
 					echo "<a target='_blank' rel='nofollow' href='https://cexplorer.io/asset/" . esc_html($get_fingerprint) . "'>" . esc_html($get_fingerprint) . "</a>";
 				} else {
-
 					echo esc_html($get_status);
 				}
 				break;
@@ -144,28 +142,24 @@ class ProductList
 
 				$bk_token_att = get_post_meta($id, 'bk_att_token_image', true);
 
+				if (!$bk_token_att) {
+					$featured_image_url = get_the_post_thumbnail_url($id, 'full');
+
+					if (!$featured_image_url) {
+						$featured_image_url = wc_placeholder_img_src();
+					}
+
+					$bk_token_att = attachment_url_to_postid($featured_image_url);
+				}
+
 				$img_metadata = wp_get_attachment_metadata($bk_token_att);
 				$img_ipfs = null;
 				if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
 					$img_ipfs = $img_metadata['ipfs'];
 				}
 
-				// if (!$img_ipfs) {
-				// 	$img_ipfs = get_post_meta($id, 'bk_token_image', true);
-				// }
-
-				# Upload to IPFS node if nothing is found
-				if ($img_ipfs == '' || !$img_ipfs) {
-
-					if (!self::$adapter) {
-						self::$adapter = new RestAdapter();
-					}
-
-					$bak_file = self::$adapter->upload_attachment_to_ipfs($bk_token_att);
-
-					$img_ipfs = $bak_file->{'ipfs'};
-					$img_metadata['ipfs'] = $img_ipfs;
-					wp_update_attachment_metadata($bk_token_att, $img_metadata); // save it back to the db
+				if (!$img_ipfs) {
+					$img_ipfs = get_post_meta($id, 'bk_token_image', true);
 				}
 
 				return array(
@@ -221,6 +215,7 @@ class ProductList
 				$attachment_id = attachment_url_to_postid($featured_image_url);
 				if ($attachment_id) {
 					$img_metadata = wp_get_attachment_metadata($attachment_id);
+					$img_metadata['ipfs'] = $img_ipfs;
 					wp_update_attachment_metadata($attachment_id, $img_metadata); // save it back to the db
 				}
 
