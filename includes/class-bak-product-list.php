@@ -285,11 +285,11 @@ class ProductList
 		// Update attachment, token_image rel
 		$bk_att_token_image = isset($data['bk_att_token_image']) ? sanitize_text_field($data['bk_att_token_image']) : '';
 
-		if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
-			# Insert attachment
-			$att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image, $post_id);
-			$bk_att_token_image = $att_id;
-		}
+		// if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
+		// 	# Insert attachment
+		// 	$att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image, $post_id);
+		// 	$bk_att_token_image = $att_id;
+		// }
 
 		// grab the product
 		$product = wc_get_product($post_id);
