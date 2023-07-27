@@ -23,8 +23,8 @@ class Order
         $fingerprint = get_post_meta($cart_item["product_id"], 'bk_token_fingerprint', true);
         if ($fingerprint) {
             $item_data[] = array(
-                'key'     => __('Fingerprint', ''),
-                'value'   => $fingerprint,
+                'key' => __('Asset', ''),
+                'value' => $fingerprint,
                 'display' => $fingerprint,
             );
         }
@@ -37,19 +37,33 @@ class Order
     {
         $fingerprint = get_post_meta($values["data"]->get_id(), 'bk_token_fingerprint', true);
         if ($fingerprint) {
-            $item->add_meta_data('Fingerprint', $fingerprint);
+            $item->add_meta_data('Asset', $fingerprint);
         }
     }
 
     public static function bak_woocommerce_order_item_name($name, $item)
     {
+        $fingerprint = null;
+        $product = $item->get_product();
 
-        $product_id = $item['product_id'];
+        // Check if the product is a variation of a variable product
+        if ($product && $product->is_type('variation')) {
+            // Get the parent product of the variation
+            $parent_product = wc_get_product($product->get_parent_id());
 
-        $fingerprint = get_post_meta($product_id, 'bk_token_fingerprint', true);
-        if ($fingerprint) {
-            $name .= '<label>' . $fingerprint . ': </label>';
+            // Get the custom attribute data from the parent product
+            $fingerprint = $parent_product->get_attribute('bk_token_fingerprint');
+        } else {
+            // Get the custom attribute data from the parent product
+            $fingerprint = $product->get_attribute('bk_token_fingerprint');
         }
+
+        if ($fingerprint) {
+            // Append the custom attribute data to the item name
+            $name .= '<label>' . esc_html($fingerprint) . '</label>';
+        }
+
         return $name;
+
     }
 }
