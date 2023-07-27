@@ -41,7 +41,7 @@ class Order
         }
     }
 
-    public static function bak_woocommerce_order_item_name($name, $item)
+    public static function bak_woocommerce_order_item_name($item_id, $item, $order_id)
     {
         $fingerprint = null;
         $product = $item->get_product();
@@ -51,19 +51,13 @@ class Order
             // Get the parent product of the variation
             $parent_product = wc_get_product($product->get_parent_id());
 
-            // Get the custom attribute data from the parent product
-            $fingerprint = $parent_product->get_attribute('bk_token_fingerprint');
-        } else {
-            // Get the custom attribute data from the parent product
-            $fingerprint = $product->get_attribute('bk_token_fingerprint');
+            $minted_id = $parent_product->get_id();
+
+            $fingerprint = get_post_meta($minted_id, 'bk_token_fingerprint', true);
+
+            if ($fingerprint) {
+                wc_add_order_item_meta($item_id, __('Asset', 'asset'), $fingerprint);
+            }
         }
-
-        if ($fingerprint) {
-            // Append the custom attribute data to the item name
-            $name .= '<label>' . esc_html($fingerprint) . '</label>';
-        }
-
-        return $name;
-
     }
 }
