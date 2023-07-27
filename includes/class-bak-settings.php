@@ -89,7 +89,7 @@ class Settings
 				'id' => 'wc_settings_tab_bak_client_secret'
 			),
 			'username' => array(
-				'name' => __('Username', 'bak-woocommerce-settings-tab'),
+				'name' => __('Email', 'bak-woocommerce-settings-tab'),
 				'type' => 'text',
 				'desc' => __('Bakrypt account. This is the email used to register.', 'bak-woocommerce-settings-tab'),
 				'id' => 'wc_settings_tab_bak_username'
@@ -113,7 +113,7 @@ class Settings
 				'id' => 'wc_settings_tab_bak_testnet_client_secret'
 			),
 			'testnet_username' => array(
-				'name' => __('Testnet Username', 'bak-woocommerce-settings-tab'),
+				'name' => __('Testnet Email', 'bak-woocommerce-settings-tab'),
 				'type' => 'text',
 				'desc' => __('Testnet Bakrypt account. This is the email used to register.', 'bak-woocommerce-settings-tab'),
 				'id' => 'wc_settings_tab_bak_testnet_username'
