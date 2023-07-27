@@ -43,21 +43,23 @@ class Order
 
     public static function bak_woocommerce_order_item_name($item_id, $item, $order_id)
     {
-        $fingerprint = null;
-        $product = $item->get_product();
+        if ($item->is_type('line_item')) {
+            $product = $item->get_product();
 
-        // Check if the product is a variation of a variable product
-        if ($product && $product->is_type('variation')) {
-            // Get the parent product of the variation
-            $parent_product = wc_get_product($product->get_parent_id());
+            // Check if the product is a variation of a variable product
+            if ($product && $product->is_type('variation')) {
+                // Get the parent product of the variation
+                $parent_product = wc_get_product($product->get_parent_id());
 
-            $minted_id = $parent_product->get_id();
+                $minted_id = $parent_product->get_id();
 
-            $fingerprint = get_post_meta($minted_id, 'bk_token_fingerprint', true);
+                $fingerprint = get_post_meta($minted_id, 'bk_token_fingerprint', true);
 
-            if ($fingerprint) {
-                wc_add_order_item_meta($item_id, __('Asset', 'asset'), $fingerprint);
+                if ($fingerprint) {
+                    wc_add_order_item_meta($item_id, __('Asset', 'asset'), $fingerprint);
+                }
             }
         }
+
     }
 }
