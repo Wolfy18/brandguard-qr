@@ -4,7 +4,7 @@ Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
 Requires at least: 6.0
 Tested up to: 6.2.2
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -110,6 +110,14 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 10. New Product View Blockchain Section
 
 == Changelog ==
+
+= 1.1.5 =
+* Added function that includes fingerprint for variable products
+* Added hook to include fingeprint to order metadata
+
+= 1.1.4 =
+* Commented out logic that uploads image on every update
+* Updated issue when updating product in cron task
 
 = 1.1.3 =
 * Added transaction status to the token column if the token hasn't been minted yet
