@@ -290,35 +290,35 @@ class RestAdapter
         return $response_body;
     }
 
-    static $bak_authorized_routes = ["api/v1/products", "api/v1/auth"];
-
-    // Handle authorization for custom REST API endpoint
-    public static function rest_api_authorization($result, $server, $request)
+    // Function to check if the route is authorized
+    public static function check_permission($request)
     {
-        if (self::is_authorized_route($request)) { // Check user capabilities or roles here
-            // Example: Allow only logged-in users
-            if (!is_user_logged_in()) {
-                return new \WP_Error('rest_not_logged_in', 'You must be logged in to access this endpoint.', array('status' => 401));
-            }
 
-            // Example: Allow only users with 'edit_posts' capability
-            if (!current_user_can('edit_posts')) {
-                return new \WP_Error('rest_forbidden', 'You do not have permission to access this endpoint.', array('status' => 403));
-            }
-
-            return $result;
+        // Check if authorization header is present
+        $authorization = $request->get_header('Authorization');
+        if (empty($authorization)) {
+            return new \WP_Error('rest_no_authorization', 'Authorization header is missing.', array('status' => 401));
         }
 
-        return new \WP_Error('rest_forbidden', 'You do not have permission to access this endpoint.', array('status' => 403));
-    }
+        // Extract the token from the Authorization header
+        $auth_header = str_replace('Basic ', '', $authorization);
+        // $decoded_auth = base64_decode($auth_header);
 
-    // Function to check if the route is authorized
-    public static function is_authorized_route($request)
-    {
+        list($username, $password) = explode(':', $auth_header);
 
-        var_dump($request->get_route());
-        exit;
-        return in_array($request->get_route(), self::$bak_authorized_routes) && in_array($request->get_method(), ['GET', 'POST', 'DELETE', 'PUT']);
+        // Authenticate the user using the application password
+        $user = wp_authenticate_application_password(null, $username, $password);
+
+        if (is_wp_error($user)) {
+            return new \WP_Error('rest_invalid_authorization', 'Invalid authorization token.', array('status' => 401));
+        }
+
+        // Example: Allow only users with 'edit_posts' capability
+        if (!$user->has_cap('edit_posts')) {
+            return new \WP_Error('rest_forbidden', 'You do not have permission to access this endpoint.', array('status' => 403));
+        }
+
+        return True;
     }
 
     // Register a custom REST API endpoint for products
@@ -332,6 +332,7 @@ class RestAdapter
             array(
                 'methods' => 'GET',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
 
@@ -342,6 +343,7 @@ class RestAdapter
             array(
                 'methods' => 'POST',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
 
@@ -351,6 +353,7 @@ class RestAdapter
             array(
                 'methods' => 'POST',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
 
@@ -361,6 +364,7 @@ class RestAdapter
             array(
                 'methods' => 'PUT',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
 
@@ -370,6 +374,7 @@ class RestAdapter
             array(
                 'methods' => 'PUT',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
 
@@ -380,6 +385,7 @@ class RestAdapter
             array(
                 'methods' => 'DELETE',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
     }
@@ -394,6 +400,7 @@ class RestAdapter
             array(
                 'methods' => 'POST',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
 
@@ -403,6 +410,7 @@ class RestAdapter
             array(
                 'methods' => 'POST',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'permission_callback' => array("BakExtension\api\RestAdapter", 'check_permission')
             )
         );
 

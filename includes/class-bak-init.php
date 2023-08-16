@@ -59,7 +59,6 @@ class BakWCExtension
         add_action('woocommerce_update_options_bak_settings', array('BakExtension\core\Settings', 'bak_update_options_bak_settings'));
 
         //==================================== REST api ===================================
-        add_filter('rest_pre_dispatch', array('BakExtension\api\RestAdapter', 'rest_api_authorization'), 10, 3);
         add_action('rest_api_init', array('BakExtension\api\RestAdapter', 'auth_routes'));
         add_action('rest_api_init', array('BakExtension\api\RestAdapter', 'product_routes'));
 
