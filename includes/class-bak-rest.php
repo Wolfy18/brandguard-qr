@@ -298,20 +298,26 @@ class RestAdapter
         if (self::is_authorized_route($request)) { // Check user capabilities or roles here
             // Example: Allow only logged-in users
             if (!is_user_logged_in()) {
-                return new WP_Error('rest_not_logged_in', 'You must be logged in to access this endpoint.', array('status' => 401));
+                return new \WP_Error('rest_not_logged_in', 'You must be logged in to access this endpoint.', array('status' => 401));
             }
 
             // Example: Allow only users with 'edit_posts' capability
             if (!current_user_can('edit_posts')) {
-                return new WP_Error('rest_forbidden', 'You do not have permission to access this endpoint.', array('status' => 403));
+                return new \WP_Error('rest_forbidden', 'You do not have permission to access this endpoint.', array('status' => 403));
             }
+
+            return $result;
         }
-        return $result;
+
+        return new \WP_Error('rest_forbidden', 'You do not have permission to access this endpoint.', array('status' => 403));
     }
 
     // Function to check if the route is authorized
     public static function is_authorized_route($request)
     {
+
+        var_dump($request->get_route());
+        exit;
         return in_array($request->get_route(), self::$bak_authorized_routes) && in_array($request->get_method(), ['GET', 'POST', 'DELETE', 'PUT']);
     }
 
