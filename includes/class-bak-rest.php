@@ -312,17 +312,6 @@ class RestAdapter
         return in_array($request->get_route(), self::$bak_authorized_routes) && in_array($request->get_method(), ['GET', 'POST', 'DELETE', 'PUT']);
     }
 
-    // Callback function for getting product details
-    function custom_get_product_details($request)
-    {
-        $product_id = $request->get_param('id');
-
-        // Your custom logic to retrieve and return the details of the product with $product_id
-        // Example: $product = wc_get_product($product_id);
-        // Example: return $product->get_data();
-    }
-
-
     // Register a custom REST API endpoint for products
     public static function product_routes()
     {
@@ -408,5 +397,15 @@ class RestAdapter
             )
         );
 
+    }
+
+    // Callback function for getting product details
+    function custom_get_product_details($request)
+    {
+        $product_id = $request->get_param('id');
+
+        // Your custom logic to retrieve and return the details of the product with $product_id
+        // Example: $product = wc_get_product($product_id);
+        // Example: return $product->get_data();
     }
 }

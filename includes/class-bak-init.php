@@ -60,6 +60,9 @@ class BakWCExtension
 
         //==================================== REST api ===================================
         add_filter('rest_pre_dispatch', array('BakExtension\api\RestAdapter', 'rest_api_authorization'), 10, 3);
+        add_action('rest_api_init', array('BakExtension\api\RestAdapter', 'auth_routes'));
+        add_action('rest_api_init', array('BakExtension\api\RestAdapter', 'product_routes'));
+
 
         //==================================== Product List ===================================
         add_filter('manage_product_posts_columns', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column'));
