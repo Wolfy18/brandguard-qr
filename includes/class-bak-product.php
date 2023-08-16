@@ -77,13 +77,13 @@ class Product
         <div id="blockchain_product_data" class="panel woocommerce_options_panel">
             <p class="form-field woocommerce-message" style="float:right" <?php if ($asset['uuid'] == '')
                 echo 'style="display:none"' ?>>
-                <button style="line-height:1" id="delete_token" name="delete_token"
-                    class="button-primary woocommerce-save-button">
-                    <span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
-                </button>
-            </p>
+                    <button style="line-height:1" id="delete_token" name="delete_token"
+                        class="button-primary woocommerce-save-button">
+                        <span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
+                    </button>
+                </p>
 
-            <input type="hidden" id="product_id" value="<?php echo get_the_ID() ?>" />
+                <input type="hidden" id="product_id" value="<?php echo get_the_ID() ?>" />
             <input type="hidden" id="bk_nonce" value="<?php echo esc_attr($nonce) ?>" />
 
             <?php
@@ -236,13 +236,13 @@ class Product
                     echo 'style="display:none"' ?>></p>
                     <p class="form-field" <?php if ($asset['uuid'] == '')
                     echo 'style="display:none"' ?>><button name="update_token"
-                        class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
+                            class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
 
-            <?php if (get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) { ?>
-                <p class="form-field"> <a target='_blank' rel='nofollow'
-                        href='https://cexplorer.io/asset/<?php echo esc_html(get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) ?>'>View
-                        in cexplorer.io</a></p>
-            <?php } ?>
+                <?php if (get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) { ?>
+                    <p class="form-field"> <a target='_blank' rel='nofollow'
+                            href='https://cexplorer.io/asset/<?php echo esc_html(get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) ?>'>View
+                            in cexplorer.io</a></p>
+                <?php } ?>
             </div>
 
         </div>
@@ -325,10 +325,10 @@ class Product
                     }
                 } else {
                     ?>
-                <li class="image" data-attachment_id="<?php echo (isset($attachment_id) ? esc_attr($attachment_id) : '') ?>">
-                    <span id="preview_bk_att_token_image"></span>
-                </li>
-                <?php
+                    <li class="image" data-attachment_id="<?php echo (isset($attachment_id) ? esc_attr($attachment_id) : '') ?>">
+                        <span id="preview_bk_att_token_image"></span>
+                    </li>
+                    <?php
                 }
                 ?>
             </ul>
@@ -503,5 +503,28 @@ class Product
         wp_send_json_success("Token Deleted.", 200);
 
         wp_die(); // this is required to terminate immediately and return a proper response
+    }
+
+    public static function get_product_data($product_id)
+    {
+        // grab the product
+        $product = wc_get_product($product_id);
+
+        // save the custom SKU using WooCommerce built-in functions
+        $product_data = array(
+            "uuid" => $product->get_meta('bk_token_uuid'),
+            "policy" => $product->get_meta('bk_token_policy'),
+            "fingerprint" => $product->get_meta('bk_token_fingerprint'),
+            "asset_name" => $product->get_meta('bk_token_asset_name'),
+            "name" => $product->get_meta('bk_token_name'),
+            "image" => $product->get_meta('bk_token_image'),
+            "amount" => $product->get_meta('bk_token_amount'),
+            "status" => $product->get_meta('bk_token_status'),
+            "transaction" => $product->get_meta('bk_token_transaction'),
+            "json" => $product->get_meta('bk_token_json'),
+            "att_image" => $product->get_meta('bk_att_token_image')
+        );
+
+        return $product_data;
     }
 }

@@ -13,6 +13,9 @@
 namespace BakExtension\api;
 
 defined('ABSPATH') || exit;
+
+use BakExtension\controllers\Product;
+
 class RestAdapter
 {
     public $access_token;
@@ -322,7 +325,7 @@ class RestAdapter
             '/products/(?P<id>\d+)',
             array(
                 'methods' => 'GET',
-                'callback' => 'custom_get_product_details',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
 
@@ -332,7 +335,7 @@ class RestAdapter
             '/products/mint',
             array(
                 'methods' => 'POST',
-                'callback' => 'custom_get_products',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
 
@@ -341,7 +344,7 @@ class RestAdapter
             '/products/ipfs',
             array(
                 'methods' => 'POST',
-                'callback' => 'custom_get_products',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
 
@@ -351,7 +354,7 @@ class RestAdapter
             '/products',
             array(
                 'methods' => 'PUT',
-                'callback' => 'custom_get_products',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
 
@@ -360,7 +363,7 @@ class RestAdapter
             '/products/(?P<id>\d+)',
             array(
                 'methods' => 'PUT',
-                'callback' => 'custom_get_products',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
 
@@ -370,7 +373,7 @@ class RestAdapter
             '/products/(?P<id>\d+)',
             array(
                 'methods' => 'DELETE',
-                'callback' => 'custom_get_products',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
     }
@@ -384,7 +387,7 @@ class RestAdapter
             '/auth/token',
             array(
                 'methods' => 'POST',
-                'callback' => 'custom_get_products',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
 
@@ -393,19 +396,35 @@ class RestAdapter
             '/auth/refresh',
             array(
                 'methods' => 'POST',
-                'callback' => 'custom_get_products',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
             )
         );
 
     }
 
-    // Callback function for getting product details
-    function custom_get_product_details($request)
+    // Callback function for getting product detailsnamespace BakExtension\api;
+    public static function get_product_details($request)
     {
         $product_id = $request->get_param('id');
 
-        // Your custom logic to retrieve and return the details of the product with $product_id
-        // Example: $product = wc_get_product($product_id);
-        // Example: return $product->get_data();
+        if (empty($product_id)) {
+            return new \WP_Error('invalid_param', 'Invalid product ID', array('status' => 400));
+        }
+
+        // Check if the product exists
+        $product = wc_get_product($product_id);
+
+        if (!$product) {
+            return new \WP_Error('not_found', 'Product not found', array('status' => 404));
+        }
+
+        // Get the product data here
+        $product_data = Product::get_product_data($product_id);
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($product_data);
+
+        return $serializer;
     }
 }
