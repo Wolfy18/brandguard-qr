@@ -496,48 +496,51 @@ jQuery(document).ready(function ($) {
 
 	// Mint bulk action
 	$('#posts-filter').on('click', '#doaction', async (e) => {
-		e.preventDefault();
 
-		if ($('#bulk-action-selector-top').val() !== 'mint') return;
+		if ($('#bulk-action-selector-top').val() === 'mint') {
+			e.preventDefault();
+			const selectedProducts = []; // Get the selected product IDs
 
-		const selectedProducts = []; // Get the selected product IDs
+			// Iterate over each row in the WP-List-Table
+			$('.wp-list-table tbody tr').each(function () {
+				const checkbox = $(this).find('input[type="checkbox"]');
 
-		// Iterate over each row in the WP-List-Table
-		$('.wp-list-table tbody tr').each(function () {
-			const checkbox = $(this).find('input[type="checkbox"]');
+				// Check if the checkbox is selected
+				if (checkbox.prop('checked')) {
+					// Retrieve the product ID from the row data or attributes
+					const productId = checkbox.val();
 
-			// Check if the checkbox is selected
-			if (checkbox.prop('checked')) {
-				// Retrieve the product ID from the row data or attributes
-				const productId = checkbox.val();
+					// Store the selected product ID
+					selectedProducts.push(productId);
+				}
+			});
 
-				// Store the selected product ID
-				selectedProducts.push(productId);
+			if (!selectedProducts.length) {
+				Swal.fire({ title: 'Please select products', icon: 'info' });
+				return;
 			}
-		});
 
-		if (!selectedProducts.length) {
-			Swal.fire({ title: 'Please select products', icon: 'info' });
+			// Add check for existing products in bak
+			// if found then show alert
+			Swal.fire({
+				title: 'Are you sure?',
+				text: 'This action is irreversible! Please note that any blockchain-related data will be overwritten',
+				icon: 'question',
+				showCancelButton: true,
+				cancelButtonColor: '#c7c7c9',
+				confirmButtonText: 'Yes, mint it!',
+			}).then((result) => {
+				/* Read more about isConfirmed, isDenied below */
+				if (result.isConfirmed) {
+					startMinting(selectedProducts);
+				} else if (result.isDenied) {
+					Swal.fire('Changes are not saved', '', 'info');
+				}
+			});
 			return;
 		}
 
-		// Add check for existing products in bak
-		// if found then show alert
-		Swal.fire({
-			title: 'Are you sure?',
-			text: 'This action is irreversible! Please note that any blockchain-related data will be overwritten',
-			icon: 'question',
-			showCancelButton: true,
-			cancelButtonColor: '#c7c7c9',
-			confirmButtonText: 'Yes, mint it!',
-		}).then((result) => {
-			/* Read more about isConfirmed, isDenied below */
-			if (result.isConfirmed) {
-				startMinting(selectedProducts);
-			} else if (result.isDenied) {
-				Swal.fire('Changes are not saved', '', 'info');
-			}
-		});
+
 	});
 });
 

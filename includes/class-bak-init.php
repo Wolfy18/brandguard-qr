@@ -58,6 +58,9 @@ class BakWCExtension
         add_action('woocommerce_settings_tabs_bak_settings', array('BakExtension\core\Settings', 'bak_add_bak_settings'));
         add_action('woocommerce_update_options_bak_settings', array('BakExtension\core\Settings', 'bak_update_options_bak_settings'));
 
+        //==================================== REST api ===================================
+        add_filter('rest_pre_dispatch', array('BakExtension\api\RestAdapter', 'rest_api_authorization'), 10, 3);
+
         //==================================== Product List ===================================
         add_filter('manage_product_posts_columns', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column'));
         add_filter('bulk_actions-edit-product', array("BakExtension\controllers\ProductList", 'add_mint_bulk_action'));

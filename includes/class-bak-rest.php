@@ -286,4 +286,127 @@ class RestAdapter
 
         return $response_body;
     }
+
+    static $bak_authorized_routes = ["api/v1/products", "api/v1/auth"];
+
+    // Handle authorization for custom REST API endpoint
+    public static function rest_api_authorization($result, $server, $request)
+    {
+        if (self::is_authorized_route($request)) { // Check user capabilities or roles here
+            // Example: Allow only logged-in users
+            if (!is_user_logged_in()) {
+                return new WP_Error('rest_not_logged_in', 'You must be logged in to access this endpoint.', array('status' => 401));
+            }
+
+            // Example: Allow only users with 'edit_posts' capability
+            if (!current_user_can('edit_posts')) {
+                return new WP_Error('rest_forbidden', 'You do not have permission to access this endpoint.', array('status' => 403));
+            }
+        }
+        return $result;
+    }
+
+    // Function to check if the route is authorized
+    public static function is_authorized_route($request)
+    {
+        return in_array($request->get_route(), self::$bak_authorized_routes) && in_array($request->get_method(), ['GET', 'POST', 'DELETE', 'PUT']);
+    }
+
+    // Callback function for getting product details
+    function custom_get_product_details($request)
+    {
+        $product_id = $request->get_param('id');
+
+        // Your custom logic to retrieve and return the details of the product with $product_id
+        // Example: $product = wc_get_product($product_id);
+        // Example: return $product->get_data();
+    }
+
+
+    // Register a custom REST API endpoint for products
+    public static function product_routes()
+    {
+
+        # GET
+        register_rest_route(
+            'bak/v1',
+            '/products/(?P<id>\d+)',
+            array(
+                'methods' => 'GET',
+                'callback' => 'custom_get_product_details',
+            )
+        );
+
+        # POST
+        register_rest_route(
+            'bak/v1',
+            '/products/mint',
+            array(
+                'methods' => 'POST',
+                'callback' => 'custom_get_products',
+            )
+        );
+
+        register_rest_route(
+            'bak/v1',
+            '/products/ipfs',
+            array(
+                'methods' => 'POST',
+                'callback' => 'custom_get_products',
+            )
+        );
+
+        # PUT
+        register_rest_route(
+            'bak/v1',
+            '/products',
+            array(
+                'methods' => 'PUT',
+                'callback' => 'custom_get_products',
+            )
+        );
+
+        register_rest_route(
+            'bak/v1',
+            '/products/(?P<id>\d+)',
+            array(
+                'methods' => 'PUT',
+                'callback' => 'custom_get_products',
+            )
+        );
+
+        # DELETE
+        register_rest_route(
+            'bak/v1',
+            '/products/(?P<id>\d+)',
+            array(
+                'methods' => 'DELETE',
+                'callback' => 'custom_get_products',
+            )
+        );
+    }
+
+    public static function auth_routes()
+    {
+
+        # POST
+        register_rest_route(
+            'bak/v1',
+            '/auth/token',
+            array(
+                'methods' => 'POST',
+                'callback' => 'custom_get_products',
+            )
+        );
+
+        register_rest_route(
+            'bak/v1',
+            '/auth/refresh',
+            array(
+                'methods' => 'POST',
+                'callback' => 'custom_get_products',
+            )
+        );
+
+    }
 }
