@@ -316,28 +316,10 @@ class ProductList
 	{
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'update_records_action') {
 			// Perform your custom action here using the $_REQUEST data
-
-			$func = function ($product) {
-
-				$data = array(
-					'bk_token_uuid' => $product['uuid'],
-					// 'bk_token_policy' =>  $bk_token_policy,
-					'bk_token_asset_name' => $product['asset_name'],
-					'bk_token_name' => $product['name'],
-					'bk_token_image' => $product['image'],
-					'bk_token_amount' => $product['amount'],
-					'bk_token_status' => $product['status'],
-					'bk_token_transaction' => $product['transaction'],
-					'bk_att_token_image' => $product['image'],
-				);
-
-				return self::update_record($product["product_id"], $data);
-			};
-
 			$response = array(
 				'success' => true,
 				'message' => 'Updated record',
-				'data' => array_map($func, $_POST['products'])
+				'data' => self::update_products($_POST['products'])
 			);
 		} else {
 			$response = array(
@@ -347,5 +329,26 @@ class ProductList
 		}
 
 		wp_send_json($response);
+	}
+
+	public static function update_products($products)
+	{
+		$func = function ($product) {
+
+			$data = array(
+				'bk_token_uuid' => $product['uuid'],
+				'bk_token_asset_name' => $product['asset_name'],
+				'bk_token_name' => $product['name'],
+				'bk_token_image' => $product['image'],
+				'bk_token_amount' => $product['amount'],
+				'bk_token_status' => $product['status'],
+				'bk_token_transaction' => $product['transaction'],
+				'bk_att_token_image' => $product['image'],
+			);
+
+			return self::update_record($product["product_id"], $data);
+		};
+
+		return array_map($func, $products);
 	}
 }

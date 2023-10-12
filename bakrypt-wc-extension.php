@@ -41,8 +41,6 @@ function bak_add_every_three_minutes($schedules)
 	return $schedules;
 }
 
-
-
 function wcbakrypt_init()
 {
 	BakWCExtension::init();
@@ -70,9 +68,3 @@ function cron_deactivate()
 register_activation_hook(WCBAK_PLUGIN_FILE, 'cron_activate');
 add_action('bak_plugin_cron_task', array("BakExtension\core\Cron", "bak_run_cron_task"), 12);
 register_deactivation_hook(WCBAK_PLUGIN_FILE, 'cron_deactivate');
-
-
-// Enable application passwords for development environment
-if (defined('WP_ENVIRONMENT_TYPE') && WP_ENVIRONMENT_TYPE === 'development') {
-	add_filter('wp_is_application_passwords_available', '__return_true');
-}
