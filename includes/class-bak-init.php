@@ -17,6 +17,7 @@ defined('ABSPATH') || exit;
 
 use BakExtension\core\Settings;
 use BakExtension\api\RestAdapter;
+use BakExtension\api\RestRoutes;
 use BakExtension\controllers\ProductList;
 use BakExtension\controllers\Product;
 
@@ -59,8 +60,8 @@ class BakWCExtension
         add_action('woocommerce_update_options_bak_settings', array('BakExtension\core\Settings', 'bak_update_options_bak_settings'));
 
         //==================================== REST api ===================================
-        add_action('rest_api_init', array('BakExtension\api\RestAdapter', 'auth_routes'));
-        add_action('rest_api_init', array('BakExtension\api\RestAdapter', 'product_routes'));
+        add_action('rest_api_init', array('BakExtension\api\RestRoutes', 'auth_routes'));
+        add_action('rest_api_init', array('BakExtension\api\RestRoutes', 'product_routes'));
 
 
         //==================================== Product List ===================================

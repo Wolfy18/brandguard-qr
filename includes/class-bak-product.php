@@ -464,7 +464,7 @@ class Product
         self::update_record($post_id);
     }
 
-    private static function delete_record($post_id)
+    public static function delete_record($post_id)
     {
         $meta_keys = array(
             'bk_token_uuid',
