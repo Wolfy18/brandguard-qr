@@ -291,8 +291,8 @@ class RestAdapter
         return $response_body;
     }
 
-    // Callback function for getting product detailsnamespace BakExtension\api;
-    public static function get_product_details($request)
+    // REST API functions
+    public static function get_product_detail($request)
     {
         $product_id = $request->get_param('id');
 
@@ -346,14 +346,14 @@ class RestAdapter
     {
         $body = $request->get_body();
 
-        if (!array_key_exists('products', $body)) {
+        if (!array_key_exists('product_ids', $body)) {
             return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
         }
 
         $response = array(
             'success' => true,
             'message' => 'Updated record',
-            'data' => ProductList::update_products($body['products'])
+            'data' => ProductList::update_products($body['product_ids'])
         );
 
         // Create a serializer instance
@@ -385,6 +385,73 @@ class RestAdapter
         $serializer->set_data(array(
             "detail" => "Done"
         ));
+
+        return $serializer;
+    }
+
+
+    public static function fetch_access_token($request)
+    {
+        $self = new self();
+
+        $access = $self->generate_access_token();
+
+        $response = array(
+            'success' => true,
+            'message' => 'Access Token',
+            'data' => $access,
+            'testnet' => $self->settings['testnet'] == "yes" ? true : false
+        );
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
+
+        return $serializer;
+    }
+
+    public static function get_ipfs_images($request)
+    {
+        $body = $request->get_body();
+
+        if (!array_key_exists('product_ids', $body)) {
+            return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
+        }
+
+        $response = array(
+            'success' => true,
+            'message' => 'Success',
+            'data' => array_map(function ($id) {
+                return Product::fetch_ipfs_image($id);
+            }, $body['product_ids'])
+        );
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
+
+        return $serializer;
+    }
+
+    public static function upload_ipfs_images($request)
+    {
+        $body = $request->get_body();
+
+        if (!array_key_exists('product_ids', $body)) {
+            return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
+        }
+
+        $response = array(
+            'success' => true,
+            'message' => 'Success',
+            'data' => array_map(function ($id) {
+                return Product::upload_ipfs_image($id);
+            }, $body['product_ids'])
+        );
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
 
         return $serializer;
     }

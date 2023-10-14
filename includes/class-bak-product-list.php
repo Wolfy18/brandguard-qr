@@ -136,44 +136,12 @@ class ProductList
 	public static function handle_mint_bulk_action_ajax()
 	{
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'mint_bulk_action') {
-			// Perform your custom action here using the $_REQUEST data
-
-			$func = function ($id) {
-
-				$bk_token_att = get_post_meta($id, 'bk_att_token_image', true);
-
-				if (!$bk_token_att) {
-					$featured_image_url = get_the_post_thumbnail_url($id, 'full');
-
-					if (!$featured_image_url) {
-						$featured_image_url = wc_placeholder_img_src();
-					}
-
-					$bk_token_att = attachment_url_to_postid($featured_image_url);
-				}
-
-				$img_metadata = wp_get_attachment_metadata($bk_token_att);
-				$img_ipfs = null;
-				if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
-					$img_ipfs = $img_metadata['ipfs'];
-				}
-
-				if (!$img_ipfs) {
-					$img_ipfs = get_post_meta($id, 'bk_token_image', true);
-				}
-
-				return array(
-					'product_id' => $id,
-					'image' => $img_ipfs,
-					'name' => get_the_title($id),
-					// 'short_description' => wp_trim_excerpt(get_post_field('post_excerpt', $id))
-				);
-			};
-
 			$response = array(
 				'success' => true,
 				'message' => 'Minting selected products!',
-				'data' => array_map($func, $_POST['product_ids'])
+				'data' => array_map(function ($id) {
+					return Product::fetch_ipfs_images($id);
+				}, $_POST['product_ids'])
 			);
 		} else {
 			$response = array(
@@ -188,47 +156,12 @@ class ProductList
 	public static function handle_upload_ipfs_bulk_action_ajax()
 	{
 		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'upload_ipfs_bulk_action') {
-			// Perform your custom action here using the $_REQUEST data
-
-			$func = function ($id) {
-				$featured_image_url = get_the_post_thumbnail_url($id, 'full');
-
-				if (!$featured_image_url) {
-					$featured_image_url = wc_placeholder_img_src();
-				}
-
-				if (!self::$adapter) {
-					self::$adapter = new RestAdapter();
-				}
-
-				$bak_file = self::$adapter->upload_attachment_to_ipfs_from_url($featured_image_url);
-
-				$img_ipfs = $bak_file->{'ipfs'};
-
-				// grab the product
-				$product = wc_get_product($id);
-
-				// save the custom SKU using WooCommerce built-in functions
-				$product->update_meta_data('bk_token_image', $img_ipfs);
-				$product->update_meta_data('bk_att_token_image', $img_ipfs);
-
-				$attachment_id = attachment_url_to_postid($featured_image_url);
-				if ($attachment_id) {
-					$img_metadata = wp_get_attachment_metadata($attachment_id);
-					$img_metadata['ipfs'] = $img_ipfs;
-					wp_update_attachment_metadata($attachment_id, $img_metadata); // save it back to the db
-				}
-
-				return array(
-					'product_id' => $id,
-					'image' => $img_ipfs,
-				);
-			};
-
 			$response = array(
 				'success' => true,
 				'message' => 'Uploaded images for selected products!',
-				'data' => array_map($func, $_POST['product_ids'])
+				'data' => array_map(function ($id) {
+					return Product::upload_ipfs_image($id);
+				}, $_POST['product_ids'])
 			);
 		} else {
 			$response = array(

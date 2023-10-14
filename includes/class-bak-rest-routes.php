@@ -38,7 +38,7 @@ class RestRoutes
             '/products/(?P<id>\d+)',
             array(
                 'methods' => 'GET',
-                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_detail'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )
         );
@@ -49,7 +49,7 @@ class RestRoutes
             '/products/ipfs',
             array(
                 'methods' => 'GET',
-                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'callback' => array('BakExtension\api\RestAdapter', 'get_ipfs_images'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )
         );
@@ -61,7 +61,7 @@ class RestRoutes
             '/products/ipfs',
             array(
                 'methods' => 'POST',
-                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'callback' => array('BakExtension\api\RestAdapter', 'upload_ipfs_images'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )
         );
@@ -111,17 +111,7 @@ class RestRoutes
             '/auth/token',
             array(
                 'methods' => 'POST',
-                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
-                'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
-            )
-        );
-
-        register_rest_route(
-            'bak/v1',
-            '/auth/refresh',
-            array(
-                'methods' => 'POST',
-                'callback' => array('BakExtension\api\RestAdapter', 'get_product_details'),
+                'callback' => array('BakExtension\api\RestAdapter', 'fetch_access_token'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )
         );
