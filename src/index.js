@@ -6,6 +6,7 @@ import renderTransactionModal from './components/transactionModal';
 import renderLaunchpadModal from './components/launchpadModal';
 import showSpinner from './components/spinner';
 import BakryptApiInterface from './api/interfaces';
+import client from './api/client';
 
 const getData = () => {
 	const asset = new FormData();
@@ -161,14 +162,10 @@ function refreshImages(id) {
 }
 
 const updateRecord = async () => {
-	const id = jQuery('#product_id').val();
-	const nonce = jQuery('#bk_nonce').val();
+	const id = document.querySelector('#product_id').value;
+	const nonce = document.querySelector('#bk_nonce').value;
 
 	const body = getData();
-
-	body.set('product_id', id);
-	body.set('bk_nonce', nonce);
-	body.set('action', 'bk_update_record');
 
 	const blockchainDataWrapper = document.querySelector(
 		'#blockchain_product_data'
@@ -179,27 +176,26 @@ const updateRecord = async () => {
 	ReactDOM.render(showSpinner(), spinner);
 	blockchainDataWrapper.appendChild(spinner);
 
-	jQuery.ajax({
-		url: ajaxurl,
-		type: 'POST',
-		data: Object.fromEntries(body),
-		success: (response) => {
-			Swal.fire({
-				title: 'Good!',
-				text: response.data,
-				icon: 'success',
-			});
-			blockchainDataWrapper.removeChild(spinner);
-		},
-		error: (error) => {
-			Swal.fire({
-				title: 'Error',
-				text: error.responseJSON.data,
-				icon: 'error',
-			});
-			blockchainDataWrapper.removeChild(spinner);
-		},
-	});
+	try {
+		client.headers = { ...client.headers, 'X-WP-Nonce': nonce };
+		const data = await client.post(`products/${id}`, Object.entries(body));
+		console.log(data);
+		if (data.status !== 200) throw 'Unable to update product.';
+
+		Swal.fire({
+			title: 'Good!',
+			text: data.responseJSON,
+			icon: 'success',
+		});
+	} catch (error) {
+		Swal.fire({
+			title: 'Error',
+			text: error.responseJSON.data,
+			icon: 'error',
+		});
+	}
+
+	blockchainDataWrapper.removeChild(spinner);
 };
 
 const deleteRecord = async (e) => {
@@ -496,7 +492,6 @@ jQuery(document).ready(function ($) {
 
 	// Mint bulk action
 	$('#posts-filter').on('click', '#doaction', async (e) => {
-
 		if ($('#bulk-action-selector-top').val() === 'mint') {
 			e.preventDefault();
 			const selectedProducts = []; // Get the selected product IDs
@@ -537,10 +532,7 @@ jQuery(document).ready(function ($) {
 					Swal.fire('Changes are not saved', '', 'info');
 				}
 			});
-			return;
 		}
-
-
 	});
 });
 
