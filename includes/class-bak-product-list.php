@@ -140,7 +140,7 @@ class ProductList
 				'success' => true,
 				'message' => 'Minting selected products!',
 				'data' => array_map(function ($id) {
-					return Product::fetch_ipfs_images($id);
+					return Product::fetch_ipfs_image($id);
 				}, $_POST['product_ids'])
 			);
 		} else {
