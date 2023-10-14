@@ -190,7 +190,7 @@ const updateRecord = async () => {
 	} catch (error) {
 		Swal.fire({
 			title: 'Error',
-			text: error.responseJSON.data,
+			text: error,
 			icon: 'error',
 		});
 	}
