@@ -177,7 +177,7 @@ const updateRecord = async () => {
 	blockchainDataWrapper.appendChild(spinner);
 
 	try {
-		client.headers = { ...client.headers, 'X-WP-Nonce': nonce };
+		client.defaults.headers.common['X-WP-Nonce'] = nonce;
 		const data = await client.post(`products/${id}`, Object.entries(body));
 		console.log(data);
 		if (data.status !== 200) throw 'Unable to update product.';
