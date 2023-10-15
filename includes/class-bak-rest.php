@@ -333,9 +333,9 @@ class RestAdapter
         }
 
         $body = $request->get_body();
-
+        $body = json_decode($body, true);
         // Get the product data here    
-        $product = Product::update_record($product_id, json_decode($body, true));
+        $product = Product::update_record($product_id, $body);
         $product_data = Product::get_product_data($product_id);
         // Create a serializer instance
         $serializer = new \WP_REST_Response();
@@ -347,6 +347,7 @@ class RestAdapter
     public static function update_products_bulk($request)
     {
         $body = $request->get_body();
+        $body = json_decode($body, true);
 
         if (!array_key_exists('product_ids', $body)) {
             return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
@@ -415,6 +416,7 @@ class RestAdapter
     public static function get_ipfs_images($request)
     {
         $body = $request->get_body();
+        $body = json_decode($body, true);
 
         if (!array_key_exists('product_ids', $body)) {
             return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
@@ -438,6 +440,7 @@ class RestAdapter
     public static function upload_ipfs_images($request)
     {
         $body = $request->get_body();
+        $body = json_decode($body, true);
 
         if (!array_key_exists('product_ids', $body)) {
             return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
