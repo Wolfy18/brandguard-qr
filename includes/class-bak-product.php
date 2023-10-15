@@ -243,6 +243,74 @@ class Product
 
         </div>
 
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                $('a#bk_token_image_media_manager').click(function(e) {
+                    e.preventDefault();
+                    var imageFrame;
+                    if (imageFrame) {
+                        imageFrame.open();
+                    }
+                    // Define imageFrame as wp.media object
+                    imageFrame = wp.media({
+                        title: 'Select Media',
+                        multiple: false,
+                        library: {
+                            type: 'image',
+                        },
+                    });
+                    imageFrame.on('close', function() {
+                        // On close, get selections and save to the hidden input
+                        // plus other AJAX stuff to refresh the image preview
+                        const selection = imageFrame.state().get('selection');
+                        const galleryIds = new Array();
+                        let idx = 0;
+                        selection.each(function(attachment) {
+                            galleryIds[idx] = attachment.id;
+                            idx++;
+                        });
+                        const ids = galleryIds.join(',');
+                        if (ids.length === 0) return true; //if closed withput selecting an image
+                        $('input#bk_att_token_image').val(ids);
+                        refreshImages(ids);
+                    });
+
+                    imageFrame.on('open', function() {
+                        // On open, get the id from the hidden input
+                        // and select the appropiate images in the media manager
+                        const selection = imageFrame.state().get('selection');
+                        const ids = $('input#bk_att_token_image').val().split(',');
+                        ids.forEach(function(id) {
+                            const attachment = wp.media.attachment(id);
+                            attachment.fetch();
+                            selection.add(attachment ? [attachment] : []);
+                        });
+                    });
+
+                    imageFrame.open();
+                });
+            });
+
+            // Ajax request to refresh the image preview
+            function refreshImages(id) {
+                const data = {
+                    action: 'product_token_get_image',
+                    id,
+                };
+                jQuery.get(ajaxurl, data, function(response) {
+                    if (response.success === true) {
+                        jQuery('#preview_bk_att_token_image').replaceWith(
+                            response.data.image
+                        );
+
+                        jQuery('#bk_att_token_image_ipfs').val(
+                            jQuery('#preview_bk_att_token_image').data('ipfs')
+                        );
+                    }
+                });
+            }
+        </script>
+
         <?php
 
     }
