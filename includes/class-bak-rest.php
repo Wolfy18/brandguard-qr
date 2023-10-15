@@ -335,7 +335,7 @@ class RestAdapter
         $body = $request->get_body();
 
         // Get the product data here    
-        $product = Product::update_record($product_id, $body);
+        $product = Product::update_record($product_id, json_decode($body, true));
         $product_data = Product::get_product_data($product_id);
         // Create a serializer instance
         $serializer = new \WP_REST_Response();

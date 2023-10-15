@@ -1,3 +1,4 @@
+import './index.scss';
 import { createRoot } from 'react-dom';
 import { Spinner } from '@wordpress/components';
 
