@@ -4,96 +4,9 @@ import * as ReactDOM from 'react-dom';
 import Swal from 'sweetalert2';
 import renderTransactionModal from './components/transactionModal';
 import renderLaunchpadModal from './components/launchpadModal';
-import showSpinner from './components/spinner';
 import BakryptApiInterface from './api/interfaces';
 import client from './api/client';
-
-const getData = () => {
-	const asset = new FormData();
-
-	const inputs = [
-		'bk_token_uuid',
-		'bk_token_policy',
-		'bk_token_fingerprint',
-		'bk_token_asset_name',
-		'bk_token_image',
-		'bk_token_name',
-		'bk_token_amount',
-		'bk_token_status',
-		'bk_token_transaction',
-		'bk_token_json',
-		'bk_att_token_image',
-		'bk_token_json',
-	];
-
-	inputs.map((i) => {
-		const input = document.querySelector(`#${i}`);
-		if (input) {
-			asset.set(i, input.value);
-		}
-
-		return i;
-	});
-
-	return asset;
-};
-
-const setData = (asset, tx) => {
-	const inputs = [
-		'bk_token_uuid',
-		'bk_token_policy',
-		'bk_token_fingerprint',
-		'bk_token_asset_name',
-		'bk_token_image',
-		'bk_token_name',
-		'bk_token_amount',
-		'bk_token_status',
-		'bk_token_transaction',
-		'bk_token_json',
-	];
-
-	inputs.map((i) => {
-		const input = document.querySelector(`#${i}`);
-		if (input && asset) {
-			switch (i) {
-				case 'bk_token_uuid':
-					input.value = asset.uuid;
-					break;
-				case 'bk_token_policy':
-					input.value = tx.policy_id;
-					break;
-				case 'bk_token_fingerprint':
-					input.value = asset.fingerprint;
-					break;
-				case 'bk_token_asset_name':
-					input.value = asset.asset_name;
-					break;
-				case 'bk_token_name':
-					input.value = asset.name;
-					break;
-				case 'bk_token_image':
-					input.value = asset.image;
-					break;
-				case 'bk_token_amount':
-					input.value = asset.amount;
-					break;
-				case 'bk_token_status':
-					input.value = tx.status;
-					break;
-				case 'bk_token_transaction':
-					input.value = tx.uuid;
-					break;
-				case 'bk_token_json':
-					input.value = JSON.stringify(tx.metadata);
-					break;
-				default:
-					break;
-			}
-		}
-
-		return i;
-	});
-};
+import { injectSpinner, removeSpinner, getData, setData } from './utils';
 
 jQuery(document).ready(function ($) {
 	$('a#bk_token_image_media_manager').click(function (e) {
@@ -164,19 +77,10 @@ function refreshImages(id) {
 const updateRecord = async () => {
 	const id = document.querySelector('#product_id').value;
 	const body = getData();
-
-	const blockchainDataWrapper = document.querySelector(
-		'#blockchain_product_data'
-	);
-	const spinner = document.createElement('div');
-	spinner.id = 'spinner';
-
-	ReactDOM.render(showSpinner(), spinner);
-	blockchainDataWrapper.appendChild(spinner);
-	console.log(Object.entries(body), '< -----');
+	injectSpinner();
 	try {
-		const data = await client.put(`products/${id}`, Object.entries(body));
-		console.log(data);
+		const data = await client.put(`products/${id}`, body);
+
 		if (data.status !== 200) throw 'Unable to update product.';
 
 		Swal.fire({
@@ -191,8 +95,7 @@ const updateRecord = async () => {
 			icon: 'error',
 		});
 	}
-
-	blockchainDataWrapper.removeChild(spinner);
+	removeSpinner();
 };
 
 const deleteRecord = async (e) => {
@@ -206,44 +109,33 @@ const deleteRecord = async (e) => {
 		confirmButtonColor: '#d33',
 		cancelButtonColor: '#c7c7c9',
 		confirmButtonText: 'Yes, delete it!',
-	}).then((result) => {
+	}).then(async (result) => {
 		/* Read more about isConfirmed, isDenied below */
 		if (result.isConfirmed) {
-			const id = jQuery('#product_id').val();
-			const nonce = jQuery('#bk_nonce').val();
+			const id = document.querySelector('#product_id').value;
 
-			const body = new FormData();
+			injectSpinner();
+			try {
+				const data = await client.delete(`products/${id}`);
 
-			body.set('product_id', id);
-			body.set('bk_nonce', nonce);
-			body.set('action', 'bk_delete_record');
+				if (data.status !== 200)
+					throw 'Unable to delete token information.';
 
-			const blockchainDataWrapper = document.querySelector(
-				'#blockchain_product_data'
-			);
-			const spinner = document.createElement('div');
-			spinner.id = 'spinner';
+				Swal.fire({
+					title: 'Good!',
+					text: data.responseJSON,
+					icon: 'The product was reset. The page will reload automatically.',
+				});
 
-			ReactDOM.render(showSpinner(), spinner);
-			blockchainDataWrapper.appendChild(spinner);
-
-			jQuery.ajax({
-				url: ajaxurl,
-				type: 'POST',
-				data: Object.fromEntries(body),
-				success: () => {
-					blockchainDataWrapper.removeChild(spinner);
-					window.location.reload();
-				},
-				error: (error) => {
-					Swal.fire({
-						title: 'Error',
-						text: error.responseJSON.data,
-						icon: 'error',
-					});
-					blockchainDataWrapper.removeChild(spinner);
-				},
-			});
+				window.location.reload();
+			} catch (error) {
+				Swal.fire({
+					title: 'Error',
+					text: error,
+					icon: 'error',
+				});
+			}
+			removeSpinner();
 		} else if (result.isDenied) {
 			Swal.fire('Changes are not saved', '', 'info');
 		}
@@ -347,12 +239,7 @@ jQuery(document).ready(function ($) {
 	};
 
 	const startMinting = (selectedProducts) => {
-		const blockchainDataWrapper = document.querySelector('#posts-filter');
-		const spinner = document.createElement('div');
-		spinner.id = 'spinner';
-
-		ReactDOM.render(showSpinner(), spinner);
-		blockchainDataWrapper.appendChild(spinner);
+		injectSpinner();
 
 		Swal.fire({
 			title: 'Prepping data',
@@ -418,7 +305,7 @@ jQuery(document).ready(function ($) {
 							product_ids: missingImgs.map((i) => i.product_id),
 						},
 						success: (ipfsRes) => {
-							blockchainDataWrapper.removeChild(spinner);
+							removeSpinner();
 							// Process the AJAX ipfsRes
 							const collectionFinal = bulkResp.data.map((i) => {
 								const elem = { ...i };
@@ -455,17 +342,17 @@ jQuery(document).ready(function ($) {
 									backdrop: '',
 								},
 							});
-							blockchainDataWrapper.removeChild(spinner);
+							removeSpinner();
 							// Handle AJAX error
 						},
 					});
 				} else {
-					blockchainDataWrapper.removeChild(spinner);
+					removeSpinner();
 					loadForm(bulkResp.data);
 				}
 			},
 			error: () => {
-				blockchainDataWrapper.removeChild(spinner);
+				removeSpinner();
 				Swal.fire({
 					title: 'Error',
 					text: 'Unable to start minting process',
@@ -609,14 +496,7 @@ const init = async () => {
 	const syncAsset = async (e) => {
 		e.preventDefault();
 
-		const blockchainDataWrapper = document.querySelector(
-			'#blockchain_product_data'
-		);
-		const spinner = document.createElement('div');
-		spinner.id = 'spinner';
-
-		ReactDOM.render(showSpinner(), spinner);
-		blockchainDataWrapper.appendChild(spinner);
+		injectSpinner();
 
 		const tokenUuid = document.querySelector('#bk_token_uuid').value;
 		const asset = await helper.getAsset(tokenUuid);
@@ -629,7 +509,7 @@ const init = async () => {
 				icon: 'error',
 			});
 
-			blockchainDataWrapper.removeChild(spinner);
+			removeSpinner();
 			return;
 		}
 
@@ -645,7 +525,7 @@ const init = async () => {
 
 		updateRecord();
 
-		blockchainDataWrapper.removeChild(spinner);
+		removeSpinner();
 	};
 
 	// Sync Btn
@@ -656,19 +536,12 @@ const init = async () => {
 	}
 
 	const viewTransaction = async () => {
-		const blockchainDataWrapper = document.querySelector(
-			'#blockchain_product_data'
-		);
-		const spinner = document.createElement('div');
-		spinner.id = 'spinner';
-
-		ReactDOM.render(showSpinner(), spinner);
-		blockchainDataWrapper.appendChild(spinner);
+		injectSpinner();
 
 		const tokenUuid = document.querySelector('#bk_token_transaction').value;
 		const tx = await helper.getTransaction(tokenUuid);
 
-		blockchainDataWrapper.removeChild(spinner);
+		removeSpinner();
 
 		return tx;
 	};
