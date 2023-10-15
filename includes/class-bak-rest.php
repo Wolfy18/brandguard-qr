@@ -349,7 +349,7 @@ class RestAdapter
         $body = $request->get_body();
         $body = json_decode($body, true);
 
-        if (!array_key_exists('product_ids', $body)) {
+        if (!array_key_exists('products', $body)) {
             return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
         }
 

@@ -1,6 +1,7 @@
 // Import SCSS entry file so that webpack picks up changes
 import './index.scss';
 import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom';
 import Swal from 'sweetalert2';
 import renderTransactionModal from './components/transactionModal';
 import renderLaunchpadModal from './components/launchpadModal';
@@ -144,101 +145,99 @@ const deleteRecord = async (e) => {
 
 // Product List
 jQuery(document).ready(function ($) {
-	const loadForm = (initialData) => {
-		$.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			data: {
-				action: 'access_token_action',
-			},
-			success: (accessResp) => {
-				const wrapper = document.querySelector('#posts-filter');
+	const loadForm = async (initialData) => {
+		let accessToken;
+		let testnet;
+		try {
+			const accessTokenRequest = await client.post(`auth/token`);
 
-				if (!wrapper) return;
+			if (accessTokenRequest.status !== 200)
+				throw 'Unable access Bakrypt API.';
 
-				const token = accessResp.data.access_token;
-				const testnet = accessResp.testnet;
+			accessToken = accessTokenRequest.data.data.access_token;
+			testnet = accessTokenRequest.data.testnet;
+		} catch (error) {
+			Swal.fire({
+				title: 'Error',
+				text: error,
+				icon: 'error',
+			});
+		}
 
-				const mintModalContainer = wrapper;
+		const wrapper = document.querySelector('#posts-filter');
 
-				const modal = document.createElement('div');
+		if (!wrapper) return;
 
-				const setInitial = () => {
-					const data = initialData.map((i) => {
-						return {
-							asset_name: i.name,
-							name: i.name,
-							image: i.image,
-							amount: 1,
-							blockchain: 'ada',
-							description: '',
-						};
+		const mintModalContainer = wrapper;
+
+		const modal = document.createElement('div');
+
+		const setInitial = () => {
+			const data = initialData.map((i) => {
+				return {
+					asset_name: i.name,
+					name: i.name,
+					image: i.image,
+					amount: 1,
+					blockchain: 'ada',
+					description: '',
+				};
+			});
+
+			return JSON.stringify(data);
+		};
+		const handleCallback = async (response) => {
+			if (response.collection && response.transaction) {
+				// Update all records
+				const updateRecords = response.collection.map((i, idx) => {
+					return {
+						...initialData[idx],
+						...i,
+					};
+				});
+
+				try {
+					const updateProductRequest = await client.put(`products`, {
+						products: updateRecords,
 					});
 
-					return JSON.stringify(data);
-				};
-				ReactDOM.render(
-					renderLaunchpadModal(
-						{
-							accessToken: token,
-							testnet,
-							open: true,
-							showButton: false,
-						},
-						setInitial,
-						(response) => {
-							if (response.collection && response.transaction) {
-								// Update all records
-								const updateRecords = response.collection.map(
-									(i, idx) => {
-										return { ...initialData[idx], ...i };
-									}
-								);
+					if (updateProductRequest.status !== 200)
+						throw 'Unable to update products.';
 
-								$.ajax({
-									url: ajaxurl,
-									type: 'POST',
-									data: {
-										action: 'update_records_action',
-										products: updateRecords,
-									},
-									success: () => {
-										Swal.fire({
-											title: 'Products were updated',
-											icon: 'success',
-											text: 'Visit any product for more information about the transaction',
-										}).then(() => {
-											window.location.reload();
-										});
-									},
-									error: (xhr, status, error) => {
-										// Handle AJAX error
-										Swal.fire({
-											title: 'Error',
-											text: error.responseJSON.data,
-											icon: 'error',
-										});
-									},
-								});
-							}
-						}
-					),
-					modal
-				);
-				mintModalContainer.appendChild(modal);
-			},
-			error: (xhr, status, error) => {
-				// Handle AJAX error
-				Swal.fire({
-					title: 'Error',
-					text: error.responseJSON.data,
-					icon: 'error',
-				});
-			},
-		});
+					Swal.fire({
+						title: 'Products were updated',
+						icon: 'success',
+						text: 'Visit any product for more information about the transaction',
+					}).then(() => {
+						window.location.reload();
+					});
+				} catch (error) {
+					Swal.fire({
+						title: 'Error',
+						text: error,
+						icon: 'error',
+					});
+				}
+			}
+		};
+		const rootElement = createRoot(modal);
+		rootElement.render(
+			renderLaunchpadModal(
+				{
+					accessToken,
+					testnet,
+					open: true,
+					showButton: false,
+				},
+				setInitial,
+				handleCallback
+			)
+		);
+
+		mintModalContainer.appendChild(modal);
 	};
 
-	const startMinting = (selectedProducts) => {
+	const startMinting = async (selectedProducts) => {
 		injectSpinner();
 
 		Swal.fire({
@@ -262,100 +261,81 @@ jQuery(document).ready(function ($) {
 				actions: 'custom-toast-position-actions',
 			},
 		});
-
-		$.ajax({
-			url: ajaxurl,
-			type: 'POST',
-			data: {
-				action: 'mint_bulk_action',
+		let missingImgs;
+		let fetchIPFSImagesReq;
+		let uploadedImages = [];
+		try {
+			fetchIPFSImagesReq = await client.get(`products/ipfs`, {
 				product_ids: selectedProducts,
-			},
-			success: (bulkResp) => {
-				// Process the AJAX bulkResp
-				const missingImgs = bulkResp.data.filter(
-					(i) => i.image === '' || !i.image
-				);
-				if (missingImgs.length) {
-					Swal.fire({
-						title: 'Uploading Images to IPFS',
-						icon: 'info',
-						timer: 6000,
-						showConfirmButton: false,
-						position: 'top-end', // Adjust position as needed
-						toast: true, // Enables the toastr-style appearance
-						showClass: {
-							popup: 'swal2-noanimation',
-							backdrop: 'swal2-noanimation',
-						},
-						hideClass: {
-							popup: '',
-							backdrop: '',
-						},
-						customClass: {
-							popup: 'custom-toast-position',
-							container: 'custom-toast-position-container',
-							actions: 'custom-toast-position-actions',
-						},
-					});
-					$.ajax({
-						url: ajaxurl,
-						type: 'POST',
-						data: {
-							action: 'upload_ipfs_bulk_action',
-							product_ids: missingImgs.map((i) => i.product_id),
-						},
-						success: (ipfsRes) => {
-							removeSpinner();
-							// Process the AJAX ipfsRes
-							const collectionFinal = bulkResp.data.map((i) => {
-								const elem = { ...i };
+			});
 
-								if (
-									ipfsRes.data
-										.map((j) => j.product_id)
-										.includes(i.product_id)
-								) {
-									elem.image = ipfsRes.data.filter(
-										(j) => j.product_id === i.product_id
-									)[0].image;
-								}
-								return elem;
-							});
+			if (fetchIPFSImagesReq.status !== 200)
+				throw 'Unable to fetch images.';
 
-							loadForm(collectionFinal);
-						},
-						error: () => {
-							Swal.fire({
-								title: 'Error',
-								text: 'Unable to start upload images',
-								icon: 'error',
-								timer: 6000,
-								showConfirmButton: false,
-								position: 'top-end', // Adjust position as needed
-								toast: true, // Enables the toastr-style appearance
-								showClass: {
-									popup: 'swal2-noanimation',
-									backdrop: 'swal2-noanimation',
-								},
-								hideClass: {
-									popup: '',
-									backdrop: '',
-								},
-							});
-							removeSpinner();
-							// Handle AJAX error
-						},
-					});
-				} else {
-					removeSpinner();
-					loadForm(bulkResp.data);
-				}
-			},
-			error: () => {
-				removeSpinner();
+			missingImgs = fetchIPFSImagesReq.data.filter(
+				(i) => i.image === '' || !i.image
+			);
+		} catch (error) {
+			Swal.fire({
+				title: 'Error',
+				text: error,
+				icon: 'error',
+				timer: 6000,
+				showConfirmButton: false,
+				position: 'top-end', // Adjust position as needed
+				toast: true, // Enables the toastr-style appearance
+				showClass: {
+					popup: 'swal2-noanimation',
+					backdrop: 'swal2-noanimation',
+				},
+				hideClass: {
+					popup: '',
+					backdrop: '',
+				},
+				customClass: {
+					popup: 'custom-toast-position',
+					container: 'custom-toast-position-container',
+					actions: 'custom-toast-position-actions',
+				},
+			});
+		}
+
+		if (missingImgs.length) {
+			Swal.fire({
+				title: 'Uploading Images to IPFS',
+				icon: 'info',
+				timer: 6000,
+				showConfirmButton: false,
+				position: 'top-end', // Adjust position as needed
+				toast: true, // Enables the toastr-style appearance
+				showClass: {
+					popup: 'swal2-noanimation',
+					backdrop: 'swal2-noanimation',
+				},
+				hideClass: {
+					popup: '',
+					backdrop: '',
+				},
+				customClass: {
+					popup: 'custom-toast-position',
+					container: 'custom-toast-position-container',
+					actions: 'custom-toast-position-actions',
+				},
+			});
+
+			try {
+				const uploadImagesReq = await client.post(`products/ipfs`, {
+					product_ids: missingImgs.map((i) => i.product_id),
+				});
+
+				if (uploadImagesReq.status !== 200)
+					throw 'Unable to upload images.';
+
+				uploadedImages = uploadImagesReq.data;
+			} catch (error) {
 				Swal.fire({
 					title: 'Error',
-					text: 'Unable to start minting process',
+					text: error,
 					icon: 'error',
 					timer: 6000,
 					showConfirmButton: false,
@@ -369,9 +349,32 @@ jQuery(document).ready(function ($) {
 						popup: '',
 						backdrop: '',
 					},
+					customClass: {
+						popup: 'custom-toast-position',
+						container: 'custom-toast-position-container',
+						actions: 'custom-toast-position-actions',
+					},
 				});
-			},
+			}
+		}
+
+		// Process the AJAX ipfsRes
+		const collectionFinal = fetchIPFSImagesReq.data.map((i) => {
+			const elem = { ...i };
+
+			if (
+				uploadedImages.map((j) => j.product_id).includes(i.product_id)
+			) {
+				elem.image = uploadedImages.filter(
+					(j) => j.product_id === i.product_id
+				)[0].image;
+			}
+			return elem;
 		});
+
+		loadForm(collectionFinal);
+
+		removeSpinner();
 	};
 
 	// Mint bulk action

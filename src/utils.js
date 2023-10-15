@@ -1,13 +1,10 @@
-import './index.scss';
 import { createRoot } from 'react-dom';
 import { Spinner } from '@wordpress/components';
 
 const injectSpinner = () => {
-	let spinnerWrapper = document.querySelector('#blockchain_product_data');
-
-	if (!spinnerWrapper) {
-		spinnerWrapper = document.querySelector('#posts-filter');
-	}
+	const spinnerWrapper =
+		document.querySelector('#blockchain_product_data') ||
+		document.querySelector('#posts-filter');
 	const spinner = document.createElement('div');
 	spinner.id = 'spinner';
 
@@ -17,11 +14,9 @@ const injectSpinner = () => {
 	spinnerWrapper.appendChild(spinner);
 };
 const removeSpinner = () => {
-	let spinnerWrapper = document.querySelector('#blockchain_product_data');
-
-	if (!spinnerWrapper) {
-		spinnerWrapper = document.querySelector('#posts-filter');
-	}
+	const spinnerWrapper =
+		document.querySelector('#blockchain_product_data') ||
+		document.querySelector('#posts-filter');
 	const spinner = spinnerWrapper.querySelector('#spinner');
 	spinnerWrapper.removeChild(spinner);
 };
