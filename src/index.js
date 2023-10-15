@@ -1,5 +1,5 @@
 // Import SCSS entry file so that webpack picks up changes
-import './index.scss';
+import './index.css';
 import * as ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom';
 import Swal from 'sweetalert2';
