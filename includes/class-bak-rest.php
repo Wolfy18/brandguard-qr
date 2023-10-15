@@ -332,9 +332,11 @@ class RestAdapter
             return new \WP_Error('not_found', 'Product not found', array('status' => 404));
         }
 
-        // Get the product data here
-        $product = Product::update_record($product_id);
-        $product_data = Product::get_product_data($product->ID);
+        $body = $request->get_body();
+
+        // Get the product data here    
+        $product = Product::update_record($product_id, $body);
+        $product_data = Product::get_product_data($product_id);
         // Create a serializer instance
         $serializer = new \WP_REST_Response();
         $serializer->set_data($product_data);
@@ -353,7 +355,7 @@ class RestAdapter
         $response = array(
             'success' => true,
             'message' => 'Updated record',
-            'data' => ProductList::update_products($body['product_ids'])
+            'data' => ProductList::update_products($body['products'])
         );
 
         // Create a serializer instance

@@ -31,19 +31,21 @@ class RestRoutes
     // Register a custom REST API endpoint for products
     public static function product_routes()
     {
-
-        # GET /wp-json/bak/v1/products/<id>
+        # List of product update
+        # /wp-json/bak/v1/products/
         register_rest_route(
             'bak/v1',
-            '/products/(?P<id>\d+)',
+            '/products',
             array(
-                'methods' => 'GET',
-                'callback' => array('BakExtension\api\RestAdapter', 'get_product_detail'),
+                'methods' => 'PUT',
+                'callback' => array('BakExtension\api\RestAdapter', 'update_products_bulk'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )
         );
 
-        # Get IPFS images for a list of products
+        # IPFS
+        # /wp-json/bak/v1/products/ipfs
+        # Get ipfs images
         register_rest_route(
             'bak/v1',
             '/products/ipfs',
@@ -54,7 +56,6 @@ class RestRoutes
             )
         );
 
-        # POST
         # Set IPFS images to multiple products
         register_rest_route(
             'bak/v1',
@@ -66,14 +67,13 @@ class RestRoutes
             )
         );
 
-        # PUT 
-        # List of product update
+        # GET /wp-json/bak/v1/products/<id>
         register_rest_route(
             'bak/v1',
-            '/products',
+            '/products/(?P<id>\d+)',
             array(
-                'methods' => 'PUT',
-                'callback' => array('BakExtension\api\RestAdapter', 'update_products_bulk'),
+                'methods' => 'GET',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_product_detail'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )
         );

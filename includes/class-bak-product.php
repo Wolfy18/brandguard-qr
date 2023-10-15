@@ -387,25 +387,25 @@ class Product
         }
     }
 
-    public static function update_record($post_id)
+    public static function update_record($post_id, $_data = null)
     {
-        // throw new Exception("failed!");
-        // grab the custom SKU from $_POST
-        $bk_token_uuid = isset($_POST['bk_token_uuid']) ? sanitize_text_field($_POST['bk_token_uuid']) : '';
-        $bk_token_policy = isset($_POST['bk_token_policy']) ? sanitize_text_field($_POST['bk_token_policy']) : '';
-        $bk_token_fingerprint = isset($_POST['bk_token_fingerprint']) ? sanitize_text_field($_POST['bk_token_fingerprint']) : '';
-        $bk_token_asset_name = isset($_POST['bk_token_asset_name']) ? sanitize_text_field($_POST['bk_token_asset_name']) : '';
-        $bk_token_name = isset($_POST['bk_token_name']) ? sanitize_text_field($_POST['bk_token_name']) : '';
-        $bk_token_image = isset($_POST['bk_token_image']) ? sanitize_text_field($_POST['bk_token_image']) : '';
-        $bk_token_amount = isset($_POST['bk_token_amount']) ? sanitize_text_field($_POST['bk_token_amount']) : '';
-        $bk_token_status = isset($_POST['bk_token_status']) ? sanitize_text_field($_POST['bk_token_status']) : '';
-        $bk_token_transaction = isset($_POST['bk_token_transaction']) ? sanitize_text_field($_POST['bk_token_transaction']) : '';
-        $bk_token_json = isset($_POST['bk_token_json']) ? sanitize_text_field($_POST['bk_token_json']) : '';
+        $data = isset($_data) ? $_data : $_POST;
+
+        $bk_token_uuid = isset($data['bk_token_uuid']) ? sanitize_text_field($data['bk_token_uuid']) : null;
+        $bk_token_policy = isset($data['bk_token_policy']) ? sanitize_text_field($data['bk_token_policy']) : null;
+        $bk_token_fingerprint = isset($data['bk_token_fingerprint']) ? sanitize_text_field($data['bk_token_fingerprint']) : null;
+        $bk_token_asset_name = isset($data['bk_token_asset_name']) ? sanitize_text_field($data['bk_token_asset_name']) : null;
+        $bk_token_name = isset($data['bk_token_name']) ? sanitize_text_field($data['bk_token_name']) : null;
+        $bk_token_image = isset($data['bk_token_image']) ? sanitize_text_field($data['bk_token_image']) : null;
+        $bk_token_amount = isset($data['bk_token_amount']) ? sanitize_text_field($data['bk_token_amount']) : null;
+        $bk_token_status = isset($data['bk_token_status']) ? sanitize_text_field($data['bk_token_status']) : null;
+        $bk_token_transaction = isset($data['bk_token_transaction']) ? sanitize_text_field($data['bk_token_transaction']) : null;
+        $bk_token_json = isset($data['bk_token_json']) ? sanitize_text_field($data['bk_token_json']) : null;
 
         // Update attachment, token_image rel
-        $bk_att_token_image = isset($_POST['bk_att_token_image']) ? sanitize_text_field($_POST['bk_att_token_image']) : '';
+        $bk_att_token_image = isset($data['bk_att_token_image']) ? sanitize_text_field($data['bk_att_token_image']) : null;
 
-        if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
+        if (!isset($bk_token_image) && !isset($bk_token_uuid) && !isset($bk_att_token_image)) {
             # Insert attachment
             $att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image, $post_id);
             $bk_att_token_image = $att_id;
@@ -415,17 +415,17 @@ class Product
         $product = wc_get_product($post_id);
 
         // save the custom SKU using WooCommerce built-in functions
-        $product->update_meta_data('bk_token_uuid', $bk_token_uuid);
-        $product->update_meta_data('bk_token_policy', $bk_token_policy);
-        $product->update_meta_data('bk_token_fingerprint', $bk_token_fingerprint);
-        $product->update_meta_data('bk_token_asset_name', $bk_token_asset_name);
-        $product->update_meta_data('bk_token_name', $bk_token_name);
-        $product->update_meta_data('bk_token_image', $bk_token_image);
-        $product->update_meta_data('bk_token_amount', $bk_token_amount);
-        $product->update_meta_data('bk_token_status', $bk_token_status);
-        $product->update_meta_data('bk_token_transaction', $bk_token_transaction);
-        $product->update_meta_data('bk_token_json', $bk_token_json);
-        $product->update_meta_data('bk_att_token_image', $bk_att_token_image);
+        if ($bk_token_uuid) $product->update_meta_data('bk_token_uuid', $bk_token_uuid);
+        if ($bk_token_policy) $product->update_meta_data('bk_token_policy', $bk_token_policy);
+        if ($bk_token_fingerprint) $product->update_meta_data('bk_token_fingerprint', $bk_token_fingerprint);
+        if ($bk_token_asset_name) $product->update_meta_data('bk_token_asset_name', $bk_token_asset_name);
+        if ($bk_token_name) $product->update_meta_data('bk_token_name', $bk_token_name);
+        if ($bk_token_image) $product->update_meta_data('bk_token_image', $bk_token_image);
+        if ($bk_token_amount) $product->update_meta_data('bk_token_amount', $bk_token_amount);
+        if ($bk_token_status) $product->update_meta_data('bk_token_status', $bk_token_status);
+        if ($bk_token_transaction) $product->update_meta_data('bk_token_transaction', $bk_token_transaction);
+        if ($bk_token_json) $product->update_meta_data('bk_token_json', $bk_token_json);
+        if ($bk_att_token_image) $product->update_meta_data('bk_att_token_image', $bk_att_token_image);
 
         $product->save();
 

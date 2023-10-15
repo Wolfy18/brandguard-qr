@@ -163,8 +163,6 @@ function refreshImages(id) {
 
 const updateRecord = async () => {
 	const id = document.querySelector('#product_id').value;
-	const nonce = document.querySelector('#bk_nonce').value;
-
 	const body = getData();
 
 	const blockchainDataWrapper = document.querySelector(
@@ -175,10 +173,9 @@ const updateRecord = async () => {
 
 	ReactDOM.render(showSpinner(), spinner);
 	blockchainDataWrapper.appendChild(spinner);
-
+	console.log(Object.entries(body), '< -----');
 	try {
-		client.defaults.headers.common['X-WP-Nonce'] = nonce;
-		const data = await client.post(`products/${id}`, Object.entries(body));
+		const data = await client.put(`products/${id}`, Object.entries(body));
 		console.log(data);
 		if (data.status !== 200) throw 'Unable to update product.';
 

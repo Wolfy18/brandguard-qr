@@ -15,7 +15,7 @@ namespace BakExtension\core;
 defined('ABSPATH') || exit;
 
 use BakExtension\api\RestAdapter;
-use BakExtension\controllers\ProductList;
+use BakExtension\controllers\Product;
 
 class Cron
 {
@@ -97,7 +97,7 @@ class Cron
                         "bk_token_status" => $_data->status
                     );
 
-                    ProductList::update_record($product_id, $data);
+                    Product::update_record($product_id, $data);
                 }
             }
         }
