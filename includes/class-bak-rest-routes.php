@@ -45,12 +45,14 @@ class RestRoutes
 
         # IPFS
         # /wp-json/bak/v1/products/ipfs
-        # Get ipfs images
+        # Get ipfs images. Handle as post due this is not a "safe" endpoints
+        # It can potentially generate images in wordpress if an IPFS uri is found
+        # but not linked to a domain image.
         register_rest_route(
             'bak/v1',
             '/products/ipfs',
             array(
-                'methods' => 'GET',
+                'methods' => 'POST',
                 'callback' => array('BakExtension\api\RestAdapter', 'get_ipfs_images'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )
@@ -61,7 +63,7 @@ class RestRoutes
             'bak/v1',
             '/products/ipfs',
             array(
-                'methods' => 'POST',
+                'methods' => 'PUT',
                 'callback' => array('BakExtension\api\RestAdapter', 'upload_ipfs_images'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
             )

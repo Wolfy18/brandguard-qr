@@ -265,14 +265,14 @@ jQuery(document).ready(function ($) {
 		let fetchIPFSImagesReq;
 		let uploadedImages = [];
 		try {
-			fetchIPFSImagesReq = await client.get(`products/ipfs`, {
+			fetchIPFSImagesReq = await client.post(`products/ipfs`, {
 				product_ids: selectedProducts,
 			});
 
 			if (fetchIPFSImagesReq.status !== 200)
 				throw 'Unable to fetch images.';
 
-			missingImgs = fetchIPFSImagesReq.data.filter(
+			missingImgs = fetchIPFSImagesReq.data.data.filter(
 				(i) => i.image === '' || !i.image
 			);
 		} catch (error) {
@@ -324,14 +324,14 @@ jQuery(document).ready(function ($) {
 			});
 
 			try {
-				const uploadImagesReq = await client.post(`products/ipfs`, {
+				const uploadImagesReq = await client.put(`products/ipfs`, {
 					product_ids: missingImgs.map((i) => i.product_id),
 				});
 
 				if (uploadImagesReq.status !== 200)
 					throw 'Unable to upload images.';
 
-				uploadedImages = uploadImagesReq.data;
+				uploadedImages = uploadImagesReq.data.data;
 			} catch (error) {
 				Swal.fire({
 					title: 'Error',
@@ -359,7 +359,7 @@ jQuery(document).ready(function ($) {
 		}
 
 		// Process the AJAX ipfsRes
-		const collectionFinal = fetchIPFSImagesReq.data.map((i) => {
+		const collectionFinal = fetchIPFSImagesReq.data.data.map((i) => {
 			const elem = { ...i };
 
 			if (
