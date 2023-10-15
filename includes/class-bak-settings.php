@@ -50,6 +50,13 @@ class Settings
 			true
 		);
 
+		wp_localize_script('bakrypt-wc-extension', 'wpApiSettings', [
+			'rest' => [
+				'root' => rest_get_url_prefix() . '/bak/v1/',
+				'nonce' => wp_create_nonce('wp_rest'),
+			],
+		]);
+
 		wp_register_style(
 			'bakrypt-wc-extension',
 			plugins_url('/build/index.css', WCBAK_PLUGIN_FILE),
@@ -148,7 +155,6 @@ class Settings
 	{
 		woocommerce_update_options(self::fetch_bak_settings());
 	}
-
 }
 
 // function bakrypt_wc_extension_activate()

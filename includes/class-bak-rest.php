@@ -13,6 +13,10 @@
 namespace BakExtension\api;
 
 defined('ABSPATH') || exit;
+
+use BakExtension\controllers\Product;
+use BakExtension\controllers\ProductList;
+
 class RestAdapter
 {
     public $access_token;
@@ -285,5 +289,175 @@ class RestAdapter
         }
 
         return $response_body;
+    }
+
+    // REST API functions
+    public static function get_product_detail($request)
+    {
+        $product_id = $request->get_param('id');
+
+        if (empty($product_id)) {
+            return new \WP_Error('invalid_param', 'Invalid product ID', array('status' => 400));
+        }
+
+        // Check if the product exists
+        $product = wc_get_product($product_id);
+
+        if (!$product) {
+            return new \WP_Error('not_found', 'Product not found', array('status' => 404));
+        }
+
+        // Get the product data here
+        $product_data = Product::get_product_data($product_id);
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($product_data);
+
+        return $serializer;
+    }
+
+    public static function update_product_detail($request)
+    {
+        $product_id = $request->get_param('id');
+
+        if (empty($product_id)) {
+            return new \WP_Error('invalid_param', 'Invalid product ID', array('status' => 400));
+        }
+
+        // Check if the product exists
+        $product = wc_get_product($product_id);
+
+        if (!$product) {
+            return new \WP_Error('not_found', 'Product not found', array('status' => 404));
+        }
+
+        $body = $request->get_body();
+        $body = json_decode($body, true);
+        // Get the product data here    
+        $product = Product::update_record($product_id, $body);
+        $product_data = Product::get_product_data($product_id);
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($product_data);
+
+        return $serializer;
+    }
+
+    public static function update_products_bulk($request)
+    {
+        $body = $request->get_body();
+        $body = json_decode($body, true);
+
+        if (!array_key_exists('products', $body)) {
+            return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
+        }
+
+        $response = array(
+            'success' => true,
+            'message' => 'Updated record',
+            'data' => ProductList::update_products($body['products'])
+        );
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
+
+        return $serializer;
+    }
+
+    public static function delete_product_token($request)
+    {
+        $product_id = $request->get_param('id');
+
+        if (empty($product_id)) {
+            return new \WP_Error('invalid_param', 'Invalid product ID', array('status' => 400));
+        }
+
+        // Check if the product exists
+        $product = wc_get_product($product_id);
+
+        if (!$product) {
+            return new \WP_Error('not_found', 'Product not found', array('status' => 404));
+        }
+
+        Product::delete_record($product_id);
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data(array(
+            "detail" => "Done"
+        ));
+
+        return $serializer;
+    }
+
+
+    public static function fetch_access_token($request)
+    {
+        $self = new self();
+
+        $access = $self->generate_access_token();
+
+        $response = array(
+            'success' => true,
+            'message' => 'Access Token',
+            'data' => $access,
+            'testnet' => $self->settings['testnet'] == "yes" ? true : false
+        );
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
+
+        return $serializer;
+    }
+
+    public static function get_ipfs_images($request)
+    {
+        $body = $request->get_body();
+        $body = json_decode($body, true);
+
+        if (!array_key_exists('product_ids', $body)) {
+            return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
+        }
+
+        $response = array(
+            'success' => true,
+            'message' => 'Success',
+            'data' => array_map(function ($id) {
+                return Product::fetch_ipfs_image($id);
+            }, $body['product_ids'])
+        );
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
+
+        return $serializer;
+    }
+
+    public static function upload_ipfs_images($request)
+    {
+        $body = $request->get_body();
+        $body = json_decode($body, true);
+
+        if (!array_key_exists('product_ids', $body)) {
+            return new \WP_Error('invalid_param', 'Missing product ids', array('status' => 400));
+        }
+
+        $response = array(
+            'success' => true,
+            'message' => 'Success',
+            'data' => array_map(function ($id) {
+                return Product::upload_ipfs_image($id);
+            }, $body['product_ids'])
+        );
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
+
+        return $serializer;
     }
 }

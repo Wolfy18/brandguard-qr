@@ -41,8 +41,6 @@ function bak_add_every_three_minutes($schedules)
 	return $schedules;
 }
 
-
-
 function wcbakrypt_init()
 {
 	BakWCExtension::init();

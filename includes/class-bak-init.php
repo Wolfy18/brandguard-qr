@@ -15,11 +15,6 @@ namespace BakExtension\core;
 
 defined('ABSPATH') || exit;
 
-use BakExtension\core\Settings;
-use BakExtension\api\RestAdapter;
-use BakExtension\controllers\ProductList;
-use BakExtension\controllers\Product;
-
 class BakWCExtension
 {
     /**
@@ -58,6 +53,10 @@ class BakWCExtension
         add_action('woocommerce_settings_tabs_bak_settings', array('BakExtension\core\Settings', 'bak_add_bak_settings'));
         add_action('woocommerce_update_options_bak_settings', array('BakExtension\core\Settings', 'bak_update_options_bak_settings'));
 
+        //==================================== REST api ===================================
+        add_action('rest_api_init', array('BakExtension\api\RestRoutes', 'auth_routes'));
+        add_action('rest_api_init', array('BakExtension\api\RestRoutes', 'product_routes'));
+
         //==================================== Product List ===================================
         add_filter('manage_product_posts_columns', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column'));
         add_filter('bulk_actions-edit-product', array("BakExtension\controllers\ProductList", 'add_mint_bulk_action'));
@@ -69,15 +68,14 @@ class BakWCExtension
         add_action('wp_ajax_access_token_action', array("BakExtension\controllers\ProductList", 'handle_access_token_action_ajax'));
         add_action('wp_ajax_update_records_action', array("BakExtension\controllers\ProductList", 'handle_update_records_action_ajax'));
 
-
         //==================================== Product  ===================================
         add_filter('woocommerce_product_tabs', array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_tab'));
         add_filter('woocommerce_product_data_tabs', array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_data_tab'));
         add_action('woocommerce_product_data_panels', array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_data_fields'));
         add_action("add_meta_boxes", array("BakExtension\controllers\Product", "add_ipfs_meta_box"));
-        add_action('wp_ajax_product_token_get_image', array("BakExtension\controllers\Product", 'product_token_get_image'));
-        add_action("wp_ajax_bk_update_record", array("BakExtension\controllers\Product", "bak_update_rest_api_blockchain_meta"));
         add_action('woocommerce_process_product_meta', array("BakExtension\controllers\Product", 'bak_save_blockchain_meta'));
+        add_action("wp_ajax_bk_update_record", array("BakExtension\controllers\Product", "bak_update_rest_api_blockchain_meta"));
+        add_action('wp_ajax_product_token_get_image', array("BakExtension\controllers\Product", 'product_token_get_image'));
         add_action("wp_ajax_bk_delete_record", array("BakExtension\controllers\Product", "bak_delete_rest_api_blockchain_meta"));
 
         // =================================== Orders ======================================

@@ -72,13 +72,12 @@ class Product
         $testnet = self::$adapter->settings['testnet'];
         $access = self::$adapter->generate_access_token();
 
-        ?>
+?>
         <!-- id below must match target registered in above add_blockchain_product_data_tab function -->
         <div id="blockchain_product_data" class="panel woocommerce_options_panel">
             <p class="form-field woocommerce-message" style="float:right" <?php if ($asset['uuid'] == '')
-                echo 'style="display:none"' ?>>
-                <button style="line-height:1" id="delete_token" name="delete_token"
-                    class="button-primary woocommerce-save-button">
+                                                                                echo 'style="display:none"' ?>>
+                <button style="line-height:1" id="delete_token" name="delete_token" class="button-primary woocommerce-save-button">
                     <span style="vertical-align:middle" class="dashicons dashicons-trash"></span>
                 </button>
             </p>
@@ -228,24 +227,89 @@ class Product
             ?>
 
             <div <?php if ($testnet == "yes")
-                echo "testnet" ?> data-token="<?php echo esc_attr($access->{'access_token'}) ?>"
-                style="display: flex; justify-content: space-between" class="btn-action">
+                        echo "testnet" ?> data-token="<?php echo esc_attr($access->{'access_token'}) ?>" style="display: flex; justify-content: space-between" class="btn-action">
                 <p class="form-field mint" <?php if ($asset['uuid'] != '')
-                    echo 'style="display:none"' ?>></p>
-                    <p class="form-field view-transaction" <?php if ($asset['uuid'] == '')
-                    echo 'style="display:none"' ?>></p>
-                    <p class="form-field" <?php if ($asset['uuid'] == '')
-                    echo 'style="display:none"' ?>><button name="update_token"
-                        class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
+                                                echo 'style="display:none"' ?>></p>
+                <p class="form-field view-transaction" <?php if ($asset['uuid'] == '')
+                                                            echo 'style="display:none"' ?>></p>
+                <p class="form-field" <?php if ($asset['uuid'] == '')
+                                            echo 'style="display:none"' ?>><button name="update_token" class="components-button is-secondary" id="sync-asset-btn">Sync Token</button></p>
 
-            <?php if (get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) { ?>
-                <p class="form-field"> <a target='_blank' rel='nofollow'
-                        href='https://cexplorer.io/asset/<?php echo esc_html(get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) ?>'>View
-                        in cexplorer.io</a></p>
-            <?php } ?>
+                <?php if (get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) { ?>
+                    <p class="form-field"> <a target='_blank' rel='nofollow' href='https://cexplorer.io/asset/<?php echo esc_html(get_post_meta(get_the_ID(), 'bk_token_fingerprint', true)) ?>'>View
+                            in cexplorer.io</a></p>
+                <?php } ?>
             </div>
 
         </div>
+
+        <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                $('a#bk_token_image_media_manager').click(function(e) {
+                    e.preventDefault();
+                    var imageFrame;
+                    if (imageFrame) {
+                        imageFrame.open();
+                    }
+                    // Define imageFrame as wp.media object
+                    imageFrame = wp.media({
+                        title: 'Select Media',
+                        multiple: false,
+                        library: {
+                            type: 'image',
+                        },
+                    });
+                    imageFrame.on('close', function() {
+                        // On close, get selections and save to the hidden input
+                        // plus other AJAX stuff to refresh the image preview
+                        const selection = imageFrame.state().get('selection');
+                        const galleryIds = new Array();
+                        let idx = 0;
+                        selection.each(function(attachment) {
+                            galleryIds[idx] = attachment.id;
+                            idx++;
+                        });
+                        const ids = galleryIds.join(',');
+                        if (ids.length === 0) return true; //if closed withput selecting an image
+                        $('input#bk_att_token_image').val(ids);
+                        refreshImages(ids);
+                    });
+
+                    imageFrame.on('open', function() {
+                        // On open, get the id from the hidden input
+                        // and select the appropiate images in the media manager
+                        const selection = imageFrame.state().get('selection');
+                        const ids = $('input#bk_att_token_image').val().split(',');
+                        ids.forEach(function(id) {
+                            const attachment = wp.media.attachment(id);
+                            attachment.fetch();
+                            selection.add(attachment ? [attachment] : []);
+                        });
+                    });
+
+                    imageFrame.open();
+                });
+            });
+
+            // Ajax request to refresh the image preview
+            function refreshImages(id) {
+                const data = {
+                    action: 'product_token_get_image',
+                    id,
+                };
+                jQuery.get(ajaxurl, data, function(response) {
+                    if (response.success === true) {
+                        jQuery('#preview_bk_att_token_image').replaceWith(
+                            response.data.image
+                        );
+
+                        jQuery('#bk_att_token_image_ipfs').val(
+                            jQuery('#preview_bk_att_token_image').data('ipfs')
+                        );
+                    }
+                });
+            }
+        </script>
 
         <?php
 
@@ -261,8 +325,7 @@ class Product
 
         if (!$settings['client_id'] && !$settings['client_secret'] && !$settings['username'] && !$settings['password']) { ?>
             <div class="error">
-                <p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>"
-                            target="_blank">Bakrypt OAuth credentials</a> are required to load data from the remote source.</strong>
+                <p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt OAuth credentials</a> are required to load data from the remote source.</strong>
                 </p>
             </div>
         <?php }
@@ -303,17 +366,17 @@ class Product
                             $update_meta = true;
                             continue;
                         }
-                        ?>
+                ?>
                         <li class="image" data-attachment_id="<?php echo esc_attr($attachment_id); ?>">
                             <?php echo $attachment; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
-                                            ?>
+                            ?>
                             <?php
                             // Allow for extra info to be exposed or extra action to be executed for this attachment.
                             do_action('woocommerce_admin_after_product_gallery_item', $thepostid, $attachment_id);
 
                             ?>
                         </li>
-                        <?php
+                    <?php
 
                         // rebuild ids to be saved.
                         $updated_gallery_ids[] = $attachment_id;
@@ -325,26 +388,24 @@ class Product
                     }
                 } else {
                     ?>
-                <li class="image" data-attachment_id="<?php echo (isset($attachment_id) ? esc_attr($attachment_id) : '') ?>">
-                    <span id="preview_bk_att_token_image"></span>
-                </li>
+                    <li class="image" data-attachment_id="<?php echo (isset($attachment_id) ? esc_attr($attachment_id) : '') ?>">
+                        <span id="preview_bk_att_token_image"></span>
+                    </li>
                 <?php
                 }
                 ?>
             </ul>
-            <input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image"
-                value="<?php echo esc_attr($bk_token_att); ?>" />
-            <input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs"
-                value="<?php echo esc_attr($img_ipfs); ?>" />
+            <input type="hidden" id="bk_att_token_image" readonly name="bk_att_token_image" value="<?php echo esc_attr($bk_token_att); ?>" />
+            <input type="hidden" id="bk_att_token_image_ipfs" readonly name="bk_att_token_image_ipfs" value="<?php echo esc_attr($img_ipfs); ?>" />
         </div>
         <?php
         if (!in_array($bk_token_status, ['confirmed', 'canceled'])) {
-            ?>
+        ?>
             <a href="#" id="bk_token_image_media_manager">
                 <?php esc_attr_e('Choose from gallery', 'mytextdomain'); ?>
             </a>
         <?php } ?>
-    <?php
+<?php
     }
 
     public static function add_ipfs_meta_box()
@@ -394,25 +455,25 @@ class Product
         }
     }
 
-    public static function update_record($post_id)
+    public static function update_record($post_id, $_data = null)
     {
-        // throw new Exception("failed!");
-        // grab the custom SKU from $_POST
-        $bk_token_uuid = isset($_POST['bk_token_uuid']) ? sanitize_text_field($_POST['bk_token_uuid']) : '';
-        $bk_token_policy = isset($_POST['bk_token_policy']) ? sanitize_text_field($_POST['bk_token_policy']) : '';
-        $bk_token_fingerprint = isset($_POST['bk_token_fingerprint']) ? sanitize_text_field($_POST['bk_token_fingerprint']) : '';
-        $bk_token_asset_name = isset($_POST['bk_token_asset_name']) ? sanitize_text_field($_POST['bk_token_asset_name']) : '';
-        $bk_token_name = isset($_POST['bk_token_name']) ? sanitize_text_field($_POST['bk_token_name']) : '';
-        $bk_token_image = isset($_POST['bk_token_image']) ? sanitize_text_field($_POST['bk_token_image']) : '';
-        $bk_token_amount = isset($_POST['bk_token_amount']) ? sanitize_text_field($_POST['bk_token_amount']) : '';
-        $bk_token_status = isset($_POST['bk_token_status']) ? sanitize_text_field($_POST['bk_token_status']) : '';
-        $bk_token_transaction = isset($_POST['bk_token_transaction']) ? sanitize_text_field($_POST['bk_token_transaction']) : '';
-        $bk_token_json = isset($_POST['bk_token_json']) ? sanitize_text_field($_POST['bk_token_json']) : '';
+        $data = isset($_data) ? $_data : $_POST;
+
+        $bk_token_uuid = isset($data['bk_token_uuid']) ? sanitize_text_field($data['bk_token_uuid']) : null;
+        $bk_token_policy = isset($data['bk_token_policy']) ? sanitize_text_field($data['bk_token_policy']) : null;
+        $bk_token_fingerprint = isset($data['bk_token_fingerprint']) ? sanitize_text_field($data['bk_token_fingerprint']) : null;
+        $bk_token_asset_name = isset($data['bk_token_asset_name']) ? sanitize_text_field($data['bk_token_asset_name']) : null;
+        $bk_token_name = isset($data['bk_token_name']) ? sanitize_text_field($data['bk_token_name']) : null;
+        $bk_token_image = isset($data['bk_token_image']) ? sanitize_text_field($data['bk_token_image']) : null;
+        $bk_token_amount = isset($data['bk_token_amount']) ? sanitize_text_field($data['bk_token_amount']) : null;
+        $bk_token_status = isset($data['bk_token_status']) ? sanitize_text_field($data['bk_token_status']) : null;
+        $bk_token_transaction = isset($data['bk_token_transaction']) ? sanitize_text_field($data['bk_token_transaction']) : null;
+        $bk_token_json = isset($data['bk_token_json']) ? sanitize_text_field($data['bk_token_json']) : null;
 
         // Update attachment, token_image rel
-        $bk_att_token_image = isset($_POST['bk_att_token_image']) ? sanitize_text_field($_POST['bk_att_token_image']) : '';
+        $bk_att_token_image = isset($data['bk_att_token_image']) ? sanitize_text_field($data['bk_att_token_image']) : null;
 
-        if ($bk_token_image != '' && $bk_token_uuid != '' && $bk_att_token_image == '') {
+        if (!isset($bk_token_image) && !isset($bk_token_uuid) && !isset($bk_att_token_image)) {
             # Insert attachment
             $att_id = RestAdapter::insert_attachment_from_ipfs($bk_token_image, $post_id);
             $bk_att_token_image = $att_id;
@@ -422,17 +483,17 @@ class Product
         $product = wc_get_product($post_id);
 
         // save the custom SKU using WooCommerce built-in functions
-        $product->update_meta_data('bk_token_uuid', $bk_token_uuid);
-        $product->update_meta_data('bk_token_policy', $bk_token_policy);
-        $product->update_meta_data('bk_token_fingerprint', $bk_token_fingerprint);
-        $product->update_meta_data('bk_token_asset_name', $bk_token_asset_name);
-        $product->update_meta_data('bk_token_name', $bk_token_name);
-        $product->update_meta_data('bk_token_image', $bk_token_image);
-        $product->update_meta_data('bk_token_amount', $bk_token_amount);
-        $product->update_meta_data('bk_token_status', $bk_token_status);
-        $product->update_meta_data('bk_token_transaction', $bk_token_transaction);
-        $product->update_meta_data('bk_token_json', $bk_token_json);
-        $product->update_meta_data('bk_att_token_image', $bk_att_token_image);
+        if ($bk_token_uuid) $product->update_meta_data('bk_token_uuid', $bk_token_uuid);
+        if ($bk_token_policy) $product->update_meta_data('bk_token_policy', $bk_token_policy);
+        if ($bk_token_fingerprint) $product->update_meta_data('bk_token_fingerprint', $bk_token_fingerprint);
+        if ($bk_token_asset_name) $product->update_meta_data('bk_token_asset_name', $bk_token_asset_name);
+        if ($bk_token_name) $product->update_meta_data('bk_token_name', $bk_token_name);
+        if ($bk_token_image) $product->update_meta_data('bk_token_image', $bk_token_image);
+        if ($bk_token_amount) $product->update_meta_data('bk_token_amount', $bk_token_amount);
+        if ($bk_token_status) $product->update_meta_data('bk_token_status', $bk_token_status);
+        if ($bk_token_transaction) $product->update_meta_data('bk_token_transaction', $bk_token_transaction);
+        if ($bk_token_json) $product->update_meta_data('bk_token_json', $bk_token_json);
+        if ($bk_att_token_image) $product->update_meta_data('bk_att_token_image', $bk_att_token_image);
 
         $product->save();
 
@@ -464,7 +525,7 @@ class Product
         self::update_record($post_id);
     }
 
-    private static function delete_record($post_id)
+    public static function delete_record($post_id)
     {
         $meta_keys = array(
             'bk_token_uuid',
@@ -503,5 +564,97 @@ class Product
         wp_send_json_success("Token Deleted.", 200);
 
         wp_die(); // this is required to terminate immediately and return a proper response
+    }
+
+    public static function get_product_data($product_id)
+    {
+        // grab the product
+        $product = wc_get_product($product_id);
+
+        // save the custom SKU using WooCommerce built-in functions
+        $product_data = array(
+            "uuid" => $product->get_meta('bk_token_uuid'),
+            "policy" => $product->get_meta('bk_token_policy'),
+            "fingerprint" => $product->get_meta('bk_token_fingerprint'),
+            "asset_name" => $product->get_meta('bk_token_asset_name'),
+            "name" => $product->get_meta('bk_token_name'),
+            "image" => $product->get_meta('bk_token_image'),
+            "amount" => $product->get_meta('bk_token_amount'),
+            "status" => $product->get_meta('bk_token_status'),
+            "transaction" => $product->get_meta('bk_token_transaction'),
+            "json" => $product->get_meta('bk_token_json'),
+            "att_image" => $product->get_meta('bk_att_token_image')
+        );
+
+        return $product_data;
+    }
+
+    public static function upload_ipfs_image($id)
+    {
+        $featured_image_url = get_the_post_thumbnail_url($id, 'full');
+
+        if (!$featured_image_url) {
+            $featured_image_url = wc_placeholder_img_src();
+        }
+
+        if (!self::$adapter) {
+            self::$adapter = new RestAdapter();
+        }
+
+        $bak_file = self::$adapter->upload_attachment_to_ipfs_from_url($featured_image_url);
+
+        $img_ipfs = $bak_file->{'ipfs'};
+
+        // grab the product
+        $product = wc_get_product($id);
+
+        // save the custom SKU using WooCommerce built-in functions
+        $product->update_meta_data('bk_token_image', $img_ipfs);
+        $product->update_meta_data('bk_att_token_image', $img_ipfs);
+
+        $attachment_id = attachment_url_to_postid($featured_image_url);
+        if ($attachment_id) {
+            $img_metadata = wp_get_attachment_metadata($attachment_id);
+            $img_metadata['ipfs'] = $img_ipfs;
+            wp_update_attachment_metadata($attachment_id, $img_metadata); // save it back to the db
+        }
+
+        return array(
+            'product_id' => $id,
+            'image' => $img_ipfs,
+        );
+    }
+
+    public static function fetch_ipfs_image($id)
+    {
+
+        $bk_token_att = get_post_meta($id, 'bk_att_token_image', true);
+
+        if (!$bk_token_att) {
+            $featured_image_url = get_the_post_thumbnail_url($id, 'full');
+
+            if (!$featured_image_url) {
+                $featured_image_url = wc_placeholder_img_src();
+            }
+
+            $bk_token_att = attachment_url_to_postid($featured_image_url);
+        }
+
+        $img_metadata = wp_get_attachment_metadata($bk_token_att);
+        $img_ipfs = null;
+        if ($img_metadata && array_key_exists('ipfs', $img_metadata)) {
+            $img_ipfs = $img_metadata['ipfs'];
+        }
+
+        if (!$img_ipfs) {
+            $img_ipfs = get_post_meta($id, 'bk_token_image', true);
+        }
+
+        return array(
+            'product_id' => $id,
+            'image' => $img_ipfs,
+            'name' => get_the_title($id),
+            // 'short_description' => wp_trim_excerpt(get_post_field('post_excerpt', $id))
+        );
     }
 }
