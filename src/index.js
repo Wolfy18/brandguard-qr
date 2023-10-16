@@ -1,6 +1,5 @@
 // Import SCSS entry file so that webpack picks up changes
 import './index.css';
-import * as ReactDOM from 'react-dom';
 import { createRoot } from 'react-dom';
 import Swal from 'sweetalert2';
 import renderTransactionModal from './components/transactionModal';
@@ -394,7 +393,8 @@ const init = async () => {
 			return JSON.stringify([asset]);
 		};
 
-		ReactDOM.render(
+		const rootElement = createRoot(modal);
+		rootElement.render(
 			renderLaunchpadModal(
 				{
 					accessToken,
@@ -418,8 +418,7 @@ const init = async () => {
 						updateRecord();
 					}
 				}
-			),
-			modal
+			)
 		);
 
 		mintModalContainer.appendChild(modal);
@@ -489,7 +488,8 @@ const init = async () => {
 
 	if (transactionModalContainer) {
 		const modal = document.createElement('div');
-		ReactDOM.render(
+		const rootElement = createRoot(modal);
+		rootElement.render(
 			renderTransactionModal(
 				{
 					accessToken,
@@ -497,8 +497,7 @@ const init = async () => {
 				},
 				viewTransaction,
 				[]
-			),
-			modal
+			)
 		);
 		transactionModalContainer.appendChild(modal);
 	}
