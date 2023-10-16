@@ -133,72 +133,6 @@ class ProductList
 		return $actions;
 	}
 
-	public static function handle_mint_bulk_action_ajax()
-	{
-		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'mint_bulk_action') {
-			$response = array(
-				'success' => true,
-				'message' => 'Minting selected products!',
-				'data' => array_map(function ($id) {
-					return Product::fetch_ipfs_image($id);
-				}, $_POST['product_ids'])
-			);
-		} else {
-			$response = array(
-				'success' => false,
-				'message' => 'Invalid action.',
-			);
-		}
-
-		wp_send_json($response);
-	}
-
-	public static function handle_upload_ipfs_bulk_action_ajax()
-	{
-		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'upload_ipfs_bulk_action') {
-			$response = array(
-				'success' => true,
-				'message' => 'Uploaded images for selected products!',
-				'data' => array_map(function ($id) {
-					return Product::upload_ipfs_image($id);
-				}, $_POST['product_ids'])
-			);
-		} else {
-			$response = array(
-				'success' => false,
-				'message' => 'Invalid action.',
-			);
-		}
-
-		wp_send_json($response);
-	}
-
-	public static function handle_access_token_action_ajax()
-	{
-		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'access_token_action') {
-			// Perform your custom action here using the $_REQUEST data
-
-			if (!self::$adapter) {
-				self::$adapter = new RestAdapter();
-			}
-
-			$access = self::$adapter->generate_access_token();
-
-			$response = array(
-				'success' => true,
-				'message' => 'Access Token',
-				'data' => $access,
-				'testnet' => self::$adapter->settings['testnet'] == "yes" ? true : false
-			);
-		} else {
-			$response = array(
-				'success' => false,
-				'message' => 'Invalid action.',
-			);
-		}
-
-		wp_send_json($response);
-	}
 
 	public static function update_products($products)
 	{
@@ -219,24 +153,5 @@ class ProductList
 		};
 
 		return array_map($func, $products);
-	}
-
-	public static function handle_update_records_action_ajax()
-	{
-		if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'update_records_action') {
-			// Perform your custom action here using the $_REQUEST data
-			$response = array(
-				'success' => true,
-				'message' => 'Updated record',
-				'data' => self::update_products($_POST['products'])
-			);
-		} else {
-			$response = array(
-				'success' => false,
-				'message' => 'Invalid action.',
-			);
-		}
-
-		wp_send_json($response);
 	}
 }

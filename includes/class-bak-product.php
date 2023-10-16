@@ -500,26 +500,6 @@ class Product
         return $product;
     }
 
-    public static function bak_update_rest_api_blockchain_meta()
-    {
-        // nonce check for an extra layer of security, the function will exit if it fails
-        if (!wp_verify_nonce($_REQUEST['bk_nonce'], "bk_nonce")) {
-            wp_send_json_error("Incorrect Nonce", 400);
-        }
-
-        $post_id = isset($_POST['product_id']) ? sanitize_text_field($_POST['product_id']) : null;
-
-        try {
-            $product = self::update_record($post_id);
-        } catch (Exception $e) {
-            wp_send_json_error("Unable to update record", 400);
-        }
-
-        wp_send_json_success("Updated successfully.", 200);
-
-        wp_die(); // this is required to terminate immediately and return a proper response
-    }
-
     public static function bak_save_blockchain_meta($post_id)
     {
         self::update_record($post_id);
@@ -544,26 +524,6 @@ class Product
         foreach ($meta_keys as $meta) {
             delete_post_meta($post_id, $meta);
         }
-    }
-
-    public static function bak_delete_rest_api_blockchain_meta()
-    {
-        // nonce check for an extra layer of security, the function will exit if it fails
-        if (!wp_verify_nonce($_REQUEST['bk_nonce'], "bk_nonce")) {
-            wp_send_json_error("Incorrect Nonce", 400);
-        }
-
-        $post_id = isset($_POST['product_id']) ? sanitize_text_field($_POST['product_id']) : null;
-
-        try {
-            $product = self::delete_record($post_id);
-        } catch (Exception $e) {
-            wp_send_json_error("Unable to delete record", 400);
-        }
-
-        wp_send_json_success("Token Deleted.", 200);
-
-        wp_die(); // this is required to terminate immediately and return a proper response
     }
 
     public static function get_product_data($product_id)
