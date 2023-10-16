@@ -108,6 +108,8 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 8. Email view that includes a tokenized product. 
 9. Tokenized Product View Blockchain Section
 10. New Product View Blockchain Section
+11. Mint products in bulks from the product list view
+12. Bakrypt launchpad view with multiple assets/products
 
 == Changelog ==
 
