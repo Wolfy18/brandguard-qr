@@ -3,8 +3,8 @@ Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
 Requires at least: 6.0
-Tested up to: 6.2.2
-Stable tag: 1.1.6
+Tested up to: 6.3.2
+Stable tag: 1.2.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -110,6 +110,17 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 10. New Product View Blockchain Section
 
 == Changelog ==
+
+= 1.2.1 =
+* chore: shaked tree to removed unused code 
+* feat: update js file to properly render components with react 18
+* feat: added wp global settings that includes the nonce and the root URL API
+* fix: removed jQuery related code to fetch data
+* feat: added IPFS related endpoints
+* feat: added endpoint to fetch access tokens from Bakrypt API
+* feat: added functions to get, update and mint products in bulks
+* feat: added functions to get and update the product details via REST
+* feat: added rest routes, authentication and authorization functionality
 
 = 1.1.6 =
 * Fixed bug related to shipping line item
