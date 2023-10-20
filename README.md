@@ -1,27 +1,4 @@
-# bakrypt-wc-extension
-
-A WooCommerce Admin Extension
-
-## Development
-
-https://github.com/nvm-sh/nvm
-
-Node v16.20.0 is recommended.
-
-To get started, run the following commands:
-
-```text
-nvm use 16
-
-npm install
-npm start
-
-composer install
-```
-
-### Woocommerce Blockchain Tokenization Extension
-
-## Description
+# Woocommerce Blockchain Tokenization Extension
 
 The WooCommerce Blockchain Tokenization Extension, is an innovative plugin that is revolutionizing the world of e-commerce.
 
@@ -44,6 +21,23 @@ Username: manager
 Password: manager
 
 Try it today and see the difference it can make for your business! Feel free to create your own tokens!
+
+## Development
+
+https://github.com/nvm-sh/nvm
+
+Node v16.20.0 is recommended.
+
+To get started, run the following commands:
+
+```text
+nvm use 16
+
+npm install
+npm start
+
+composer install
+```
 
 **Non-Fungible Tokens as a supply chain solution.**
 

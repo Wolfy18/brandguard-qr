@@ -33,7 +33,12 @@ Password: manager
 
 Try it today and see the difference it can make for your business! Feel free to create your own tokens!
 
-**Non-Fungible Tokens as a supply chain solution.**
+== Github == 
+
+This is an open-source development. 
+[https://github.com/Wolfy18/bakrypt-wc-extension](https://github.com/Wolfy18/bakrypt-wc-extension)
+
+== Non-Fungible Tokens as a supply chain solution ==
 
 Non-fungible tokens (NFTs) are digital assets that represent ownership of a unique item or concept. They are stored on a blockchain and can be bought, sold, and traded like any other asset.
 
