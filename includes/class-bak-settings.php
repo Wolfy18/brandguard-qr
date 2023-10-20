@@ -3,7 +3,7 @@
 /**
  * Settings
  *
- * A class which represents blockchain settings.
+ * A class that represents blockchain settings.
  *
  * @package BakExtension\core
  * @version 1.0.0
@@ -156,17 +156,3 @@ class Settings
 		woocommerce_update_options(self::fetch_bak_settings());
 	}
 }
-
-// function bakrypt_wc_extension_activate()
-// {
-// 	// Your activation logic goes here.
-
-// }
-// register_activation_hook(WCBAK_PLUGIN_FILE, 'bakrypt_wc_extension_activate');
-
-
-// function bakrypt_wc_extension_deactivate()
-// {
-// 	// Your deactivation logic goes here.
-// }
-// register_deactivation_hook(WCBAK_PLUGIN_FILE, 'bakrypt_wc_extension_deactivate');

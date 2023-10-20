@@ -3,7 +3,7 @@
 /**
  * RestAdapter
  *
- * A class which represents bakrypt's API and features.
+ * A class that represents bakrypt's API and REST use cases.
  *
  * @package BakExtension\api
  * @version 1.0.0

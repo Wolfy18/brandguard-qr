@@ -3,7 +3,7 @@
 /**
  * RestAdapter Routes
  *
- * A class which represents bakrypt's API and features.
+ * A class which represents plugin's REST routes
  *
  * @package BakExtension\api
  * @version 1.0.0
