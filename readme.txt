@@ -19,14 +19,14 @@ The plugin also has the ability to upload images and documents into IPFS using B
 
 The plugin implements WordPress native cron tasks; the plugin will automatically pull asset data (every 3 minutes until the transaction is confirmed or canceled), into your WordPress store and update your store products. The metadata includes the transaction's submitted JSON metadata as seen in the blockchain, policyId, fingerprint, and status. This metadata is used in several places in WordPress, such as printing the fingerprint of a minted asset in the order's email that the customer receives, which improves the traceability of the product and increases trust in the store.
 
-Learn more 🚀 -> https://bakrypt.readme.io/reference/blockchain-tokenization-extension-for-woocommerce
+Learn more 🚀 -> [Plugin's Docs](https://bakrypt.readme.io/reference/blockchain-tokenization-extension-for-woocommerce)
 
 == Demo ==
 
-We've created a demo store with custom permissions so that you can try the plugin without having to install a new instance. Managers are allowed to view and edit products. The demo store is available at https://wp.bakrypt.io, and you can log in with the following credentials:
+We've created a demo store with custom permissions so that you can try the plugin without having to install a new instance. Managers are allowed to view and edit products. The demo store is available at [https://wp.bakrypt.io](https://wp.bakrypt.io), and you can log in with the following credentials:
 
 Login:
-https://wp.bakrypt.io/wp-admin
+[https://wp.bakrypt.io/wp-admin](https://wp.bakrypt.io/wp-admin)
 
 Username: manager
 Password: manager
