@@ -3,7 +3,7 @@ Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
 Requires at least: 6.0
-Tested up to: 6.3.2
+Tested up to: 6.4.2
 Stable tag: 1.2.2
 Requires PHP: 7.4
 License: GPLv2 or later
