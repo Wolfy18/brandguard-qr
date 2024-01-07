@@ -323,9 +323,9 @@ class Product
 
         $settings = self::$adapter->settings;
 
-        if (!$settings['client_id'] && !$settings['client_secret'] && !$settings['username'] && !$settings['password']) { ?>
+        if( (!$settings['client_id'] && !$settings['client_secret'] && !$settings['username'] && !$settings['password']) and !$settings['auth_token'] ) { ?>
             <div class="error">
-                <p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt OAuth credentials</a> are required to load data from the remote source.</strong>
+                <p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt Auth credentials</a> are required to load data from the remote source.</strong>
                 </p>
             </div>
         <?php }

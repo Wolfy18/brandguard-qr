@@ -4,7 +4,7 @@ Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
 Requires at least: 6.0
 Tested up to: 6.4.2
-Stable tag: 1.2.2
+Stable tag: 1.3.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -48,30 +48,20 @@ NFTs could also be used to verify the authenticity of products, by linking them 
 
 Overall, the use of NFTs in a supply chain could help companies improve transparency, traceability, and authenticity, which could in turn enhance customer trust and loyalty.
 
-== Bakrypt API ==
+== Register with Bakrypt.io ==
+We use Bakrypt's API to conveniently interact with the blockchain. Therefore, it's required to create an account in our platform.
 
-Are you looking to create and sell non-fungible tokens (NFTs)? Our minting service can help you bring your unique digital assets to the market quickly and easily.
+* Create an account for mainnet:
+[Mainnet Bakrypt API](https://bakrypt.io/account/login/) 
+[Remember to set your password](https://bakrypt.io/account/password_reset/) 
 
-With our platform, you'll have access to a range of tools and features that make it simple to create and manage your NFTs. You can easily upload your artwork or other content, set your own prices, and choose from a variety of options for how your NFTs will be sold and distributed.
-
-Our platform is built on top of a robust and secure blockchain, ensuring that your NFTs are safe and secure. We also offer support from our team of experts, who can help you every step of the way as you create and sell your NFTs.
-
-Don't miss out on the growing market for NFTs – join our platform today and start minting your own digital assets.
+* Create an account for testnet.
+[Testnet Bakrypt API](https://testnet.bakrypt.io/account/login/) 
+[Remember to set your password](https://testnet.bakrypt.io/account/password_reset/) 
 
 == Cardano Blockchain ==
 
-Cardano is a decentralized public blockchain and cryptocurrency project that is focused on providing a secure and scalable platform for the creation and use of non-fungible tokens (NFTs). Some potential benefits of using Cardano for NFTs include:
-
-1. Security: Cardano uses a proof-of-stake (PoS) consensus algorithm and a multi-layered architecture that is designed to be secure and resistant to attacks. This can be particularly important for NFTs, which may represent valuable or unique assets that need to be protected.
-
-2. Scalability: Cardano is built to be scalable, with the ability to handle a large number of transactions per second. This can be useful for NFTs, which may be in high demand and require a fast and efficient platform to support their creation and exchange.
-
-3. Interoperability: Cardano is designed to be interoperable with other blockchain platforms, which could allow NFTs created on Cardano to be easily integrated with other applications and systems.
-
-4. Decentralized: Cardano is a decentralized platform, which means that it is not controlled by any single entity and is instead maintained by a distributed network of participants. This can provide users with greater control over their assets and reduce the risk of censorship or interference.
-
-5. Community support: Cardano has a large and active community of developers and users who are involved in the project and contribute to its development. This can provide users with access to a wealth of resources and support when it comes to using Cardano for NFTs.
-
+Cardano is a decentralized public blockchain and cryptocurrency project that is focused on providing a secure and scalable platform for the creation and use of non-fungible tokens (NFTs).
 
 **Bakrypt Docs**
 [Getting started with our API](https://bakrypt.readme.io/reference/getting-started-with-your-api)
@@ -85,17 +75,6 @@ Cardano is a decentralized public blockchain and cryptocurrency project that is 
 2. Search for our plugin with the search bar in the top right corner.
 3. After finding the plugin in the results, click Install Now. You can also click the plugin name to view more details about it.
 4. To use the plugin, you'll need to activate it. When the installation is finished (this usually takes a couple of seconds), click Activate.
-
-= Register with Bakrypt =
-We use Bakrypt's API to conveniently interact with the blockchain platform, while still being able to take advantage of the underlying technology. Therefore, it's require to create an account in our platform. We only required a valid email.
-
-* Create an account for mainnet:
-[Mainnet Bakrypt API](https://bakrypt.io/account/login/) 
-[Remember to set your password](https://bakrypt.io/account/password_reset/) 
-
-* Create an account for testnet.
-[Testnet Bakrypt API](https://testnet.bakrypt.io/account/login/) 
-[Remember to set your password](https://testnet.bakrypt.io/account/password_reset/) 
 
 **WooCommerce Blockchain Settings**
 1. In your WooCommerce Settings, find the "Blockchain" tab to setup your credentials. 
