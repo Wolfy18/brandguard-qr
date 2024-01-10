@@ -13,9 +13,9 @@ The WooCommerce Blockchain Tokenization Extension, is an innovative plugin that 
 
 == Description ==
 
-With this plugin, you can easily mint your existing or new products into collections of NFTs or Fungible tokens with just a few clicks. The system will automatically pick up metadata from your products and generate a valid JSON structure required by Bakrypt's API, BAkrypt's API will mint the data structure as Cardano native tokens according to your preferences.
+With this plugin, you can easily mint your existing or new products into collections of NFTs or Fungible tokens with just a few clicks. The system will automatically pick up metadata from your products and generate a valid JSON structure. Bakrypt's API will mint the object as a Cardano native token according to your preferences.
 
-The plugin also has the ability to upload images and documents into IPFS using Bakrypt's IPFS node. Product thumbnail images will automatically be picked as the cover image for NFTs, and these will be uploaded at the time of minting. Once the transaction has been submitted, Bakrypt will generate a transaction with an estimated cost and a deposit address. Once payment is confirmed on the deposit address, Bakrypt will go ahead and mint the tokens in the Cardano blockchain. Following the minting process, any remaining tokens (ADA) and assets will be sent back to the sender's address. Refunds are offered for _non-confirmed_ transactions. It's important to note that Bakrypt's convenience fees for transactions that have been confirmed are _non-refundable_.
+The plugin also has the ability to upload images and documents into IPFS using Bakrypt's IPFS node. Product thumbnail images will automatically be picked as the cover image for NFTs, and these will be uploaded at the time of minting. Once the transaction has been submitted, Bakrypt will generate a transaction with an estimated cost and a deposit address. Once payment is confirmed on the deposit address, Bakrypt will go ahead and mint the tokens in the Cardano blockchain. Following the minting process, any remaining tokens (ADA) and assets will be sent back to the sender's address. Refunds are offered for _non-confirmed_ transactions. It's important to note that Bakrypt's convenience fees are _non-refundable_ for transactions that have been confirmed.
 
 The plugin implements WordPress native cron tasks; the plugin will automatically pull asset data (every 3 minutes until the transaction is confirmed or canceled), into your WordPress store and update your store products. The metadata includes the transaction's submitted JSON metadata as seen in the blockchain, policyId, fingerprint, and status. This metadata is used in several places in WordPress, such as printing the fingerprint of a minted asset in the order's email that the customer receives, which improves the traceability of the product and increases trust in the store.
 
@@ -23,7 +23,7 @@ Learn more 🚀 -> [Plugin's Docs](https://bakrypt.readme.io/reference/blockchai
 
 == Demo ==
 
-We've created a demo store with custom permissions so that you can try the plugin without having to install a new instance. Managers are allowed to view and edit products. The demo store is available at [https://wp.bakrypt.io](https://wp.bakrypt.io), and you can log in with the following credentials:
+We've created a demo store with custom permissions so that you can try the plugin without having to install a new instance. Managers are allowed to view and edit products. The demo store is available at https://wp.bakrypt.io, and you can log in with the following credentials:
 
 Login:
 [https://wp.bakrypt.io/wp-admin](https://wp.bakrypt.io/wp-admin)
@@ -116,6 +116,10 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 12. Bakrypt launchpad view with multiple assets/products
 
 == Changelog ==
+
+= 1.3.2 =
+* feat: added token authentication schema
+* feat: updated woocommerce blockchain settings to use Token authentication
 
 = 1.2.2 =
 * feat: updated README documentation.
