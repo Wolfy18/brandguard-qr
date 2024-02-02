@@ -37,6 +37,16 @@ class RestRoutes
             'bak/v1',
             '/products',
             array(
+                'methods' => 'GET',
+                'callback' => array('BakExtension\api\RestAdapter', 'get_products_bulk'),
+                'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')
+            )
+        );
+
+        register_rest_route(
+            'bak/v1',
+            '/products',
+            array(
                 'methods' => 'PUT',
                 'callback' => array('BakExtension\api\RestAdapter', 'update_products_bulk'),
                 'permission_callback' => array("BakExtension\api\RestRoutes", 'check_permission')

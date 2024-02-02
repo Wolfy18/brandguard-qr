@@ -6,7 +6,13 @@ import renderTransactionModal from './components/transactionModal';
 import renderLaunchpadModal from './components/launchpadModal';
 import BakryptApiInterface from './api/interfaces';
 import client from './api/client';
-import { injectSpinner, removeSpinner, getData, setData } from './utils';
+import {
+	injectSpinner,
+	removeSpinner,
+	getData,
+	setData,
+	generateQRCodeAndDownloadAll,
+} from './utils';
 
 const updateRecord = async () => {
 	const id = document.querySelector('#product_id').value;
@@ -74,6 +80,24 @@ const deleteRecord = async (e) => {
 			Swal.fire('Changes are not saved', '', 'info');
 		}
 	});
+};
+
+const fetchProductData = async (productIds) => {
+	try {
+		const data = await client.get(`/products/?ids=${productIds.join()}`);
+
+		if (data.status !== 200) throw 'Unable get product information.';
+
+		return data;
+	} catch (error) {
+		Swal.fire({
+			title: 'Error',
+			text: error,
+			icon: 'error',
+		});
+	}
+
+	return undefined;
 };
 
 // Product List
@@ -352,6 +376,53 @@ jQuery(document).ready(function ($) {
 					Swal.fire('Changes are not saved', '', 'info');
 				}
 			});
+		} else if ($('#bulk-action-selector-top').val() === 'qr') {
+			e.preventDefault();
+			const selectedProducts = []; // Get the selected product IDs
+
+			// Iterate over each row in the WP-List-Table
+			$('.wp-list-table tbody tr').each(function () {
+				const checkbox = $(this).find('input[type="checkbox"]');
+
+				// Check if the checkbox is selected
+				if (checkbox.prop('checked')) {
+					// Retrieve the product ID from the row data or attributes
+					const productId = checkbox.val();
+
+					// Store the selected product ID
+					selectedProducts.push(productId);
+				}
+			});
+
+			if (!selectedProducts.length) {
+				Swal.fire({ title: 'Please select products', icon: 'info' });
+				return;
+			}
+
+			injectSpinner();
+			try {
+				// Fetch product data sku:fingerprint
+				const products = await fetchProductData(selectedProducts);
+
+				const reduced = products.data.data
+					.filter((i) => i.fingerprint && i.fingerprint.length)
+					.reduce((acc, obj) => {
+						acc.push({
+							fileName: obj.name,
+							text: obj.fingerprint,
+						});
+						return acc;
+					}, []);
+
+				generateQRCodeAndDownloadAll(reduced);
+			} catch (error) {
+				Swal.fire({
+					title: 'Error',
+					text: error,
+					icon: 'error',
+				});
+			}
+			removeSpinner();
 		}
 	});
 });

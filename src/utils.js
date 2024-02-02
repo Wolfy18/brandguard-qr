@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom';
 import { Spinner } from '@wordpress/components';
+import JSZip from 'jszip';
 
 const injectSpinner = () => {
 	const spinnerWrapper =
@@ -109,4 +110,56 @@ const setData = (asset, tx) => {
 	});
 };
 
-export { injectSpinner, removeSpinner, getData, setData };
+async function generateQRCodeAndDownloadAll(pairs) {
+	try {
+		const zip = new JSZip();
+
+		// Function to generate QR code and add to the ZIP file
+		async function generateAndAddToZip(pair) {
+			const { fileName, text } = pair;
+
+			const response = await fetch(
+				`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(
+					text
+				)}`
+			);
+
+			if (!response.ok) {
+				throw new Error(`Failed to generate QR code for ${text}`);
+			}
+
+			const blob = await response.blob();
+			zip.file(`${fileName}.png`, blob);
+		}
+
+		// Generate QR codes for each pair in the array
+		await Promise.all(pairs.map(generateAndAddToZip));
+
+		// Generate the ZIP file
+		const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+		// Create a download link and trigger a click event
+		const downloadLink = document.createElement('a');
+		downloadLink.href = URL.createObjectURL(zipBlob);
+		downloadLink.download = 'qrcodes.zip';
+
+		// Append the link to the document
+		document.body.appendChild(downloadLink);
+
+		// Trigger a click event to start the download
+		downloadLink.click();
+
+		// Remove the link from the document
+		document.body.removeChild(downloadLink);
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export {
+	injectSpinner,
+	removeSpinner,
+	getData,
+	setData,
+	generateQRCodeAndDownloadAll,
+};

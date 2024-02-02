@@ -26,7 +26,7 @@ class Settings
 		echo '<div class="error"><p><strong>' .
 			sprintf(
 				esc_html__(
-					'WC Blockchain Extension requires WooCommerce to be installed and active. You can download %s here.',
+					'BrandGuardQR requires WooCommerce to be installed and active. You can download %s here.',
 					'woocommerce-blockchain-extension'
 				),
 				'<a href="https://woocommerce.com/" target="_blank">WooCommerce</a>'
@@ -97,30 +97,6 @@ class Settings
 				'desc' => '',
 				'id' => 'wc_settings_tab_demo_section_title',
 			],
-			// 'client_id' => array(
-			// 	'name' => __('ClientID', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'text',
-			// 	'desc' => __('Client Id value. You can find this in the user profile', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_client_id'
-			// ),
-			// 'client_secret' => array(
-			// 	'name' => __('Client Secret', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'password',
-			// 	'desc' => __('Client secret value. You can find this in the user profile', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_client_secret'
-			// ),
-			// 'username' => array(
-			// 	'name' => __('Email', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'text',
-			// 	'desc' => __('Bakrypt account. This is the email used to register.', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_username'
-			// ),
-			// 'password' => array(
-			// 	'name' => __('Password', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'password',
-			// 	'desc' => __('The password for the Bakrypt account.', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_password'
-			// ),
 			'auth_token' => [
 				'name' => __('Authentication Token', 'bak-woocommerce-settings-tab'),
 				'type' => 'password',
@@ -130,30 +106,6 @@ class Settings
 				),
 				'id' => 'wc_settings_tab_bak_auth_token',
 			],
-			// 'testnet_client_id' => array(
-			// 	'name' => __('Testnet ClientID', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'text',
-			// 	'desc' => __('Testnet Client Id value. You can find this in the user profile', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_testnet_client_id'
-			// ),
-			// 'testnet_client_secret' => array(
-			// 	'name' => __('Testnet Client Secret', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'password',
-			// 	'desc' => __('Testnet Client secret value. You can find this in the user profile', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_testnet_client_secret'
-			// ),
-			// 'testnet_username' => array(
-			// 	'name' => __('Testnet Email', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'text',
-			// 	'desc' => __('Testnet Bakrypt account. This is the email used to register.', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_testnet_username'
-			// ),
-			// 'testnet_password' => array(
-			// 	'name' => __('Testnet Password', 'bak-woocommerce-settings-tab'),
-			// 	'type' => 'password',
-			// 	'desc' => __('The password for the Bakrypt account.', 'bak-woocommerce-settings-tab'),
-			// 	'id' => 'wc_settings_tab_bak_testnet_password'
-			// ),
 			'testnet_auth_token' => [
 				'name' => __('Testnet Authentication Token', 'bak-woocommerce-settings-tab'),
 				'type' => 'password',
