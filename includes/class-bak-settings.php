@@ -26,7 +26,7 @@ class Settings
 		echo '<div class="error"><p><strong>' .
 			sprintf(
 				esc_html__(
-					'WC Blockchain Extension requires WooCommerce to be installed and active. You can download %s here.',
+					'BrandGuardQR requires WooCommerce to be installed and active. You can download %s here.',
 					'woocommerce-blockchain-extension'
 				),
 				'<a href="https://woocommerce.com/" target="_blank">WooCommerce</a>'

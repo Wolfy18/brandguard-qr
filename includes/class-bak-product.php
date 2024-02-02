@@ -323,7 +323,7 @@ class Product
 
         $settings = self::$adapter->settings;
 
-        if( (!$settings['client_id'] && !$settings['client_secret'] && !$settings['username'] && !$settings['password']) and !$settings['auth_token'] ) { ?>
+        if ((!$settings['client_id'] && !$settings['client_secret'] && !$settings['username'] && !$settings['password']) and !$settings['auth_token']) { ?>
             <div class="error">
                 <p><strong><a href="<?php echo admin_url('admin.php') . '?page=wc-settings&tab=bak_settings' ?>" target="_blank">Bakrypt Auth credentials</a> are required to load data from the remote source.</strong>
                 </p>
@@ -543,7 +543,8 @@ class Product
             "status" => $product->get_meta('bk_token_status'),
             "transaction" => $product->get_meta('bk_token_transaction'),
             "json" => $product->get_meta('bk_token_json'),
-            "att_image" => $product->get_meta('bk_att_token_image')
+            "att_image" => $product->get_meta('bk_att_token_image'),
+            "sku" => $product->get_sku()
         );
 
         return $product_data;

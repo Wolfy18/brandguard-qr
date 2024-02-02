@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: Bakrypt Blockchain Extension
+ * Plugin Name: BrandGuard QR
  * Plugin URI: https://bakrypt.io
  * Description: Mint your products into the Cardano Blockchain
  * Version: 1.3.2

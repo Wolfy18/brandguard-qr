@@ -1,6 +1,6 @@
-# Woocommerce Blockchain Tokenization Extension
+# BrandGuardQR
 
-The WooCommerce Blockchain Tokenization Extension, is an innovative plugin that is revolutionizing the world of e-commerce.
+BrandGuardQR, is an innovative plugin that is revolutionizing the world of e-commerce.
 
 With this plugin, you can easily mint your existing or new products into collections of NFTs or Fungible tokens with just a few clicks. The system will automatically pick up metadata from your products and generate a valid JSON structure. Bakrypt's API will mint the object as a Cardano native token according to your preferences.
 

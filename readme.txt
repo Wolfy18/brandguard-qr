@@ -1,4 +1,4 @@
-=== Bakrypt Blockchain Tokenization Extension for WooCommerce  ===
+=== BrandGuardQR  ===
 Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain

@@ -130,6 +130,7 @@ class ProductList
 	public static function add_mint_bulk_action($actions)
 	{
 		$actions['mint'] = 'Mint as Tokens';
+		$actions['qr'] = 'Create QR Codes';
 		return $actions;
 	}
 
@@ -153,5 +154,14 @@ class ProductList
 		};
 
 		return array_map($func, $products);
+	}
+
+	public static function get_products($ids)
+	{
+		$func = function ($id) {
+			return Product::get_product_data($id);
+		};
+
+		return array_map($func, $ids);
 	}
 }

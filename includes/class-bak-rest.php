@@ -393,6 +393,30 @@ class RestAdapter
         return $serializer;
     }
 
+    public static function get_products_bulk($request)
+    {
+        // Retrieve the "ids" parameter from the request
+        $ids_param = $request->get_param('ids');
+
+        if (!$ids_param) {
+            return new \WP_Error('invalid_param', 'Missing product ids', [
+                'status' => 400,
+            ]);
+        }
+
+        $response = [
+            'success' => true,
+            'message' => 'Here is the information',
+            'data' => ProductList::get_products(explode(",", $ids_param)),
+        ];
+
+        // Create a serializer instance
+        $serializer = new \WP_REST_Response();
+        $serializer->set_data($response);
+
+        return $serializer;
+    }
+
     public static function update_products_bulk($request)
     {
         $body = $request->get_body();
