@@ -1,8 +1,8 @@
-# BrandGuardQR
+# BrandGuard QR
 
-BrandGuardQR, is an innovative plugin that is revolutionizing the world of e-commerce.
+BrandGuard QR, is an innovative plugin that is revolutionizing the world of e-commerce.
 
-With this plugin, you can easily mint your existing or new products into collections of NFTs or Fungible tokens with just a few clicks. The system will automatically pick up metadata from your products and generate a valid JSON structure. Bakrypt's API will mint the object as a Cardano native token according to your preferences.
+With this plugin, you can easily mint your existing or new products into collections of NFTs or Fungible tokens with just a few clicks. The system will automatically pick up metadata from your products and generate a valid JSON structure. Bakrypt's API will mint the object as a Cardano native token according to your preferences. Once the transaction is confirmed, the fingerprint of the minted NFT is linked to the product in your store. You can also create QR codes of the fingerprint! Go to your products list, select your minted products and select "Create QR Codes" from the bulk actions dropdown. 
 
 The plugin also has the ability to upload images and documents into IPFS using Bakrypt's IPFS node. Product thumbnail images will automatically be picked as the cover image for NFTs, and these will be uploaded at the time of minting. Once the transaction has been submitted, Bakrypt will generate a transaction with an estimated cost and a deposit address. Once payment is confirmed on the deposit address, Bakrypt will go ahead and mint the tokens in the Cardano blockchain. Following the minting process, any remaining tokens (ADA) and assets will be sent back to the sender's address. Refunds are offered for _non-confirmed_ transactions. It's important to note that Bakrypt's convenience fees are _non-refundable_ for transactions that have been confirmed.
 
