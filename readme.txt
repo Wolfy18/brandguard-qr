@@ -1,7 +1,7 @@
 === BrandGuard QR ===
 Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
-Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
+Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain, QR Codes
 Requires at least: 6.0
 Tested up to: 6.4.3
 Stable tag: 1.3.3
@@ -116,6 +116,10 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 12. Bakrypt launchpad view with multiple assets/products
 
 == Changelog ==
+
+= 1.3.3 =
+* feat: QR CODES generator from product fingerprint
+* feat: Added product list endpoint 
 
 = 1.3.2 =
 * feat: added token authentication schema
