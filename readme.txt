@@ -1,7 +1,7 @@
 === BrandGuard QR ===
 Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
-Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain
+Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain, QR Codes
 Requires at least: 6.0
 Tested up to: 6.4.3
 Stable tag: 1.3.3
