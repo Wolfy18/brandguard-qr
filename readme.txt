@@ -117,6 +117,10 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 
 == Changelog ==
 
+= 1.3.3 =
+* feat: QR CODES generator from product fingerprint
+* feat: Added product list endpoint 
+
 = 1.3.2 =
 * feat: added token authentication schema
 * feat: updated woocommerce blockchain settings to use Token authentication
