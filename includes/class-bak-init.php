@@ -28,6 +28,7 @@ class BakWCExtension
     protected function __construct()
     {
         // Instantiation logic will go here.
+
     }
 
     public static function is_woocommerce_activated()
@@ -63,7 +64,7 @@ class BakWCExtension
         add_action('manage_product_posts_custom_column', array("BakExtension\controllers\ProductList", 'bak_fingerprint_column_data'), 10, 2);
         add_filter('woocommerce_product_filters', array("BakExtension\controllers\ProductList", 'bak_custom_filter'));
         add_action('pre_get_posts', array("BakExtension\controllers\ProductList", 'bak_products_filter_query'));
-        
+
         //==================================== Product  ===================================
         add_filter('woocommerce_product_tabs', array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_tab'));
         add_filter('woocommerce_product_data_tabs', array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_data_tab'));
@@ -71,6 +72,9 @@ class BakWCExtension
         add_action("add_meta_boxes", array("BakExtension\controllers\Product", "add_ipfs_meta_box"));
         add_action('woocommerce_process_product_meta', array("BakExtension\controllers\Product", 'bak_save_blockchain_meta'));
         add_action('wp_ajax_product_token_get_image', array("BakExtension\controllers\Product", 'product_token_get_image'));
+
+        // Add shortcodes
+        add_shortcode("bak_asset_tracking", array('BakExtension\controllers\AssetTracking', 'asset_tracking'));
 
         // =================================== Orders ======================================
         add_filter('woocommerce_get_item_data', array("BakExtension\controllers\Order", "display_asset_fingerprint_in_cart"), 10, 2);
