@@ -1,10 +1,10 @@
 === BrandGuard QR ===
 Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
-Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain, QR Codes
+Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain, QR Codes, Asset Tracking
 Requires at least: 6.0
 Tested up to: 6.4.3
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,6 +20,12 @@ The plugin also has the ability to upload images and documents into IPFS using B
 The plugin implements WordPress native cron tasks; the plugin will automatically pull asset data (every 3 minutes until the transaction is confirmed or canceled), into your WordPress store and update your store products. The metadata includes the transaction's submitted JSON metadata as seen in the blockchain, policyId, fingerprint, and status. This metadata is used in several places in WordPress, such as printing the fingerprint of a minted asset in the order's email that the customer receives, which improves the traceability of the product and increases trust in the store.
 
 Learn more 🚀 -> [Plugin's Docs](https://bakrypt.readme.io/reference/blockchain-tokenization-extension-for-woocommerce)
+
+== Shortcode ==
+
+[ bak_asset_tracking ]
+
+Use the Asset Tracking shortcode anywhere in your website to include a public form that verifies an asset fingerprint with an existing product in your store.
 
 == Demo ==
 
@@ -114,8 +120,17 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 10. New Product View Blockchain Section
 11. Mint products in bulks from the product list view
 12. Bakrypt launchpad view with multiple assets/products
+13. Asset Tracking page sample. This page uses the shortcode [bak_asset_tracking]
+14. Found asset using the asset tracker
+15. Blockchain tab in the product detail page
+16. Asset Tracking shortcode in post edit view
 
 == Changelog ==
+
+= 1.3.4 =
+* fix: Fixed bug related to the woocommerce tabs in the product detail page
+* feat: Added Asset Tracking Shortcode
+* feat: Added images related to asset tracking
 
 = 1.3.3 =
 * feat: QR CODES generator from product fingerprint
