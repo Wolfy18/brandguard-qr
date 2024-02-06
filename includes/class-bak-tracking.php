@@ -65,10 +65,11 @@ class AssetTracking
                     'product/tracking.php',
                     array(
                         'product' => $product,
+                        'fingerprint' => $fingerprint
                     )
                 );
             } else {
-                wc_print_notice(__('Sorry, the asset could not be found. Please contact us if you are having difficulty finding the requested information', 'bak'), 'error');
+                wc_print_notice(__('Sorry, the asset could not be found.', 'bak'), 'error');
             }
         }
 
