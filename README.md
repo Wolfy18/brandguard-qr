@@ -10,6 +10,13 @@ The plugin implements WordPress native cron tasks; the plugin will automatically
 
 Learn more 🚀 -> https://bakrypt.readme.io/reference/blockchain-tokenization-extension-for-woocommerce
 
+## Shortcode
+
+[ bak_asset_tracking ]
+
+Use the Asset Tracking shortcode anywhere in your website to include a public form that verifies an asset fingerprint with an existing product in your store.
+
+
 ## Demo
 
 We've created a demo store with custom permissions so that you can try the plugin without having to install a new instance. Managers are allowed to view and edit products. The demo store is available at https://wp.bakrypt.io, and you can log in with the following credentials:
@@ -112,3 +119,10 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 8. Email view that includes a tokenized product.
 9. Tokenized Product View Blockchain Section
 10. New Product View Blockchain Section
+11. Mint products in bulks from the product list view
+12. Bakrypt launchpad view with multiple assets/products
+13. Asset Tracking page sample. This page uses the shortcode [bak_asset_tracking]
+14. Found asset using the asset tracker
+15. Blockchain tab in the product detail page
+16. Asset Tracking shortcode in post edit view
+
