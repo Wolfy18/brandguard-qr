@@ -31,7 +31,7 @@ class AssetTracking
         $atts        = shortcode_atts(array(), $atts, 'bak_asset_tracking');
         $nonce_value = wc_get_var($_REQUEST['bak-asset-tracking-nonce'], wc_get_var($_REQUEST['_wpnonce'], '')); // @codingStandardsIgnoreLine.
 
-        if (isset($_REQUEST['fingerprint']) && wp_verify_nonce($nonce_value, 'bak-asset_tracking')) { // WPCS: input var ok.
+        if (isset($_REQUEST['fingerprint']) && strlen($_REQUEST['fingerprint']) && wp_verify_nonce($nonce_value, 'bak-asset_tracking')) { // WPCS: input var ok.
 
             $fingerprint = empty($_REQUEST['fingerprint']) ? '' : trim(wc_clean(wp_unslash($_REQUEST['fingerprint']))); // WPCS: input var ok.
 
