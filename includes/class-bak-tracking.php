@@ -19,6 +19,7 @@ defined('ABSPATH') || exit;
  */
 class AssetTracking
 {
+
     /**
      * Output the shortcode.
      *
@@ -59,20 +60,18 @@ class AssetTracking
                 }
 
                 wp_reset_postdata();
-                // do_action('bak_track_fingerprint', $fingerprint);
 
-                bak_get_template(
+                return bak_get_template(
                     'product/tracking.php',
                     array(
                         'product' => $product,
                     )
                 );
-                return;
             } else {
                 wc_print_notice(__('Sorry, the asset could not be found. Please contact us if you are having difficulty finding the requested information', 'bak'), 'error');
             }
         }
 
-        bak_get_template('product/form-tracking.php');
+        return bak_get_template('product/form-tracking.php');
     }
 }
