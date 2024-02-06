@@ -33,7 +33,8 @@ class Product
     {
         // The new tab content
         $prod_id = get_the_ID();
-        echo '<p>' . esc_html(get_post_meta($prod_id, 'additional information', true)) . '</p>';
+        $fingerprint = get_post_meta($prod_id, 'bk_token_fingerprint', true);
+        echo '<p><strong>Fingerprint:</strong> <a href="https://cexplorer.io/asset/' . esc_html($fingerprint) . '" target="_blank" rel="nofollow">' . esc_html($fingerprint) . '</a></p>';
     }
 
     public static function bakrypt_blockchain_product_tab($tabs)
@@ -44,6 +45,8 @@ class Product
             'priority' => 50,
             'callback' => array("BakExtension\controllers\Product", 'bakrypt_blockchain_product_tab_content')
         );
+
+        return $tabs;
     }
 
     public static function bakrypt_blockchain_product_data_tab(
