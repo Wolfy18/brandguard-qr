@@ -16,7 +16,6 @@ Learn more 🚀 -> https://bakrypt.readme.io/reference/blockchain-tokenization-e
 
 Use the Asset Tracking shortcode anywhere in your website to include a public form that verifies an asset fingerprint with an existing product in your store.
 
-
 ## Demo
 
 We've created a demo store with custom permissions so that you can try the plugin without having to install a new instance. Managers are allowed to view and edit products. The demo store is available at https://wp.bakrypt.io, and you can log in with the following credentials:
