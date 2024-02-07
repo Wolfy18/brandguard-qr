@@ -149,6 +149,7 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 == Changelog ==
 
 = 1.3.5 =
+* fix: fixed typo
 * fix: upgraded bakrypt launchpad version
 * chore: updated readme files
 
