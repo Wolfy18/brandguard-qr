@@ -19,6 +19,7 @@ wp-cli.local.yml
 .idea
 .vscode/
 update-emails.*
+remove-all-staled-branches.*
 
 # Composer
 /vendor/

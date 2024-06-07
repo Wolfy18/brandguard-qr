@@ -30,6 +30,6 @@
   content: "\f17e";
 }
 
-.ant-tabs-dropdown, .ant-popover, .ant-message {
+.ant-tabs-dropdown, .ant-popover, .ant-message, .ant-drawer {
   z-index: 999999 !important;
 }/*# sourceMappingURL=index.css.map */
