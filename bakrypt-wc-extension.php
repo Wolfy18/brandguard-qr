@@ -1,10 +1,10 @@
 <?php
 
 /**
- * Plugin Name: BrandGuard QR
+ * Plugin Name: Brand Guard QR
  * Plugin URI: https://bakrypt.io
  * Description: Mint your products into the Cardano Blockchain
- * Version: 1.3.5
+ * Version: 1.3.6
  * Author: Wolfgang Leon
  * Author URI: https://bakrypt.io/
  * Developer: Wolfgang Leon
@@ -14,7 +14,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * 
  * WC requires at least: 7.1
- * WC tested up to: 8.5.2
+ * WC tested up to: 8.9.2
  *
  */
 
