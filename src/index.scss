@@ -1,0 +1,32 @@
+// Add styles here.
+
+#blockchain_product_data,
+#posts-filter {
+	position: relative;
+	#spinner {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		top: 0;
+		z-index: 99999;
+		display: flex;
+		justify-content: center;
+		background: rgba(0, 0, 0, 0.2);
+		svg {
+			align-self: center;
+		}
+	}
+	.custom-toast-position {
+		margin-top: 20px;
+	}
+}
+
+.wp-list-table .manage-column.column-asset_fingerprint {
+	width: 12%;
+}
+
+#woocommerce-product-data ul.wc-tabs li.bakrypt-blockchain_tab a::before {
+	content: '\f17e';
+}
+
+.ant-tabs-dropdown, .ant-popover, .ant-message {z-index: 999999 !important;}

@@ -1,0 +1,10 @@
+{
+	"autoload": {
+		"classmap": [
+			"./includes"
+		],
+		"files": [
+			"helpers/functions.php"
+		]
+	}
+}

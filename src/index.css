@@ -1,0 +1,35 @@
+#blockchain_product_data,
+#posts-filter {
+  position: relative;
+}
+#blockchain_product_data #spinner,
+#posts-filter #spinner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  z-index: 99999;
+  display: flex;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+#blockchain_product_data #spinner svg,
+#posts-filter #spinner svg {
+  align-self: center;
+}
+#blockchain_product_data .custom-toast-position,
+#posts-filter .custom-toast-position {
+  margin-top: 20px;
+}
+
+.wp-list-table .manage-column.column-asset_fingerprint {
+  width: 12%;
+}
+
+#woocommerce-product-data ul.wc-tabs li.bakrypt-blockchain_tab a::before {
+  content: "\f17e";
+}
+
+.ant-tabs-dropdown, .ant-popover, .ant-message {
+  z-index: 999999 !important;
+}/*# sourceMappingURL=index.css.map */
