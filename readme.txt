@@ -1,11 +1,11 @@
 === Brand Guard QR ===
 Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
-Tags: NFT, Cardano, Blockchain, WooCommerce, Tokenization, Supply Chain, QR Codes, Asset Tracking
+Tags: NFT, Cardano, Blockchain, WooCommerce, Supply Chain
 Requires at least: 6.0
 Tested up to: 6.5.4
 Stable tag: 1.3.6
-Requires PHP: 7.4 or later
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -99,11 +99,11 @@ Cardano is a decentralized public blockchain and cryptocurrency project that is 
 
 **WooCommerce Blockchain Settings**
 1. In your WooCommerce Settings, find the "Blockchain" tab to setup your credentials. 
-2. Set your Client ID, Client Secret, Username and Password for the Bakrypt's account. 
+2. Set your Token from your Bakrypt's account. 
 3. Save Changes!
 
 *Testnet Credentials (Optional):* 
-4. Set your Client ID, Client Secret, Username and Password for the Bakrypt's *testnet* account.
+4. Set your token from your Bakrypt's *testnet* account.
 5. Activate the "testnet" checkbox. This will send all requests towards the testnet network.
 6. Save Changes! 
 
@@ -141,6 +141,11 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 16. Asset Tracking shortcode in post edit view
 
 == Changelog ==
+
+= 1.3.6 =
+* feat: upgraded BakBridge to version 2
+* feat: updated banners
+* feat: updated readme.txt
 
 = 1.3.5 =
 * fix: fixed typo
