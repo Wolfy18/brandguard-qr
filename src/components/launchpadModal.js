@@ -60,7 +60,6 @@ const LaunchpadModal = ({ config, getter, callback }) => {
 				<Modal
 					title="Review Assets"
 					onRequestClose={closeModal}
-					isFullScreen={true}
 					ref={modalRef}
 					shouldCloseOnClickOutside={false}
 					shouldCloseOnEsc={false}

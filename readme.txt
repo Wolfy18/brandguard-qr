@@ -3,16 +3,14 @@ Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Supply Chain
 Requires at least: 6.0
-Tested up to: 6.5.4
-Stable tag: 1.3.6
+Tested up to: 6.5.5
+Stable tag: 1.3.7
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Brand Guard QR, is an innovative plugin that is changing the world of e-commerce.
 
-== Enhanced Product Identification ==
-
+== Brand Guard QR - Enhanced Product Identification ==
 Generate dynamic product identification codes on-demand, effectively replacing and enhancing traditional GTIN/UPC usage backed by the Cardano Blockchain and the IPFS Network, ensuring a fully decentralized and secure system.
 
 == On-Demand Product Code Generation: ==
@@ -22,13 +20,13 @@ Generate dynamic product identification codes on-demand, effectively replacing a
 - Significantly lower costs compared to traditional methods, with no annual renewals required.
 - Data is stored on a public, immutable, and auditable blockchain, instilling confidence in data integrity.
 
-== Enriched Customer Engagement: ==
-- Elevate customer experience by providing additional product information through the generated identification codes.
-- Strengthen brand engagement by offering customers a deeper understanding of the product's unique features, benefits, and origin.
-
 == Blockchain-Enabled Anti-Counterfeit Certification: ==
 - Leverage cutting-edge Blockchain Technology for a failsafe Proof of Authenticity through a Certificate of Origin.
 - Ensure the legitimacy of your products by certifying them on the blockchain, safeguarding against counterfeiting.
+
+== Enriched Customer Engagement: ==
+- Elevate customer experience by providing additional product information through the generated identification codes.
+- Strengthen brand engagement by offering customers a deeper understanding of the product's unique features, benefits, and origin.
 
 == How does it work? ==
 
@@ -36,19 +34,26 @@ With this plugin, you can easily mint your existing or new products into collect
 
 Learn more 🚀 -> [Plugin's Docs](https://bakrypt.readme.io/reference/blockchain-tokenization-extension-for-woocommerce)
 
-== Register with Bakrypt.io ==
-We use Bakrypt's API to conveniently interact with the blockchain. Therefore, it's required to create an account in our platform.
+== Minting a Single Asset ==
+1. Navigate to any product.
+2. Locate the "Blockchain" tab within the product's data table.
 
-* Create an account for mainnet:
-- [Mainnet Bakrypt API](https://bakrypt.io/account/login/) 
-- [Remember to set your password](https://bakrypt.io/account/password_reset/) 
+== Minting Multiple Assets ==
+1. Go to the product list.
+2. Select the desired products.
+3. From the Bulk actions dropdown, choose "Mint as Tokens".
 
-* Create an account for testnet.
-- [Testnet Bakrypt API](https://testnet.bakrypt.io/account/login/) 
-- [Remember to set your password](https://testnet.bakrypt.io/account/password_reset/) 
+== Generating QR Codes ==
+1. Go to the product list.
+2. Select the desired products.
+3. From the Bulk actions dropdown, choose "Create QR Codes".
+
+== Shortcodes ==
+Use the Asset Tracking shortcode anywhere in your website to include a public form that verifies an asset fingerprint with an existing product in your store.
+
+[ bak_asset_tracking ]
 
 == Demo ==
-
 We've created a demo store with custom permissions so that you can try the plugin without having to install a new instance. Managers are allowed to view and edit products. The demo store is available at https://wp.bakrypt.io, and you can log in with the following credentials:
 
 Login:
@@ -57,13 +62,14 @@ Login:
 Username: manager
 Password: manager
 
-Try it today and see the difference it can make for your business! Feel free to create your own tokens!
+== Register with Bakrypt.io ==
+We use Bakrypt's API to conveniently interact with the blockchain. Therefore, it's required to create an account in our platform.
 
-== Shortcodes ==
+* Create an account for mainnet:
+- [Mainnet Bakrypt API](https://bakrypt.io/account/login/)
 
-[ bak_asset_tracking ]
-
-Use the Asset Tracking shortcode anywhere in your website to include a public form that verifies an asset fingerprint with an existing product in your store.
+* Create an account for testnet.
+- [Testnet Bakrypt API](https://testnet.bakrypt.io/account/login/)
 
 == Github == 
 
@@ -90,7 +96,7 @@ Cardano is a decentralized public blockchain and cryptocurrency project that is 
 
 == Installation ==
 
-**Make sure WooCommerce is also installed and activated** 
+**WooCommerce is required** 
 
 1. In your WordPress dashboard, choose Plugins > Add new.
 2. Search for our plugin with the search bar in the top right corner.
@@ -141,6 +147,11 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 16. Asset Tracking shortcode in post edit view
 
 == Changelog ==
+
+= 1.3.7 =
+* feat: upgraded BakBridge to version 0.5.4
+* feat: updated readme.txt
+* feat: modal height is now dynamic
 
 = 1.3.6 =
 * feat: upgraded BakBridge to version 2

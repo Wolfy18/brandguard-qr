@@ -54,7 +54,6 @@ const TransactionModal = ({ config, getter, collection }) => {
 				<Modal
 					title="Review Transaction"
 					onRequestClose={closeModal}
-					isFullScreen={true}
 					ref={modalRef}
 					shouldCloseOnClickOutside={false}
 					shouldCloseOnEsc={false}
