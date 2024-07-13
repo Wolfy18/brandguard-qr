@@ -11,7 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 
 Brand Guard QR - Enhanced Product Identification
-Generate dynamic product identification codes on-demand, effectively replacing and enhancing traditional GTIN/UPC usage backed by the Cardano Blockchain and the IPFS Network, ensuring a fully decentralized and secure system.
+Generate dynamic product identification codes replacing traditional GTIN/UPC usage backed by the Cardano Blockchain.
 
 == On-Demand Product Code Generation: ==
 - Enjoy the benefits of a fully decentralized system, ensuring enhanced security and transparency.
