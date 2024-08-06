@@ -64,12 +64,12 @@ We use Bakrypt's API to conveniently interact with the blockchain. Therefore, it
 ## Development
 https://github.com/nvm-sh/nvm
 
-Node v16.20.0 is recommended.
+Node v20.13.1 is recommended.
 
 To get started, run the following commands:
 
 ```text
-nvm use 16
+nvm use 20
 
 npm install
 npm start
