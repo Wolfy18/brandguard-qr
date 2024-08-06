@@ -71,8 +71,8 @@ To get started, run the following commands:
 ```text
 nvm use 20
 
-npm install
-npm start
+pnpm install
+pnpm start
 
 composer install
 ```
