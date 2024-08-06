@@ -2,7 +2,7 @@
 	"name": "bakrypt-wc-extension",
 	"title": "bakrypt-wc-extension",
 	"license": "GPL-3.0-or-later",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "bakrypt-wc-extension",
 	"scripts": {
 		"build": "wp-scripts build",
@@ -21,9 +21,9 @@
 	},
 	"devDependencies": {
 		"@prettier/plugin-php": "^0.19.2",
-		"@woocommerce/dependency-extraction-webpack-plugin": "1.6.0",
-		"@woocommerce/eslint-plugin": "1.1.0",
-		"@wordpress/scripts": "^12.2.1",
+		"@woocommerce/dependency-extraction-webpack-plugin": "3.0.1",
+		"@woocommerce/eslint-plugin": "2.3.0",
+		"@wordpress/scripts": "^28.4.0",
 		"prettier": "^2.8.0"
 	},
 	"dependencies": {
@@ -31,8 +31,8 @@
 		"axios": "^1.5.1",
 		"bakbridge": "^0.5.4",
 		"jszip": "^3.10.1",
-		"react": "16.13.1",
-		"react-dom": "16.13.1",
+		"react": "18.0.0",
+		"react-dom": "18.0.0",
 		"sweetalert2": "^11.4.8"
 	}
 }

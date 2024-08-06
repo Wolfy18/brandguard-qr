@@ -3,8 +3,8 @@ Contributors: bakrypt
 Donate link: https://bakrypt.io/pool/
 Tags: NFT, Cardano, Blockchain, WooCommerce, Supply Chain
 Requires at least: 6.0
-Tested up to: 6.5.5
-Stable tag: 1.3.7
+Tested up to: 6.6.1
+Stable tag: 1.3.8
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -37,6 +37,7 @@ Learn more 🚀 -> [Plugin's Docs](https://bakrypt.readme.io/reference/blockchai
 == Minting a Single Asset ==
 1. Navigate to any product.
 2. Locate the "Blockchain" tab within the product's data table.
+3. Click on the "Get Started" button to mint the current product.
 
 == Minting Multiple Assets ==
 1. Go to the product list.
@@ -147,6 +148,11 @@ WooCommerce is a scalable platform that can handle a large volume of traffic and
 16. Asset Tracking shortcode in post edit view
 
 == Changelog ==
+
+= 1.3.8 =
+* feat: updated wordpress scripts
+* feat: changed package manager to pnpm 
+* fix: fixed javascript library bug
 
 = 1.3.7 =
 * feat: upgraded BakBridge to version 0.5.4

@@ -24,6 +24,7 @@ Learn more 🚀 -> https://bakrypt.readme.io/reference/blockchain-tokenization-e
 ## Minting a Single Asset
 1. Navigate to any product.
 2. Locate the "Blockchain" tab within the product's data table.
+3. Click on the "Get Started" button to mint the current product.
 
 ## Minting Multiple Assets
 1. Go to the product list.
