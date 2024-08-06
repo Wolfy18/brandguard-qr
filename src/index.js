@@ -440,7 +440,7 @@ const init = async () => {
 	const mintModalContainer = wrapper
 		.querySelector('.btn-action')
 		.querySelector('.mint');
-
+		
 	if (mintModalContainer) {
 		const modal = document.createElement('div');
 
